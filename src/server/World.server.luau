@@ -71,8 +71,46 @@ car.Parent = world
 local carCFrame = CFrame.new(34, 2.1, 13)
 local body = part("Body", Vector3.new(7, 1.6, 11), carCFrame, Color3.fromRGB(218, 55, 55), Enum.Material.Metal, car)
 car.PrimaryPart = body
+-- Creator Store sports car MeshPart asset by @JonathasBus (6014137456).
+-- Load only its visual geometry; never run scripts from third-party assets.
+-- Keep our own trusted VehicleSeat, driving logic and fallback geometry.
+local meshLoaded = false
+local ok, assetOrError = pcall(function()
+    return game:GetService("InsertService"):LoadAsset(6014137456)
+end)
+if ok and assetOrError then
+    local assetContainer = assetOrError
+    local sourceMesh = assetContainer:FindFirstChildWhichIsA("MeshPart", true)
+    if sourceMesh then
+        local visual = sourceMesh:Clone()
+        visual.Name = "SportsCarMesh"
+        for _, descendant in ipairs(visual:GetDescendants()) do
+            if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("ModuleScript") then
+                descendant:Destroy()
+            end
+        end
+        visual.Anchored = true
+        visual.CanCollide = false
+        visual.CanTouch = false
+        visual.CanQuery = false
+        visual.Massless = true
+        -- Normalize the visual mesh to the existing arcade car footprint.
+        local sourceSize = visual.Size
+        local scale = math.min(7 / math.max(sourceSize.X, 0.01), 11 / math.max(sourceSize.Z, 0.01), 2.8 / math.max(sourceSize.Y, 0.01))
+        visual.Size = sourceSize * scale
+        visual.CFrame = carCFrame
+        visual.Parent = car
+        meshLoaded = true
+    else
+        warn("Sports car asset did not contain a MeshPart; using fallback car.")
+    end
+    assetContainer:Destroy()
+else
+    warn("Sports car asset unavailable to this experience; using fallback car.")
+end
+body.Transparency = meshLoaded and 1 or 0
 local cabin = part("Cabin", Vector3.new(6, 1.5, 5), carCFrame * CFrame.new(0, 1.35, -1), Color3.fromRGB(72, 139, 174), Enum.Material.Glass, car)
-cabin.Transparency = .25
+cabin.Transparency = meshLoaded and 1 or .25
 local seat = Instance.new("VehicleSeat")
 seat.Name = "DriverSeat"
 seat.Size = Vector3.new(2, 1, 2)
@@ -87,6 +125,7 @@ for _, x in ipairs({-3.6, 3.6}) do
     for _, z in ipairs({-3.5, 3.5}) do
         local wheel = part("Wheel", Vector3.new(1.4, 2.6, 2.6), carCFrame * CFrame.new(x, -.45, z), Color3.fromRGB(28, 30, 34), Enum.Material.Rubber, car)
         wheel.Shape = Enum.PartType.Cylinder
+        wheel.Transparency = meshLoaded and 1 or 0
     end
 end
 local prompt = Instance.new("ProximityPrompt")
@@ -122,4 +161,4 @@ RunService.Heartbeat:Connect(function(dt)
     car:PivotTo(current)
 end)
 
-print("PrototypeWorld ready: empty house, road, trees, spawn and drivable test car")
+print("PrototypeWorld ready: house, road, spawn and drivable sports car; mesh loaded:", meshLoaded)
