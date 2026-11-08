@@ -1,0 +1,20 @@
+name: Import 3D Sports Car (staging only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  import-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Upload licensed GLB via Roblox Open Cloud
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_CREATOR_USER_ID: ${{ vars.ROBLOX_CREATOR_USER_ID }}
+        run: python3 scripts/upload_sports_car.py assets/sports-car.glb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uploaded-sports-car-id
+          path: uploaded-sports-car-id.txt
+          if-no-files-found: error
