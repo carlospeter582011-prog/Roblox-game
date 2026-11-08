@@ -1,0 +1,58 @@
+name: Deploy Roblox Place (Manual Saved Only)
+on:
+  workflow_dispatch:
+    inputs:
+      build_run_id:
+        description: 'Successful build workflow run ID containing roblox-place artifact'
+        required: true
+        type: string
+      confirmation:
+        description: 'Type DEPLOY SAVED to confirm overwriting the Saved version of the existing place'
+        required: true
+        type: string
+permissions:
+  actions: read
+  contents: read
+jobs:
+  deploy:
+    if: ${{ inputs.confirmation == 'DEPLOY SAVED' }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Validate configuration
+        env:
+          UNIVERSE: ${{ vars.ROBLOX_UNIVERSE_ID }}
+          PLACE: ${{ vars.ROBLOX_PLACE_ID }}
+          RUN_ID: ${{ inputs.build_run_id }}
+        run: |
+          set -euo pipefail
+          test "$UNIVERSE" = "6766580105"
+          test "$PLACE" = "123021373220932"
+          [[ "$RUN_ID" =~ ^[0-9]+$ ]]
+      - name: Download previously built artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUN_ID: ${{ inputs.build_run_id }}
+        run: |
+          set -euo pipefail
+          gh run download "$RUN_ID" --repo "$GITHUB_REPOSITORY" --name roblox-place --dir dist
+          test -s dist/game.rbxlx
+      - name: Upload to Roblox Saved version only
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          UNIVERSE: ${{ vars.ROBLOX_UNIVERSE_ID }}
+          PLACE: ${{ vars.ROBLOX_PLACE_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -n "$ROBLOX_API_KEY"
+          status=$(curl --silent --show-error --output /tmp/roblox-response.json --write-out '%{http_code}' \
+            --request POST \
+            --header "x-api-key: $ROBLOX_API_KEY" \
+            --header "Content-Type: application/xml" \
+            --data-binary @dist/game.rbxlx \
+            "https://apis.roblox.com/universes/v1/$UNIVERSE/places/$PLACE/versions?versionType=Saved")
+          if [[ "$status" != "200" ]]; then
+            echo "Roblox upload failed with HTTP $status (response hidden to avoid leaking sensitive data)"
+            exit 1
+          fi
+          echo "Roblox accepted Saved version upload. No Published version requested."

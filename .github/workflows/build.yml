@@ -1,0 +1,51 @@
+name: Build Roblox Place
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'default.project.json'
+      - '.github/workflows/build.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Rojo 7.4.4
+        shell: bash
+        run: |
+          set -euo pipefail
+          curl --fail --location --silent --show-error --retry 3 \
+            "https://github.com/rojo-rbx/rojo/releases/download/v7.4.4/rojo-7.4.4-linux-x86_64.zip" -o /tmp/rojo.zip
+          unzip -q /tmp/rojo.zip -d /tmp/rojo
+          chmod +x /tmp/rojo/rojo
+          echo "/tmp/rojo" >> "$GITHUB_PATH"
+      - name: Validate source and configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m json.tool default.project.json >/dev/null
+          test -f src/server/Bootstrap.server.luau
+          test -f src/client/Bootstrap.client.luau
+          if grep -R -nE 'ROBLOX_API_KEY|BEGIN PRIVATE KEY' src/; then
+            echo "Potential credential reference in source"; exit 1
+          fi
+      - name: Build place
+        run: rojo build default.project.json --output game.rbxlx
+      - name: Verify output
+        run: |
+          test -s game.rbxlx
+          python3 - <<'PY'
+          import xml.etree.ElementTree as ET
+          root = ET.parse("game.rbxlx").getroot()
+          assert root.tag == "roblox", root.tag
+          print("Valid nonempty Roblox XML place")
+          PY
+      - uses: actions/upload-artifact@v4
+        with:
+          name: roblox-place
+          path: game.rbxlx
+          if-no-files-found: error
+          retention-days: 14
