@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -10,7 +11,6 @@ local cloudFolder = Instance.new("Folder")
 cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
 local active = {}
-local inventory = {}
 local lastAttempt = {}
 local nextId = 0
 local function spawnCloud()
@@ -47,13 +47,16 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         return
     end
     active[cloudId] = nil
+    if not ProfileStore.AddCatch(player, species.id, species.baseRewardCoins) then
+        -- Player profile unavailable: preserve the cloud rather than grant an unsaved catch.
+        active[cloudId] = cloud
+        remote:FireClient(player, false, "Profile unavailable. Please rejoin.")
+        return
+    end
     cloud:Destroy()
-    inventory[player] = (inventory[player] or 0) + 1
-    player:SetAttribute("CloudCount", inventory[player])
     remote:FireClient(player, true, "Caught a Breeze Cloud!")
     task.delay(5, spawnCloud)
 end)
 Players.PlayerRemoving:Connect(function(player)
-    inventory[player] = nil
     lastAttempt[player] = nil
 end)
