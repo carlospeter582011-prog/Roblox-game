@@ -245,6 +245,7 @@ require("./CatchRulesSpec")(test, eq)
 require("./SpawnLevelSpec")(test, eq)
 require("./MutationsSpec")(test, eq)
 require("./MutationAccountingSpec")(test, eq)
+require("./ProgressSpec")(test, eq)
 
 local failures = 0
 for _, t in ipairs(tests) do
