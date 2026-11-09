@@ -96,7 +96,8 @@ for _, placement in ipairs({
 end
 -- Original 3D lanterns mark the route from spawn to the central catching meadow.
 -- Keep the path open for touch users and preserve the actual world as 3D geometry.
-for _, x in ipairs({ -24, -12, 0, 12, 24 }) do
+-- Keep the middle sightline unobstructed; no central lantern post.
+for _, x in ipairs({ -24, -12, 12, 24 }) do
     WorldAssetModels.skyLantern(world, Vector3.new(x, 1, -43), 0.75)
 end
 local spawn=Instance.new("SpawnLocation")
