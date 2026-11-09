@@ -1,0 +1,22 @@
+local Rules = require("../src/shared/CrystalRules")
+return function(test, eq)
+    test("crystal discovery accepts eligible nearby player", function()
+        eq(Rules.canDiscover(1, 10, false, true), true, "nearby")
+        eq(Rules.canDiscover(18, 13, false, true), true, "boundary")
+    end)
+    test("crystal discovery rejects invalid or distant requests", function()
+        for _, distance in ipairs({ -1, 13.01, math.huge, 0/0 }) do
+            eq(Rules.canDiscover(1, distance, false, true), false, "distance")
+        end
+        eq(Rules.canDiscover(0, 1, false, true), false, "index zero")
+        eq(Rules.canDiscover(19, 1, false, true), false, "index over limit")
+        eq(Rules.canDiscover(1.5, 1, false, true), false, "fractional index")
+    end)
+    test("crystal discovery requires ready profile and rejects duplicates", function()
+        eq(Rules.canDiscover(1, 1, true, true), false, "duplicate")
+        eq(Rules.canDiscover(1, 1, false, false), false, "not ready")
+    end)
+    test("crystal count ignores corrupt and out-of-range entries", function()
+        eq(Rules.count({ [1]=true, [2]=true, [19]=true, [3]=false, bogus=true }), 2, "count")
+    end)
+end
