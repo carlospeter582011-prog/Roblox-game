@@ -150,12 +150,12 @@ refreshQuest()
 -- Compact level/coins
 local levelLabel = Instance.new("TextLabel")
 levelLabel.Name = "LevelLabel"
-levelLabel.Size = UDim2.fromOffset(235, 28)
-levelLabel.Position = UDim2.new(0, 16, 0, 118)
+levelLabel.Size = UDim2.fromOffset(290, 40)
+levelLabel.Position = UDim2.new(0, 16, 0, 102)
 levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 levelLabel.BackgroundTransparency = 0.2
 levelLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
-levelLabel.TextSize = 12
+levelLabel.TextSize = 16
 levelLabel.Font = Enum.Font.Gotham
 levelLabel.Parent = gui
 local function refreshLevel()
