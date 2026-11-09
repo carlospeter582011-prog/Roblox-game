@@ -48,16 +48,23 @@ for i=1,18 do
     local crystal = WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
     -- Server-owned interactive 3D discovery. ProximityPrompt supports touch and gamepad.
     -- Discovery is server-authoritative and saved with the player profile.
-    local target = crystal and (crystal:IsA("BasePart") and crystal or crystal:FindFirstChildWhichIsA("BasePart", true))
+    local target = crystal and (crystal:IsA("BasePart") and crystal or crystal:FindFirstChild("CrystalShard1", true))
     if target then
         local prompt = Instance.new("ProximityPrompt")
         prompt.Name = "DiscoverCrystal"
         prompt.ActionText = "Discover"
         prompt.ObjectText = "Sky Crystal"
-        prompt.MaxActivationDistance = 10
+        prompt.MaxActivationDistance = 16
+        prompt.MaxIndicatorDistance = 24
+        prompt.Exclusivity = Enum.ProximityPromptExclusivity.AlwaysShow
         prompt.HoldDuration = 0.35
         prompt.RequiresLineOfSight = false
-        prompt.Parent = target
+        -- Put the prompt above the crystal rather than inside the glowing shard.
+        local anchor = Instance.new("Attachment")
+        anchor.Name = "DiscoveryPromptAnchor"
+        anchor.Position = Vector3.new(0, target.Size.Y * 0.5 + 1.5, 0)
+        anchor.Parent = target
+        prompt.Parent = anchor
         local crystalId = "sky-crystal-" .. tostring(i)
         prompt.Triggered:Connect(function(player)
             if not player or not player:IsA("Player") or not player.Parent then return end
@@ -71,7 +78,10 @@ for i=1,18 do
             if not CrystalRules.canDiscover(i, distance, discovered[i], player:GetAttribute("ProfileReady")) then
                 return
             end
-            Profile.DiscoverCrystal(player, i)
+            local awarded = Profile.DiscoverCrystal(player, i)
+            if awarded then
+                player:SetAttribute("CrystalDiscoveryFeedback", "Crystal " .. i .. " discovered! +10 Coins +5 XP")
+            end
         end)
     end
 end
