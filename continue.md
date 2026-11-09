@@ -195,3 +195,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Implemented persistent `crystals` index set in ProfileCore schema v3, migration/sanitization for indices 1–18, and server-authoritative `ProfileStore.DiscoverCrystal` with duplicate rejection. StarterWorld prompts now read the loaded profile rather than session-only discovery table. Two profile roundtrip/sanitization tests added to `tests/run.luau`.
 - Commits: `8e89241a`, `a7c45758`, `acc4fbd5`, `5c774323`. No new assets or 2D world geometry; existing SkyCrystal3D is native Roblox Model/Parts. Imported cloud `104852877755332` is a Model asset, not a MeshPart MeshId.
 - **Unverified:** CI execution, auto-publish result, real DataStore save/rejoin, mobile prompt UX, runtime and 3D model load. Do not check launch acceptance yet. Next: inspect push-triggered workflow logs and repair any failing Luau tests; test actual persistence on Roblox before claiming complete.
+
+
+## 2026-11-10 — Crystal discovery economy integration (source only)
+- Added fixed 10 Coins and 5 XP for each first-time SkyCrystal3D discovery, awarded server-side inside `ProfileStore.DiscoverCrystal` only after persistent duplicate guard. Wallet, XP and level player attributes refresh immediately. `CrystalRules.reward` rejects duplicate/invalid IDs. Commits: `f76cdaea`, `f0a15096`, `b39f3fb2`.
+- Added two pure CrystalRules reward tests. Crystal visuals remain native Roblox Model/Part with ProximityPrompt; HUD ScreenGui remains permitted. No new GLB, Model ID, MeshId, or third-party license. `ASSET_REGISTRY.md` requires no new asset entry.
+- Verification pending: CI execution, push-triggered publish outcome, Roblox Android runtime, rejoin persistence and wallet/level display. Do not mark checklist acceptance complete based on commits. Next: inspect push workflow, verify reward persistence, build playable world/boss systems and finish imported 3D asset QA.
