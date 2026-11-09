@@ -11,7 +11,7 @@ gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 local button = Instance.new("TextButton")
 button.Size = UDim2.fromOffset(80, 32)
-button.Position = UDim2.new(0, 16, 0, 158)
+button.Position = UDim2.new(0, 16, 0, 144)
 button.Text = "Tools"
 button.TextSize = 14
 button.Font = Enum.Font.GothamBold
@@ -20,8 +20,8 @@ button.TextColor3 = Color3.new(1, 1, 1)
 button.Parent = gui
 -- Scrolls so all tools fit on a small touch screen.
 local panel = Instance.new("ScrollingFrame")
-panel.Size = UDim2.new(0, 210, 0, 220)
-panel.Position = UDim2.new(0, 16, 0, 198)
+panel.Size = UDim2.new(0, 210, 0, 170)
+panel.Position = UDim2.new(0, 16, 0, 184)
 panel.Visible = false
 panel.BackgroundColor3 = Color3.fromRGB(24, 48, 81)
 panel.CanvasSize = UDim2.new(0, 0, 0, 0)
@@ -46,6 +46,7 @@ for _, id in ipairs(order) do
     row.Activated:Connect(function()
         if (player:GetAttribute("CloudCount") or 0) >= tool.unlockCatches then
             equip:FireServer(id)
+            button.Text = tool.name
             panel.Visible = false
         end
     end)
@@ -56,10 +57,13 @@ local function refresh()
     for id, row in pairs(rows) do
         local tool = catalog[id]
         local locked = count < tool.unlockCatches
-        row.Text = tool.name .. (locked and (" | " .. tool.unlockCatches) or "")
+        local selected = player:GetAttribute("EquippedCatchTool") == id
+        row.Text = tool.name .. (locked and (" | unlock " .. tool.unlockCatches) or (selected and " ✓ Equipped" or " | Equip"))
+        row.BackgroundColor3 = selected and Color3.fromRGB(36, 133, 95) or (locked and Color3.fromRGB(55, 66, 83) or Color3.fromRGB(45, 103, 139))
     end
 end
 player:GetAttributeChangedSignal("CloudCount"):Connect(refresh)
+player:GetAttributeChangedSignal("EquippedCatchTool"):Connect(refresh)
 button.Activated:Connect(function()
     refresh()
     panel.Visible = not panel.Visible
