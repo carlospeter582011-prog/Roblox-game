@@ -210,3 +210,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 
 ### 2026-11-10 follow-up on gate
 - Run [42718188577](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42718188577) failed: 82 tests, one failure because the added assertion inspected the sparse raw stored record instead of sanitized `result.data.crystals`. Publish skipped again. Corrected the assertion in commit [5a1f8ee](https://github.com/carlospeter582011-prog/Roblox-game/commit/5a1f8ee65ac1e2932a590de3c8f0bd7dd0d0f8a4). Await a new completed push run before claiming green CI/publish.
+
+## 2026-11-10 — Crystal usability / glare feedback
+- User reports crystal interaction does not work and crystals are excessively shiny; also reports a long central stick and tools lacking satisfying utility.
+- Commits d94da7f and 2bfa984: crystal prompts now anchor above primary shard with 16-stud activation, visible indicators and AlwaysShow; server records success feedback attribute. Crystal fallback shards changed from Neon to Glass with dimmer PointLights. These are source fixes, **not runtime verified**.
+- Central stick identity remains unverified; do not remove arbitrary world geometry until source or screenshot identifies it. Existing tools have range/cooldown/coin modifiers but need meaningful active gameplay and UI feedback. Audit pending.
+- Next: CI/publish status, Android prompt test, visible discovery feedback HUD, identify/remove central obstruction, meaningful tool actions, gameplay progression, tests and 3D-only asset QA.
