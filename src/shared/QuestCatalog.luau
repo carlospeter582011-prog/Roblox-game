@@ -1,4 +1,5 @@
 -- Story and side quests. Stable IDs. Server awards completion via CatchRules.
+-- All speciesId values must exist in CloudCatalog.
 local Quests = {
     first_breeze = { id = "first_breeze", title = "A Whisper in the Sky", description = "Catch your first Breeze Cloud.", objective = "catch_species", speciesId = "breeze", required = 1, rewardCoins = 50, rewardXP = 25, chapter = 1 },
     three_clouds = { id = "three_clouds", title = "A Cloud Keeper's Beginning", description = "Catch three clouds to prepare for your journey.", objective = "total_catches", required = 3, rewardCoins = 80, rewardXP = 40, chapter = 1 },
@@ -22,7 +23,7 @@ local Quests = {
     hundred_total = { id = "hundred_total", title = "Legend of the Clouds", description = "Catch one hundred clouds.", objective = "total_catches", required = 100, rewardCoins = 2000, rewardXP = 1000, chapter = 5 },
     ten_cirrus = { id = "ten_cirrus", title = "High Winds", description = "Catch ten Cirrus Clouds.", objective = "catch_species", speciesId = "cirrus", required = 10, rewardCoins = 220, rewardXP = 110, chapter = 2 },
     five_voltage = { id = "five_voltage", title = "Charged Skies", description = "Catch five Voltage Clouds.", objective = "catch_species", speciesId = "voltage", required = 5, rewardCoins = 400, rewardXP = 200, chapter = 3 },
-    first_meteor = { id = "first_meteor", title = "Falling Star", description = "Catch a Meteor Cloud.", objective = "catch_species", speciesId = "meteor", required = 1, rewardCoins = 450, rewardXP = 225, chapter = 3 },
+    first_comet = { id = "first_comet", title = "Shooting Star", description = "Catch a Comet Cloud.", objective = "catch_species", speciesId = "comet", required = 1, rewardCoins = 600, rewardXP = 300, chapter = 4 },
     twenty_mist = { id = "twenty_mist", title = "Endless Fog", description = "Catch twenty Mist Clouds.", objective = "catch_species", speciesId = "mist", required = 20, rewardCoins = 350, rewardXP = 175, chapter = 3 },
     first_crystal = { id = "first_crystal", title = "Shining Stone", description = "Catch a Crystal Cloud.", objective = "catch_species", speciesId = "crystal", required = 1, rewardCoins = 380, rewardXP = 190, chapter = 3 },
     three_nebula = { id = "three_nebula", title = "Cosmic Trio", description = "Catch three Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 3, rewardCoins = 1500, rewardXP = 750, chapter = 5 },
@@ -32,7 +33,6 @@ local Quests = {
     two_hundred_total = { id = "two_hundred_total", title = "Cloud Legend", description = "Catch two hundred clouds.", objective = "total_catches", required = 200, rewardCoins = 5000, rewardXP = 2500, chapter = 5 },
     five_sunbeam = { id = "five_sunbeam", title = "Sunlit Path", description = "Catch five Sunbeam Clouds.", objective = "catch_species", speciesId = "sunbeam", required = 5, rewardCoins = 180, rewardXP = 90, chapter = 2 },
     ten_pebble = { id = "ten_pebble", title = "Rocky Start", description = "Catch ten Pebble Clouds.", objective = "catch_species", speciesId = "pebble", required = 10, rewardCoins = 200, rewardXP = 100, chapter = 2 },
-    first_comet = { id = "first_comet", title = "Shooting Star", description = "Catch a Comet Cloud.", objective = "catch_species", speciesId = "comet", required = 1, rewardCoins = 600, rewardXP = 300, chapter = 4 },
     forty_total = { id = "forty_total", title = "Sky Explorer", description = "Catch forty clouds.", objective = "total_catches", required = 40, rewardCoins = 500, rewardXP = 250, chapter = 3 },
     three_rainbow = { id = "three_rainbow", title = "Triple Rainbow", description = "Catch three Rainbow Clouds.", objective = "catch_species", speciesId = "rainbow", required = 3, rewardCoins = 800, rewardXP = 400, chapter = 4 },
     first_voidrift = { id = "first_voidrift", title = "Rift Walker", description = "Catch a Voidrift Cloud.", objective = "catch_species", speciesId = "voidrift", required = 1, rewardCoins = 900, rewardXP = 450, chapter = 4 },
