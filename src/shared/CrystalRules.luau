@@ -2,6 +2,17 @@
 local Rules = {}
 Rules.MAX_CRYSTALS = 18
 Rules.MAX_DISTANCE = 13
+Rules.DISCOVERY_COINS = 10
+Rules.DISCOVERY_XP = 5
+
+-- Fixed, non-random reward; only award after a first-time server-side discovery.
+function Rules.reward(index, alreadyDiscovered)
+    if type(index) ~= "number" or index ~= math.floor(index)
+        or index < 1 or index > Rules.MAX_CRYSTALS or alreadyDiscovered == true then
+        return 0, 0
+    end
+    return Rules.DISCOVERY_COINS, Rules.DISCOVERY_XP
+end
 
 function Rules.canDiscover(index, distance, alreadyDiscovered, profileReady)
     if type(index) ~= "number" or index ~= math.floor(index)
