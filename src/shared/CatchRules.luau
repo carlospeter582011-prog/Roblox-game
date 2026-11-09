@@ -32,6 +32,14 @@ function Rules.isInRange(distance, species, tool)
     return distance <= species.baseCatchRadius + tool.rangeBonus
 end
 
+-- Cloud Magnet has an active long-distance pull/catch field, not just a stat bonus.
+-- Caller must pass the server-resolved tool id; never trust a client-supplied tool id.
+function Rules.canMagnetPull(distance, species, toolId, tool)
+    return toolId == "cloud_magnet"
+        and type(distance) == "number" and distance >= 0 and distance < math.huge
+        and distance <= species.baseCatchRadius + tool.rangeBonus + 12
+end
+
 -- Deterministic server-side multi-catch target selection. The requested target must
 -- already have passed the ordinary catch-range check; candidates cannot be supplied
 -- by the client. Stable id ordering breaks equal-distance ties.
