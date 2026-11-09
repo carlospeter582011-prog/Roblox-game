@@ -21,7 +21,7 @@ local function loadCloudTemplate()
         return AssetService:LoadAssetAsync(VERIFIED_CLOUD_MODEL_ASSET_ID)
     end)
     if not ok or not container then
-        warn("Cloud model asset could not be loaded; using original 3D fallback")
+        warn("Cloud Model 104852877755332 load failed; using 3D fallback: " .. tostring(container))
         return nil
     end
     -- Treat uploaded assets as untrusted: copy ONLY geometry, never scripts or remotes.
@@ -89,6 +89,8 @@ function CloudVisuals.createCloudVisual(parent, position, tint, speciesId)
                 part.CanCollide = false
             end
         end
+        model:SetAttribute("VisualSource", "ImportedRobloxModel")
+        model:SetAttribute("ModelAssetId", VERIFIED_CLOUD_MODEL_ASSET_ID)
         return model
     end
 
@@ -104,6 +106,7 @@ function CloudVisuals.createCloudVisual(parent, position, tint, speciesId)
         mesh.CanCollide = false
         mesh.Position = position
         mesh.Parent = model
+        model:SetAttribute("VisualSource", "MeshPart")
         return model
     end
 
@@ -128,6 +131,7 @@ function CloudVisuals.createCloudVisual(parent, position, tint, speciesId)
         puff.Position = position + offset
         puff.Parent = model
     end
+    model:SetAttribute("VisualSource", "Procedural3DParts")
     return model
 end
 
