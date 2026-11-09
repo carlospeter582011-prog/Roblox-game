@@ -118,3 +118,10 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Updated `src/shared/CloudVisuals.luau` (`94b3203361ba9c81184ea239416145c5c40582c9`) to cap copied imported BaseParts at 32, reject invalid geometry bounds, normalize largest dimension to 6 studs, and recenter the imported Model before positioning. This addresses likely GLB origin/scale mismatch; procedural 3D fallback remains.
 - Confirmed prior GitHub handoff reports uploaded original Model `104852877755332` from successful workflow run `42624259940`; **not** a MeshPart.MeshId. No new external asset or ID introduced.
 - This run did not independently confirm the latest auto-publish workflow or Studio/Android rendering. Next: check publish run, test loaded Model on Android, inspect fallback warnings, add automated tests for geometry bounds, continue 3D world and boss gameplay.
+
+
+## 2026-11-09 — Starter island fall recovery (code only)
+- Added `src/shared/RecoveryRules.luau`, `src/server/PlayerRecovery.server.luau` and `tests/RecoverySpec.luau`; registered three tests in `tests/run.luau` (commits d840894, 1b1a7c8, 2cdf9ba, cc5fd99).
+- Server checks fallen characters near starter island at 4Hz, rescues to 3D spawn area and clears velocity; ignores distant locations to avoid interfering with future worlds. Pure policy tests cover threshold, distance, cooldown and invalid values.
+- All geometry remains Roblox 3D; HUD remains legitimate ScreenGui. No external model imported in this run; original cloud Model ID 104852877755332 remains type Model, not MeshPart MeshId.
+- **UNVERIFIED**: CI outcome for these commits, live auto-publish, Roblox runtime/mobile, spawn safety and visual correctness. Never check launch acceptance until verified. Next: inspect publish gate and actual in-game behavior; integrate additional worlds and gameplay.
