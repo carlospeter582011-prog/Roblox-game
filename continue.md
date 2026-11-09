@@ -62,3 +62,10 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 2. `git fetch`, read `git log origin/main`, `gh run list -R carlospeter582011-prog/Roblox-game` (GraphQL is blocked: use `gh api` REST for PRs; tags cannot be pushed).
 3. Sandbox cannot download Luau/Rojo; tests run on GitHub's runner: push a `feature/**` branch or open a PR, then read the run.
 4. Never check an acceptance box or claim completion without runtime evidence. Update this file and Notion after each milestone with commit SHAs and run IDs.
+
+## 2026-11-09 — 3D world model conversion (PR #17, draft)
+- Read latest `main` and reconciled previous agent's work: main already has 86 species rows, 15 tools, 38 quests, mutation/encyclopedia/tool UI, and an Open Cloud Published upload with CI evidence, but no Roblox Studio runtime evidence.
+- New branch `feature/3d-model-world-assets` from `main`; draft PR https://github.com/carlospeter582011-prog/Roblox-game/pull/17.
+- Added `src/server/WorldAssetModels.luau`: reusable Roblox 3D Model assemblies for SkyTree3D, SkyCrystal3D, FloatingRock3D, with optional MeshPart slots for approved verified Mesh IDs. Wired `StarterWorld.server.luau` to instantiate these. Registered provenance and caveats in ASSET_REGISTRY.md.
+- No Canvas is used for world objects. ScreenGui remains for necessary HUD controls. **No real external MeshPart IDs are yet configured**, so this is not a completed professional mesh replacement. Do not treat Model asset IDs as MeshPart IDs. No external asset was uploaded.
+- PR #17 is DRAFT, NOT merged or published. Needs CI, Roblox runtime visual verification and approved mesh asset IDs. Do not claim success before evidence.
