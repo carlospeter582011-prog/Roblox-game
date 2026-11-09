@@ -11,16 +11,34 @@ local function fixed(value)
 end
 
 return function(test, eq)
+    test("expanded species catalog has 20 unique spawnable entries and every rarity tier", function()
+        local count, tiers = 0, {}
+        for id, species in pairs(Species) do
+            count += 1
+            eq(species.id, id, "stable id " .. id)
+            eq(type(species.spawnWeight) == "number" and species.spawnWeight > 0, true, "weight " .. id)
+            eq(type(species.baseRewardCoins) == "number" and species.baseRewardCoins > 0, true, "reward " .. id)
+            eq(#species.colorRGB, 3, "color " .. id)
+            tiers[species.rarity] = true
+        end
+        eq(count, 20, "species count")
+        for _, tier in ipairs({ "Common", "Uncommon", "Rare", "Epic", "Legendary", "Mythic" }) do
+            eq(tiers[tier], true, "rarity " .. tier)
+        end
+        eq(Spawn.rollSpecies(Species, fixed(0)) ~= nil, true, "first spawn")
+        eq(Spawn.rollSpecies(Species, fixed(0.999999)) ~= nil, true, "last spawn")
+    end)
+
     test("rollSpecies maps rng ranges onto weights in sorted id order", function()
-        -- Catalog weights: breeze 70, drizzle 30 (ids sorted: breeze, drizzle).
-        eq(Spawn.rollSpecies(Species, fixed(0)), "breeze", "rng 0")
-        eq(Spawn.rollSpecies(Species, fixed(0.699)), "breeze", "rng 0.699")
-        eq(Spawn.rollSpecies(Species, fixed(0.701)), "drizzle", "rng 0.701")
-        eq(Spawn.rollSpecies(Species, fixed(0.9999)), "drizzle", "rng 0.9999")
+        local fixture = { breeze = { spawnWeight = 70 }, drizzle = { spawnWeight = 30 } }
+        eq(Spawn.rollSpecies(fixture, fixed(0)), "breeze", "rng 0")
+        eq(Spawn.rollSpecies(fixture, fixed(0.699)), "breeze", "rng 0.699")
+        eq(Spawn.rollSpecies(fixture, fixed(0.701)), "drizzle", "rng 0.701")
+        eq(Spawn.rollSpecies(fixture, fixed(0.9999)), "drizzle", "rng 0.9999")
     end)
 
     test("rollSpecies returns the last id if rng hits exactly 1.0", function()
-        eq(Spawn.rollSpecies(Species, fixed(1)), "drizzle", "rng 1.0")
+        eq(Spawn.rollSpecies({ breeze = { spawnWeight = 70 }, drizzle = { spawnWeight = 30 } }, fixed(1)), "drizzle", "rng 1.0")
     end)
 
     test("rollSpecies ignores species without a positive finite weight", function()
@@ -50,7 +68,7 @@ return function(test, eq)
         local breeze = 0
         local total = 20000
         for _ = 1, total do
-            if Spawn.rollSpecies(Species, rng) == "breeze" then
+            if Spawn.rollSpecies({ breeze = { spawnWeight = 70 }, drizzle = { spawnWeight = 30 } }, rng) == "breeze" then
                 breeze += 1
             end
         end
