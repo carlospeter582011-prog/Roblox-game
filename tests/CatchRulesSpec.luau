@@ -105,6 +105,13 @@ return function(test, eq)
             eq(s.id, id, "species id matches key " .. id)
             eq(type(s.baseCatchRadius) == "number" and s.baseCatchRadius > 0, true, id .. " radius")
             eq(type(s.baseRewardCoins) == "number" and s.baseRewardCoins >= 0, true, id .. " reward")
+            eq(type(s.spawnWeight) == "number" and s.spawnWeight > 0, true, id .. " spawnWeight")
+            eq(type(s.name) == "string" and #s.name > 0, true, id .. " name")
+            eq(type(s.colorRGB) == "table" and #s.colorRGB == 3, true, id .. " colorRGB shape")
+            for i = 1, 3 do
+                local c = s.colorRGB[i]
+                eq(type(c) == "number" and c >= 0 and c <= 255 and c == math.floor(c), true, id .. " colorRGB[" .. i .. "]")
+            end
         end
     end)
 

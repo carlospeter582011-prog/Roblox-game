@@ -4,6 +4,7 @@ on:
     branches: [main]
     paths:
       - 'src/**'
+      - 'tests/**'
       - 'default.project.json'
       - '.github/workflows/auto-publish.yml'
   workflow_dispatch:
@@ -27,12 +28,33 @@ jobs:
           unzip -q /tmp/rojo.zip -d /tmp/rojo
           chmod +x /tmp/rojo/rojo
           echo /tmp/rojo >> "$GITHUB_PATH"
+      - name: Install pinned Luau CLI 0.746
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh release download 0.746 --repo luau-lang/luau --pattern 'luau-ubuntu.zip' --dir /tmp/luau
+          unzip -q /tmp/luau/luau-ubuntu.zip -d /tmp/luau/bin
+          chmod +x /tmp/luau/bin/luau /tmp/luau/bin/luau-analyze
+          echo /tmp/luau/bin >> "$GITHUB_PATH"
+      - name: Release gate - static analysis and unit tests (publish is skipped if these fail)
+        shell: bash
+        run: |
+          set -euo pipefail
+          luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau
+          luau tests/run.luau
       - name: Check project and build
         shell: bash
         run: |
           set -euo pipefail
           python3 -m json.tool default.project.json >/dev/null
-          test -f src/server/World.server.luau
+          test -f src/server/StarterWorld.server.luau
+          test -f src/server/CloudCatch.server.luau
+          test -f src/server/ProfileStore.luau
+          if grep -R -nE 'ROBLOX_API_KEY|BEGIN PRIVATE KEY' src/; then
+            echo "Potential credential reference in source"; exit 1
+          fi
           rojo build default.project.json --output game.rbxlx
           test -s game.rbxlx
           python3 - <<'PY'

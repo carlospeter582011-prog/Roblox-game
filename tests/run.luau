@@ -242,6 +242,7 @@ test("a lock that frees up mid-retry lets the waiting server in", function()
 end)
 
 require("./CatchRulesSpec")(test, eq)
+require("./SpawnLevelSpec")(test, eq)
 
 local failures = 0
 for _, t in ipairs(tests) do

@@ -11,9 +11,10 @@ gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 local button = Instance.new("TextButton")
 button.Name = "CatchButton"
-button.AnchorPoint = Vector2.new(1, 1)
-button.Position = UDim2.new(1, -20, 1, -35)
-button.Size = UDim2.fromOffset(155, 60)
+-- Mid-right, clear of Roblox's own jump button and thumbstick at the bottom of the screen.
+button.AnchorPoint = Vector2.new(1, 0.5)
+button.Position = UDim2.new(1, -24, 0.6, 0)
+button.Size = UDim2.fromOffset(170, 70)
 button.BackgroundColor3 = Color3.fromRGB(71, 137, 230)
 button.TextColor3 = Color3.new(1, 1, 1)
 button.TextScaled = true
@@ -69,3 +70,21 @@ for _,attribute in ipairs({"Quest_first_breeze","Quest_three_clouds","CloudCount
     player:GetAttributeChangedSignal(attribute):Connect(refreshQuest)
 end
 refreshQuest()
+
+local levelLabel = Instance.new("TextLabel")
+levelLabel.Name = "LevelLabel"
+levelLabel.Size = UDim2.fromOffset(190, 40)
+levelLabel.Position = UDim2.new(0, 12, 0, 12)
+levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
+levelLabel.BackgroundTransparency = 0.15
+levelLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
+levelLabel.TextScaled = true
+levelLabel.Parent = gui
+local function refreshLevel()
+    levelLabel.Text = "Level " .. tostring(player:GetAttribute("CloudLevel") or 1)
+        .. "  |  " .. tostring(player:GetAttribute("CloudCoins") or 0) .. " coins"
+end
+for _, attribute in ipairs({ "CloudLevel", "CloudCoins" }) do
+    player:GetAttributeChangedSignal(attribute):Connect(refreshLevel)
+end
+refreshLevel()

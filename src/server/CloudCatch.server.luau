@@ -1,4 +1,4 @@
--- Initial playable vertical slice; session-only inventory (persistence is a later milestone).
+-- Initial playable vertical slice: spawns and validates cloud catches; progress lives in ProfileStore.
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
@@ -6,6 +6,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -27,28 +28,31 @@ local visuals = {}
 local function spawnCloud()
     nextId += 1
     local id = tostring(nextId)
+    local speciesId = SpawnRules.rollSpecies(catalog, math.random) or "breeze"
+    local species = catalog[speciesId]
+    local tint = Color3.fromRGB(species.colorRGB[1], species.colorRGB[2], species.colorRGB[3])
     local cloud = Instance.new("Part")
-    cloud.Name = "BreezeCloud_" .. id
+    cloud.Name = speciesId .. "Cloud_" .. id
     cloud.Shape = Enum.PartType.Ball
     cloud.Size = Vector3.new(5, 3, 4)
-    cloud.Color = Color3.fromRGB(211, 238, 255)
+    cloud.Color = tint
     cloud.Material = Enum.Material.Neon
     cloud.Anchored = true
     cloud.CanCollide = false
     cloud.Position = Vector3.new(math.random(-28, 28), 9, math.random(-28, 28))
     cloud:SetAttribute("CloudId", id)
-    cloud:SetAttribute("SpeciesId", "breeze")
+    cloud:SetAttribute("SpeciesId", speciesId)
     cloud.Transparency = 1
     cloud.Parent = cloudFolder
     local model = Instance.new("Model")
-    model.Name = "BreezeCloudVisual_" .. id
+    model.Name = speciesId .. "CloudVisual_" .. id
     model.Parent = cloudFolder
     for i, offset in ipairs({Vector3.new(-2,0,0),Vector3.new(0,1,0),Vector3.new(2.2,0,0),Vector3.new(0,-0.4,1.3)}) do
         local puff = Instance.new("Part")
         puff.Name = "Puff" .. i
         puff.Shape = Enum.PartType.Ball
         puff.Size = Vector3.new(3.8,3,3.5)
-        puff.Color = Color3.fromRGB(226,242,255)
+        puff.Color = tint:Lerp(Color3.new(1, 1, 1), 0.5)
         puff.Material = Enum.Material.SmoothPlastic
         puff.Anchored = true
         puff.CanCollide = false
@@ -56,7 +60,7 @@ local function spawnCloud()
         puff.Parent = model
     end
     local glow = Instance.new("PointLight")
-    glow.Color = Color3.fromRGB(148,207,255)
+    glow.Color = tint
     glow.Brightness = 1
     glow.Range = 12
     glow.Parent = cloud
@@ -98,7 +102,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     end
     cloud:Destroy()
     if visuals[cloudId] then visuals[cloudId]:Destroy(); visuals[cloudId] = nil end
-    remote:FireClient(player, true, "Caught a Breeze Cloud!")
+    remote:FireClient(player, true, "Caught a " .. species.name .. "!")
     task.delay(5, spawnCloud)
 end)
 Players.PlayerRemoving:Connect(function(player)
