@@ -3,9 +3,10 @@ local DataStoreService = game:GetService("DataStoreService")
 local Players = game:GetService("Players")
 local store = DataStoreService:GetDataStore("CatchACloudProfiles_v1")
 local Profile = {}
+local questCatalog = require(game:GetService('ReplicatedStorage'):WaitForChild('QuestCatalog'))
 local sessions = {}
 local function defaultData()
-    return {version=1, coins=0, xp=0, captures=0, species={}, lastSeen=os.time()}
+    return {version=1, coins=0, xp=0, captures=0, species={}, quests={}, lastSeen=os.time()}
 end
 local function sanitize(data)
     if type(data)~="table" then return defaultData() end
@@ -22,6 +23,11 @@ local function sanitize(data)
             end
         end
     end
+    if type(data.quests)=='table' then
+        for id,done in pairs(data.quests) do
+            if type(id)=='string' and questCatalog[id] and done==true then clean.quests[id]=true end
+        end
+    end
     return clean
 end
 function Profile.Get(player)
@@ -34,6 +40,17 @@ function Profile.AddCatch(player,speciesId,coins)
     data.captures+=1
     data.coins+=coins
     data.xp+=10
+    for id,quest in pairs(questCatalog) do
+        if not data.quests[id] then
+            local progress = quest.objective=='catch_species' and (data.species[quest.speciesId] or 0) or data.captures
+            if progress >= quest.required then
+                data.quests[id]=true
+                data.coins+=quest.rewardCoins
+                data.xp+=quest.rewardXP
+                player:SetAttribute('Quest_'..id,true)
+            end
+        end
+    end
     player:SetAttribute("CloudCount",data.captures)
     player:SetAttribute("CloudCoins",data.coins)
     return true
@@ -67,6 +84,7 @@ Players.PlayerAdded:Connect(function(player)
     player:SetAttribute("ProfileReady",true)
     player:SetAttribute("CloudCount",sessions[player].captures)
     player:SetAttribute("CloudCoins",sessions[player].coins)
+    for id,_ in pairs(questCatalog) do player:SetAttribute('Quest_'..id,sessions[player].quests[id]==true) end
 end)
 Players.PlayerRemoving:Connect(function(player)
     Profile.Save(player)
