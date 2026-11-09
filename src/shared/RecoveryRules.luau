@@ -26,4 +26,13 @@ function RecoveryRules.shouldRecover(y, horizontalDistance, now, lastRecovery)
     return true
 end
 
+-- Resolve the actual configured SpawnLocation instead of teleporting to a
+-- hardcoded center point (which can overlap catching props as maps evolve).
+-- Inputs and outputs are plain coordinates so the policy is testable in CI.
+function RecoveryRules.recoveryPosition(x, y, z, spawnHeight)
+    if not finite(x) or not finite(y) or not finite(z) then return nil end
+    if not finite(spawnHeight) or spawnHeight < 0 or spawnHeight > 30 then return nil end
+    return x, y + spawnHeight, z
+end
+
 return RecoveryRules
