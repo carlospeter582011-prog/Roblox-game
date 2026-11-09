@@ -216,3 +216,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits d94da7f and 2bfa984: crystal prompts now anchor above primary shard with 16-stud activation, visible indicators and AlwaysShow; server records success feedback attribute. Crystal fallback shards changed from Neon to Glass with dimmer PointLights. These are source fixes, **not runtime verified**.
 - Central stick identity remains unverified; do not remove arbitrary world geometry until source or screenshot identifies it. Existing tools have range/cooldown/coin modifiers but need meaningful active gameplay and UI feedback. Audit pending.
 - Next: CI/publish status, Android prompt test, visible discovery feedback HUD, identify/remove central obstruction, meaningful tool actions, gameplay progression, tests and 3D-only asset QA.
+
+## 2026-11-10 — Player feedback follow-up: HUD and central sightline
+- Commit `b8c47ce`: mobile Catch HUD now shows the equipped tool's actual range bonus and displays 3-second crystal reward/discovery feedback with 0–18 count, based on server player attributes. This improves visibility of existing tool bonuses but does **not** constitute unique active tool abilities.
+- Commit `adb634f`: removed the center x=0 lantern post from the spawn approach; four real 3D lanterns remain. **Unconfirmed** whether this was the exact long stick the owner reported; screenshot/runtime check still needed.
+- Previously committed crystal ProximityPrompt/glare fixes still require Android runtime verification. No new GLB or Mesh IDs; existing Roblox Model ID is not a MeshPart ID.
+- Outstanding: genuinely distinct tool abilities (magnet pull, vacuum multi-target, traps), rewarding quests/bosses, 3D audit, latest GitHub Actions publish evidence and mobile playtest. No runtime or publish success claimed.
