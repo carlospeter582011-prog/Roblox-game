@@ -1,6 +1,14 @@
 # Changelog
 
-## Unreleased (branch `feature/catch-a-cloud-foundation`, PR #11)
+## Unreleased (PR #13)
+- Fixed likely crash on mutated catches (invalid attribute name `SpeciesCount_<species>:<mutation>`), base-species accounting and mutation XP, collapsed cloud puffs, hidden XP HUD text, catch button placement; removed duplicate quest `first_moonveil`.
+- CI now runs `tests/MutationsSpec.luau` (previously unloaded) and analyses Mutations/Encyclopedia: 55 tests.
+
+## Merged via PR #11 and follow-ups (published to Roblox; runtime unverified)
+- Mutations (golden/rainbow/electric/storm), 86 species rows, 15 tools, 38 quests, collection HUD, first-catch tutorial, `CloudVisuals` (MeshPart-ready, no meshes yet).
+- Data-only catalogs not yet used by any script: Worlds (10), Bosses (10), Travel, Island, Encyclopedia.
+
+## Foundation (PR #11)
 - Replaced the house-and-car prototype with the Catch a Cloud foundation (prototype preserved on
   branch `baseline/house-car-prototype`).
 - Starter floating island, spawnable clouds (two species: Breeze, Drizzle) with weighted spawns,

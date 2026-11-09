@@ -17,7 +17,12 @@ modules. New logic goes into pure modules first.
 | `src/shared/CatchRules.luau` | pure | Tool resolution/equip checks, catch range, coin reward, quest progress, `applyCatch` |
 | `src/shared/SpawnRules.luau` | pure | Weighted species roll with injected RNG |
 | `src/shared/Leveling.luau` | pure | XP -> level curve (25*(L-1)*L, cap 100) |
-| `src/shared/CloudCatalog.luau` | data | Species (id, name, rarity, radius, reward, spawnWeight, colorRGB) |
+| `src/shared/Mutations.luau` | pure | Mutation roll (8%), multipliers, variant key (`species:mutation`, server-side only; not attribute-safe) |
+| `src/shared/Encyclopedia.luau` | pure | Unique/completion helpers (not yet used by any script) |
+| `src/shared/CloudVisuals.luau` | wiring | Cloud visual: MeshPart if `MeshIds.cloud` set, else multi-part fallback |
+| `src/client/Inventory.client.luau` | client | Compact collection HUD (caught/unique) |
+| `src/shared/CloudCatalog.luau` | data | Species (id, name, rarity, radius, reward, spawnWeight, colorRGB, element): 86 stat/colour variants |
+| `src/shared/WorldCatalog.luau`, `BossCatalog.luau`, `TravelCatalog.luau`, `IslandCatalog.luau` | data | Planning data; **referenced by no script yet** |
 | `src/shared/CatchToolCatalog.luau` | data | Catching tools |
 | `src/shared/QuestCatalog.luau` | data | Quests |
 | `src/server/CloudCatch.server.luau` | wiring | Spawns clouds, validates catch/equip remotes server-side, animates cloud visuals |
@@ -28,6 +33,7 @@ modules. New logic goes into pure modules first.
 ## Boundaries and data flow
 Client -> remote (`RequestCloudCatch`, `EquipCatchTool`) -> server validates (type, length,
 cooldown, range, unlock, profile loaded) -> `ProfileStore.AddCatch` -> `CatchRules.applyCatch`
+(base species always counted; mutation variant key tracked separately; only attribute-safe ids replicated)
 mutates the in-memory profile -> attributes replicate to the client HUD -> autosave/leave-save via
 `ProfileCore` (lock-owned writes only).
 
