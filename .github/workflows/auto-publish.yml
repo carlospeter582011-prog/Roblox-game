@@ -44,6 +44,7 @@ jobs:
           set -euo pipefail
           luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau src/shared/Mutations.luau src/shared/Encyclopedia.luau src/shared/ProgressRules.luau
           luau tests/run.luau
+          python3 scripts/audit_3d_world.py
       - name: Check project and build
         shell: bash
         run: |
