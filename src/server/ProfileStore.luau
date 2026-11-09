@@ -10,6 +10,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local questCatalog = require(ReplicatedStorage:WaitForChild("QuestCatalog"))
 local ProfileCore = require(script.Parent:WaitForChild("ProfileCore"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
@@ -69,6 +70,21 @@ function Profile.AddCatch(player, speciesId, coins, options)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     return true
+end
+
+function Profile.BuyTool(player, toolId)
+    local data = sessions[player]
+    local tool = type(toolId) == "string" and toolCatalog[toolId] or nil
+    if not data or not tool then return false, "Invalid tool or profile unavailable" end
+    data.ownedTools = data.ownedTools or { starter_net = true }
+    if data.ownedTools[toolId] then return true, "Already owned" end
+    if data.captures < tool.unlockCatches then return false, "Unlock at " .. tool.unlockCatches .. " catches" end
+    if data.coins < tool.priceCoins then return false, "Need " .. tool.priceCoins .. " coins" end
+    data.coins -= tool.priceCoins
+    data.ownedTools[toolId] = true
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("OwnsTool_" .. toolId, true)
+    return true, "Purchased " .. tool.name
 end
 
 -- Saves with retries. release = true also frees the session lock and ends the session.
@@ -144,6 +160,10 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    for toolId, owned in pairs(data.ownedTools or {}) do
+        if owned and toolCatalog[toolId] then player:SetAttribute("OwnsTool_" .. toolId, true) end
+    end
+    player:SetAttribute("OwnsTool_starter_net", true)
     for speciesId, count in pairs(data.species) do
         -- Saves written by earlier builds may hold mutation keys like "breeze:golden".
         if CatchRules.isAttributeSafe("SpeciesCount_" .. speciesId) then
