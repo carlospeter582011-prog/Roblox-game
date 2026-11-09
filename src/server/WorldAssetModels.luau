@@ -93,10 +93,10 @@ function Assets.crystal(parent, position, scale)
             Vector3.new(1.5, height, 1.5) * scale,
             cf * CFrame.new(math.cos(angle) * scale, height / 2, math.sin(angle) * scale)
                 * CFrame.Angles(0, angle, math.rad(12)),
-            Color3.fromRGB(167, 140, 251), Enum.Material.Neon)
+            Color3.fromRGB(147, 132, 205), Enum.Material.Glass)
         local light = Instance.new("PointLight")
-        light.Brightness = 0.35
-        light.Range = 8 * scale
+        light.Brightness = 0.08
+        light.Range = 5 * scale
         light.Parent = p
     end
     return model
