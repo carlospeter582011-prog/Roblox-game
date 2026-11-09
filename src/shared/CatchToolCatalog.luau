@@ -16,4 +16,8 @@ local Tools = {
     mythic_lasso = {name="Mythic Lasso",unlockCatches=500,rangeBonus=11,cooldown=0.6,coinMultiplier=2.5},
     archon_net = {name="Archon Net",unlockCatches=700,rangeBonus=15,cooldown=0.7,coinMultiplier=3.0},
 }
+for id, tool in pairs(Tools) do
+    -- One-time in-game coin price, scaled with the required catches.
+    tool.priceCoins = id == "starter_net" and 0 or math.max(50, tool.unlockCatches * 5)
+end
 return table.freeze(Tools)
