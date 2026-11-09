@@ -11,11 +11,25 @@ gui.Name = "CloudInventory"
 gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 190, 0, 92)
-frame.Position = UDim2.new(0, 8, 0.5, -46)
+frame.Size = UDim2.fromOffset(218, 94)
+frame.Position = UDim2.new(0, 8, 0.5, -15)
 frame.BackgroundColor3 = Color3.fromRGB(20, 30, 50)
 frame.BackgroundTransparency = 0.35
+frame.Visible = false
 frame.Parent = gui
+local toggle = Instance.new("TextButton")
+toggle.Name = "CollectionToggle"
+toggle.Size = UDim2.fromOffset(108, 34)
+toggle.Position = UDim2.new(0, 98, 1, -44)
+toggle.BackgroundColor3 = Color3.fromRGB(33, 85, 125)
+toggle.TextColor3 = Color3.new(1, 1, 1)
+toggle.Font = Enum.Font.GothamBold
+toggle.TextSize = 13
+toggle.Text = "Collection"
+toggle.Parent = gui
+toggle.Activated:Connect(function()
+    frame.Visible = not frame.Visible
+end)
 local label = Instance.new("TextLabel")
 label.Size = UDim2.new(1, -8, 1, -8)
 label.Position = UDim2.new(0, 4, 0, 4)
