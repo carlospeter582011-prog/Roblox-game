@@ -113,3 +113,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Inspected GitHub Actions run `42624259940` job `129183845390`: success, 16,852-byte original GLB generated, 5 meshes validated, Roblox returned `Uploaded model: assets/104852877755332`, artifact `13678575138` created. Creator ID `7550783083`.
 - Enabled Model asset `104852877755332` in `src/shared/CloudVisuals.luau` with modern `AssetService:LoadAssetAsync`, preserving geometry-only copy and procedural fallback (`24f09786`). Model asset ID is **NOT** MeshPart.MeshId. Registered in ASSET_REGISTRY (`938108ab`).
 - **NOT YET VERIFIED**: newest production auto-publish run after code commit, live model load permissions, correct size/pivot, mobile visual appearance. Owner can test after publish confirmation. Next: inspect Actions run and mobile screenshot; fix load/scale if fallback remains.
+
+## 2026-11-09 — imported cloud geometry normalization
+- Updated `src/shared/CloudVisuals.luau` (`94b3203361ba9c81184ea239416145c5c40582c9`) to cap copied imported BaseParts at 32, reject invalid geometry bounds, normalize largest dimension to 6 studs, and recenter the imported Model before positioning. This addresses likely GLB origin/scale mismatch; procedural 3D fallback remains.
+- Confirmed prior GitHub handoff reports uploaded original Model `104852877755332` from successful workflow run `42624259940`; **not** a MeshPart.MeshId. No new external asset or ID introduced.
+- This run did not independently confirm the latest auto-publish workflow or Studio/Android rendering. Next: check publish run, test loaded Model on Android, inspect fallback warnings, add automated tests for geometry bounds, continue 3D world and boss gameplay.
