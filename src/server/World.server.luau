@@ -89,6 +89,29 @@ if ok and assetOrError then
         if descendant:IsA("MeshPart") then
             local piece = descendant:Clone()
             piece.Name = descendant.Name
+            -- Preserve colored meshes; color neutral imported meshes by part name.
+            local name = descendant.Name:lower()
+            local col = descendant.Color
+            local neutral = math.abs(col.R - col.G) < .08 and math.abs(col.G - col.B) < .08
+            if neutral then
+                if name:find("wheel") or name:find("tire") or name:find("tyre") or name:find("rubber") then
+                    piece.Color = Color3.fromRGB(30, 33, 40)
+                    piece.Material = Enum.Material.Rubber
+                elseif name:find("glass") or name:find("window") or name:find("windshield") then
+                    piece.Color = Color3.fromRGB(45, 90, 125)
+                    piece.Material = Enum.Material.Glass
+                    piece.Transparency = .22
+                elseif name:find("light") or name:find("lamp") then
+                    piece.Color = Color3.fromRGB(255, 239, 190)
+                    piece.Material = Enum.Material.Neon
+                elseif name:find("rim") or name:find("hub") then
+                    piece.Color = Color3.fromRGB(165, 171, 180)
+                    piece.Material = Enum.Material.Metal
+                else
+                    piece.Color = Color3.fromRGB(218, 44, 58)
+                    piece.Material = Enum.Material.SmoothPlastic
+                end
+            end
             -- Never execute scripts supplied with a third-party model.
             for _, child in ipairs(piece:GetDescendants()) do
                 if child:IsA("BaseScript") or child:IsA("ModuleScript") then
@@ -115,7 +138,7 @@ if ok and assetOrError then
         local bbox, size = visual:GetBoundingBox()
         -- Rotate the longer horizontal axis to the vehicle's Z direction.
         local yaw = size.X > size.Z and math.rad(90) or 0
-        local desired = carCFrame * CFrame.new(0, -.25, 0) * CFrame.Angles(0, yaw, 0)
+        local desired = carCFrame * CFrame.new(0, -.45, 0) * CFrame.Angles(0, yaw, 0)
         local centerOffset = CFrame.new(-bbox.Position) -- use world-space translation only
         visual:PivotTo(desired * centerOffset * visual:GetPivot())
         meshLoaded = true
@@ -134,9 +157,10 @@ cabin.Transparency = meshLoaded and 1 or .25
 local seat = Instance.new("VehicleSeat")
 seat.Name = "DriverSeat"
 seat.Size = Vector3.new(2, 1, 2)
-seat.CFrame = carCFrame * CFrame.new(0, 1.2, 1.5)
+seat.CFrame = carCFrame * CFrame.new(0, .15, 1.5)
 seat.Anchored = true
 seat.CanCollide = false
+seat.Transparency = meshLoaded and 1 or 0
 seat.MaxSpeed = 35
 seat.Torque = 10000
 seat.TurnSpeed = 1
