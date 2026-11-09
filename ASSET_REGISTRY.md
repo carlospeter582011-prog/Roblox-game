@@ -23,3 +23,9 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 - `WorldAssetModels.MeshIds.tree`, `.crystal`, `.floatingRock` and `CloudVisuals.MeshIds.cloud` remain unset until a real approved **Mesh asset ID** is verified. A Roblox Model asset ID is not automatically a valid `MeshPart.MeshId`.
 - Before assigning IDs, verify creator ownership/experience permissions, source licence, correct asset type, scale, collision, and Studio visual result. Do not copy arbitrary Creator Store IDs or import unknown scripts.
 - No externally sourced 3D mesh was downloaded or uploaded by this change. 3D Model assemblies are an interim replacement for loose world primitives, not final professional meshes.
+
+## Original cloud GLB import attempt — 2026-11-09
+- Original, generated in-repo from five low-poly sphere meshes: `scripts/generate_cloud_glb.py` (trimesh 4.9.0). Source is project-authored; no third-party model license.
+- Upload pipeline: `.github/workflows/import-original-cloud.yml`, `scripts/upload_original_cloud.py`; workflow is configured to run on the workflow's initial push to `main` and on manual dispatch. GitHub artifact `original-cloud-model-asset-id` should contain the resulting **Model asset ID** only if Roblox accepts the upload.
+- **Upload outcome not yet verified.** The uploaded Model package ID is **not** a valid `MeshPart.MeshId` by itself. Do not assign it to `CloudVisuals.MeshIds.cloud`. No imported asset is wired into the game until asset permissions and insertion method are verified.
+- Roblox Open Cloud supports GLB as a Model container containing MeshParts; the direct Mesh asset upload format does not accept arbitrary GLB files. See https://create.roblox.com/docs/cloud/guides/usage-assets .
