@@ -16,17 +16,17 @@ local function part(name,size,position,color,material,parent)
     p.Parent=parent or world
     return p
 end
-local base=part("FloatingMeadow",Vector3.new(115,5,115),Vector3.new(0,-3,0),Color3.fromRGB(104,184,125),Enum.Material.Grass)
+local base=part("FloatingMeadow",Vector3.new(225,5,225),Vector3.new(0,-3,0),Color3.fromRGB(104,184,125),Enum.Material.Grass)
 base.Shape=Enum.PartType.Cylinder
 base.Orientation=Vector3.new(0,0,90)
 base.CanCollide = false
 -- Main safe walkable square over a sculpted underside.
-part("WalkableMeadow",Vector3.new(95,2,95),Vector3.new(0,0,0),Color3.fromRGB(102,191,134),Enum.Material.Grass)
+part("WalkableMeadow",Vector3.new(205,2,205),Vector3.new(0,0,0),Color3.fromRGB(102,191,134),Enum.Material.Grass)
 WorldAssetModels.floatingRock(world, Vector3.new(0, -15, 0))
 -- Sculpted underside silhouette: staggered 3D slate ledges and smaller hanging rock islands.
 for i = 1, 12 do
     local angle = i * math.pi * 2 / 12
-    local radius = 39 + (i % 3) * 3
+    local radius = 88 + (i % 3) * 4
     local ledge = part("CliffLedge" .. i,
         Vector3.new(17 + (i % 3) * 4, 8 + (i % 4) * 2, 14 + (i % 2) * 4),
         Vector3.new(math.cos(angle) * radius, -8 - (i % 3) * 3, math.sin(angle) * radius),
@@ -36,27 +36,27 @@ for i = 1, 12 do
 end
 for i=1,14 do
     local angle=i*math.pi*2/14
-    local x,z=math.cos(angle)*37,math.sin(angle)*37
+    local x,z=math.cos(angle)*82,math.sin(angle)*82
     WorldAssetModels.tree(world, Vector3.new(x, 1, z), 0.85 + (i % 4) * 0.08)
 end
 for i=1,18 do
     local angle=i*2.399963
-    local radius=12+math.sqrt(i)*6
+    local radius=28+math.sqrt(i)*11
     WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
 end
 -- Four original 3D stone arches frame the meadow paths; no Canvas or asset IDs needed.
 for _, placement in ipairs({
-    { Vector3.new(0, 1, -29), 0 },
-    { Vector3.new(0, 1, 29), 0 },
-    { Vector3.new(-29, 1, 0), math.pi / 2 },
-    { Vector3.new(29, 1, 0), math.pi / 2 },
+    { Vector3.new(0, 1, -65), 0 },
+    { Vector3.new(0, 1, 65), 0 },
+    { Vector3.new(-65, 1, 0), math.pi / 2 },
+    { Vector3.new(65, 1, 0), math.pi / 2 },
 }) do
     WorldAssetModels.skyArch(world, placement[1], 0.75, placement[2])
 end
 local spawn=Instance.new("SpawnLocation")
 spawn.Name="SkyArrival"
 spawn.Size=Vector3.new(12,1,12)
-spawn.Position=Vector3.new(0,2,0)
+spawn.Position=Vector3.new(0,2,-25)
 spawn.Anchored=true
 spawn.Neutral=true
 spawn.Material=Enum.Material.SmoothPlastic
