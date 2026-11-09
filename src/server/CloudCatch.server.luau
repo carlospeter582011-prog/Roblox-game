@@ -12,12 +12,21 @@ local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
+local purchaseRemote = Instance.new("RemoteEvent")
+purchaseRemote.Name = "PurchaseCatchTool"
+purchaseRemote.Parent = ReplicatedStorage
+purchaseRemote.OnServerEvent:Connect(function(player, toolId)
+    if typeof(toolId) ~= "string" or #toolId > 40 then return end
+    local ok, message = ProfileStore.BuyTool(player, toolId)
+    purchaseRemote:FireClient(player, ok, message)
+end)
 local equipRemote = Instance.new("RemoteEvent")
 equipRemote.Name = "EquipCatchTool"
 equipRemote.Parent = ReplicatedStorage
 equipRemote.OnServerEvent:Connect(function(player,toolId)
     local profile=ProfileStore.Get(player)
     if not profile or not CatchRules.canEquip(toolId,profile.captures,toolCatalog) then return end
+    if toolId ~= "starter_net" and not (profile.ownedTools and profile.ownedTools[toolId]) then return end
     player:SetAttribute("EquippedCatchTool",toolId)
 end)
 local cloudFolder = Instance.new("Folder")
@@ -46,7 +55,7 @@ local function spawnCloud()
     cloud.Anchored = true
     cloud.CanCollide = false
     cloud.Transparency = 1
-    cloud.Position = Vector3.new(math.random(-28, 28), 9, math.random(-28, 28))
+    cloud.Position = Vector3.new(math.random(-72, 72), 9, math.random(-72, 72))
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
     if mutationId then cloud:SetAttribute("MutationId", mutationId) end
@@ -79,6 +88,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     end
     local equipped=player:GetAttribute("EquippedCatchTool")
     local tool,toolId=CatchRules.resolveTool(equipped,profile.captures,toolCatalog)
+    if toolId ~= "starter_net" and not (profile.ownedTools and profile.ownedTools[toolId]) then
+        tool,toolId=CatchRules.resolveTool(nil,profile.captures,toolCatalog)
+    end
     if equipped~=nil and equipped~=toolId then
         player:SetAttribute("EquippedCatchTool",toolId)
     end
