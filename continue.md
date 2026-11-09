@@ -227,3 +227,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - `a3739a3`: Storm Vacuum now performs a server-authoritative burst of up to 3 clouds per activation (target plus 2 closest in tool range). Existing unlock, ownership, cooldown, range, persistence and rewards still apply. Each captured cloud is removed only after ProfileStore.AddCatch succeeds; replacements respawn after five seconds. No new RemoteEvent or client-controlled batch list.
 - `f9825c9`: tool picker explicitly labels its `3-cloud burst` ability.
 - Source implemented, **NOT verified** by CI or Roblox runtime; potential race and balance need live testing. Follow-up: add deterministic pure targeting tests, additional distinct tools, inspect auto-publish, test on Android. No 3D assets or Model/Mesh IDs changed.
+
+## 2026-11-10 — Storm Vacuum burst correctness and tests
+- Commits `3ddc0a5`, `947116f`, `01605a4`: moved multi-target selection to pure `CatchRules.selectBurstTargets`, reused by server for Storm Vacuum; deterministic nearest-first order, stable tie-breaking, duplicate/invalid candidate filtering, max 3 targets. Added two CatchRulesSpec tests for ordering and limits. No client-supplied target lists or new RemoteEvents.
+- **Unverified**: CI test execution, Open Cloud Published acceptance, Android runtime/balance. GitHub commit-workflow lookup only exposes PR runs and cannot establish push auto-publish status. Check Actions push workflow separately. No new assets; ASSET_REGISTRY inventory unchanged.
+- Next: inspect CI/publish, test 3-cloud burst in multiplayer, add meaningful Cloud Magnet ability and bosses, maintain 3D-only audit.
