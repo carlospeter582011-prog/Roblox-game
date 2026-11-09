@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
+local tools = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("RequestCloudCatch")
 local folder = Workspace:WaitForChild("CatchableClouds")
@@ -51,6 +52,12 @@ button.TextSize = 16
 button.Font = Enum.Font.GothamBold
 button.Text = "Catch"
 button.Parent = gui
+local function updateCatchButton()
+    local tool = tools[player:GetAttribute("EquippedCatchTool")] or tools.starter_net
+    button.Text = "Catch | +" .. tostring(tool.rangeBonus) .. " range"
+end
+player:GetAttributeChangedSignal("EquippedCatchTool"):Connect(updateCatchButton)
+updateCatchButton()
 
 -- Compact status message
 local message = Instance.new("TextLabel")
@@ -95,9 +102,36 @@ remote.OnClientEvent:Connect(function(success, text)
         if message.Text == text then message.Visible = false end
     end)
     if success then
-        button.Text = "Catch"
+        updateCatchButton()
         hideTutorial()
     end
+end)
+
+-- Native crystal discoveries use a ProximityPrompt, while this ScreenGui provides
+-- immediate touch-friendly confirmation of rewards and total progress.
+local crystalToast = Instance.new("TextLabel")
+crystalToast.Name = "CrystalToast"
+crystalToast.Size = UDim2.fromOffset(280, 36)
+crystalToast.AnchorPoint = Vector2.new(0.5, 0)
+crystalToast.Position = UDim2.new(0.5, 0, 0, 72)
+crystalToast.BackgroundColor3 = Color3.fromRGB(36, 76, 92)
+crystalToast.TextColor3 = Color3.fromRGB(250, 250, 255)
+crystalToast.Font = Enum.Font.GothamBold
+crystalToast.TextSize = 13
+crystalToast.TextWrapped = true
+crystalToast.Visible = false
+crystalToast.Parent = gui
+local toastSerial = 0
+player:GetAttributeChangedSignal("CrystalDiscoveryFeedback"):Connect(function()
+    local feedback = player:GetAttribute("CrystalDiscoveryFeedback")
+    if type(feedback) ~= "string" or feedback == "" then return end
+    toastSerial += 1
+    local serial = toastSerial
+    crystalToast.Text = feedback .. " (" .. tostring(player:GetAttribute("SkyCrystalsDiscovered") or 0) .. "/18)"
+    crystalToast.Visible = true
+    task.delay(3, function()
+        if toastSerial == serial then crystalToast.Visible = false end
+    end)
 end)
 
 -- Compact quest tracker
