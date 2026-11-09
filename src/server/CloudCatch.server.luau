@@ -108,28 +108,25 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     end
     -- Vacuum tools can collect nearby clouds in a single server-authoritative burst.
     -- Only the explicitly targeted cloud needs to be in range to start a burst.
-    local targets = { { id = cloudId, cloud = cloud } }
+    local candidates = {}
     if toolId == "storm_vacuum" then
-        local candidates = {}
         for otherId, otherCloud in pairs(active) do
             if otherId ~= cloudId and otherCloud.Parent then
                 local otherSpecies = catalog[otherCloud:GetAttribute("SpeciesId")]
                 local distance = (root.Position - otherCloud.Position).Magnitude
                 if otherSpecies and CatchRules.isInRange(distance, otherSpecies, tool) then
-                    table.insert(candidates, { id = otherId, cloud = otherCloud, distance = distance })
+                    table.insert(candidates, { id = otherId, distance = distance })
                 end
             end
         end
-        table.sort(candidates, function(left, right) return left.distance < right.distance end)
-        for i = 1, math.min(2, #candidates) do
-            table.insert(targets, candidates[i])
-        end
     end
+    local targetIds = CatchRules.selectBurstTargets(cloudId, candidates, toolId == "storm_vacuum" and 3 or 1)
     local caught = 0
-    for _, target in ipairs(targets) do
-        local targetCloud = target.cloud
+    for _, targetId in ipairs(targetIds) do
+        local targetCloud = active[targetId]
+        if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[target.id] == targetCloud then
+        if targetSpecies and active[targetId] == targetCloud then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
@@ -138,9 +135,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
-                active[target.id] = nil
+                active[targetId] = nil
                 targetCloud:Destroy()
-                if visuals[target.id] then
+                if visuals[targetId] then
                     visuals[target.id].model:Destroy()
                     visuals[target.id] = nil
                 end
