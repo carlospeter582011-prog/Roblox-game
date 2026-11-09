@@ -63,7 +63,7 @@ local function refresh()
         local locked = count < tool.unlockCatches
         local selected = player:GetAttribute("EquippedCatchTool") == id
         local owned = id == "starter_net" or player:GetAttribute("OwnsTool_" .. id) == true
-        row.Text = tool.name .. (locked and (" | " .. tool.unlockCatches .. " catches") or (selected and " | Equipped" or (owned and " | Equip" or (" | Buy " .. tool.priceCoins .. " coins"))))
+        row.Text = tool.name .. (id == "storm_vacuum" and " [3-cloud burst]" or "") .. (locked and (" | " .. tool.unlockCatches .. " catches") or (selected and " | Equipped" or (owned and " | Equip" or (" | Buy " .. tool.priceCoins .. " coins"))))
         row.BackgroundColor3 = selected and Color3.fromRGB(36, 133, 95) or (locked and Color3.fromRGB(55, 66, 83) or Color3.fromRGB(45, 103, 139))
     end
 end
