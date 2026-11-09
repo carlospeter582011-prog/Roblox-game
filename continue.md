@@ -190,3 +190,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Crystal discoveries remain session-only; do NOT claim persistent quest/currency rewards. All objects remain native 3D Roblox Parts/Models; no new GLB or asset IDs.
 - Source commits confirmed. CI and Open Cloud Published status for these commits NOT verified; Studio/Android runtime and actual imported cloud Model appearance NOT verified. Keep launch/3D checklist acceptance unchecked.
 - Next: check push-triggered CI and publish logs, implement persistent discovery with a schema migration and tests, and add playable world/boss logic.
+
+## 2026-11-09 — persistent crystal discoveries (source-only checkpoint)
+- Implemented persistent `crystals` index set in ProfileCore schema v3, migration/sanitization for indices 1–18, and server-authoritative `ProfileStore.DiscoverCrystal` with duplicate rejection. StarterWorld prompts now read the loaded profile rather than session-only discovery table. Two profile roundtrip/sanitization tests added to `tests/run.luau`.
+- Commits: `8e89241a`, `a7c45758`, `acc4fbd5`, `5c774323`. No new assets or 2D world geometry; existing SkyCrystal3D is native Roblox Model/Parts. Imported cloud `104852877755332` is a Model asset, not a MeshPart MeshId.
+- **Unverified:** CI execution, auto-publish result, real DataStore save/rejoin, mobile prompt UX, runtime and 3D model load. Do not check launch acceptance yet. Next: inspect push-triggered workflow logs and repair any failing Luau tests; test actual persistence on Roblox before claiming complete.
