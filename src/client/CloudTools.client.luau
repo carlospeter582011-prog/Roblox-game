@@ -5,6 +5,7 @@ local player = Players.LocalPlayer
 local catalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Progress = require(ReplicatedStorage:WaitForChild("ProgressRules"))
 local equip = ReplicatedStorage:WaitForChild("EquipCatchTool")
+local purchase = ReplicatedStorage:WaitForChild("PurchaseCatchTool")
 local gui = Instance.new("ScreenGui")
 gui.Name = "CloudToolPicker"
 gui.ResetOnSpawn = false
@@ -44,10 +45,13 @@ for _, id in ipairs(order) do
     row.BackgroundColor3 = Color3.fromRGB(45, 103, 139)
     row.Parent = panel
     row.Activated:Connect(function()
-        if (player:GetAttribute("CloudCount") or 0) >= tool.unlockCatches then
+        if (player:GetAttribute("CloudCount") or 0) < tool.unlockCatches then return end
+        if id == "starter_net" or player:GetAttribute("OwnsTool_" .. id) then
             equip:FireServer(id)
             button.Text = tool.name
             panel.Visible = false
+        else
+            purchase:FireServer(id)
         end
     end)
     rows[id] = row
@@ -58,12 +62,22 @@ local function refresh()
         local tool = catalog[id]
         local locked = count < tool.unlockCatches
         local selected = player:GetAttribute("EquippedCatchTool") == id
-        row.Text = tool.name .. (locked and (" | unlock " .. tool.unlockCatches) or (selected and " ✓ Equipped" or " | Equip"))
+        local owned = id == "starter_net" or player:GetAttribute("OwnsTool_" .. id) == true
+        row.Text = tool.name .. (locked and (" | " .. tool.unlockCatches .. " catches") or (selected and " | Equipped" or (owned and " | Equip" or (" | Buy " .. tool.priceCoins .. " coins"))))
         row.BackgroundColor3 = selected and Color3.fromRGB(36, 133, 95) or (locked and Color3.fromRGB(55, 66, 83) or Color3.fromRGB(45, 103, 139))
     end
 end
 player:GetAttributeChangedSignal("CloudCount"):Connect(refresh)
 player:GetAttributeChangedSignal("EquippedCatchTool"):Connect(refresh)
+player:GetAttributeChangedSignal("CloudCoins"):Connect(refresh)
+for _, id in ipairs(order) do
+    player:GetAttributeChangedSignal("OwnsTool_" .. id):Connect(refresh)
+end
+purchase.OnClientEvent:Connect(function(ok, result)
+    button.Text = ok and "Purchased!" or tostring(result)
+    refresh()
+    task.delay(2, function() button.Text = "Tools" end)
+end)
 button.Activated:Connect(function()
     refresh()
     panel.Visible = not panel.Visible
