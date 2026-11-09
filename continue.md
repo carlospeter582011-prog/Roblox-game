@@ -53,3 +53,10 @@ No background agent has been scheduled. Continue in an active session or configu
 4. CI proves build packaging and pure-logic tests only; it is not gameplay proof.
 5. Sandbox cannot reach the Luau/Rojo hosts; tests run on GitHub's runner. Push to the branch and read the run (`gh run list/view -R carlospeter582011-prog/Roblox-game`).
 6. After each milestone update this file and the same Notion hub with commit SHA and test evidence.
+
+## Continuation checkpoint — 2026-11-09, invalid XP handling
+- The branch now also contains `src/shared/SpawnRules.luau`, `src/shared/Leveling.luau`, and `tests/SpawnLevelSpec.luau`; `tests/run.luau` loads the new specs, and CloudCatch uses weighted spawn selection. These appeared after the previous canonical handoff and are not yet independently CI-verified in this checkpoint.
+- Fixed a concrete pure-logic crash: `Leveling.progress(nil)` / nonnumeric XP previously subtracted an invalid value. `Leveling.progress` now treats invalid XP as 0, consistent with `levelForXp`. Added regression test for nil/string/negative/NaN.
+- Fix commit `95aa8c049cba1dc358ce1206c0bb22052339d71a`; regression test commit `249b691cfd410c73bd423fdcc66c91e3dd0ef485`.
+- Pending: inspect GitHub Actions runs for these commits; do not claim tests passed without a run. Still no Studio runtime evidence, public publication, or launch acceptance completion.
+- Next: validate CI, wire level progress into player HUD, then tackle full species/world content and Studio playtesting. Check branch HEAD for concurrent changes before edits.
