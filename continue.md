@@ -1,78 +1,19 @@
 # Catch a Cloud — Agent Handoff
 
-Updated: 2026-11-09 — CatchRules extraction + Luau pin checkpoint
-Notion: https://app.notion.com/p/413edc0cac2381a4b42bd36df3e25183 (read the "CANONICAL LATEST HANDOFF" section)
-PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/11 (open, unmerged)
+Updated: 2026-11-09 — mutations, 40 species, 10 quests, 8 tools, inventory HUD
+Notion: https://app.notion.com/p/413edc0cac2381a4b42bd36df3e25183
 Branch: feature/catch-a-cloud-foundation
-Latest implementation commit: d7434f74ef3cb2c3b17b873cbd7533e138d163d8 (profile hardening was 67052d6f5c2444e2ec5fd7a707b68805416879e1)
-Latest CI (both success for d7434f7): push run 42577681481, PR run 42577686783
-  - `luau-tests` job (Luau pinned to release 0.746): luau-analyze on ProfileCore + CatchRules, `luau tests/run.luau` = 27 tests, 0 failed
-  - `build` job: Rojo 7.4.4 build + XML validation + artifact upload
 
-## Implemented in branch (NOT Studio/runtime verified unless stated)
-- Procedural starter floating island with trees, crystals and spawn.
-- Original multi-part cloud shapes with lightweight bobbing animation.
-- Starter cloud spawning and server-authoritative distance/cooldown catch requests.
-- Touch/desktop catch button.
-- `QuestCatalog.luau`: 2 chapter-one quests, integrated into server profile updates and client tracker.
-- `CatchToolCatalog.luau` (5 tools, server-enforced range/cooldown/reward) + `CloudTools.client.luau` picker.
-- **Profile persistence rewrite (commit 67052d6):**
-  - `src/server/ProfileCore.luau` — pure logic, no Roblox globals: cross-server session lock (jobId + timestamp, 300s stale timeout), v2 envelope `{version, data, lock, savedAt}`, v1 flat-record migration, field validation (NaN/inf/negative/huge/unknown-quest rejected), refuses records from a newer schema, save only while lock is owned (`lost_lock` never overwrites the new owner), linear-backoff retry helper.
-  - `src/server/ProfileStore.luau` — wires the core to DataStore/Players: load retries while another server releases the lock (5 tries, 3/6/9/12s), kick on locked/failed load, saves serialised per player, lost-lock => stop writing + kick, rejoin-on-same-server waits for the final save, player-left-during-load frees the lock, BindToClose saves in parallel (25s cap), autosave every 90s refreshes the lock. Same DataStore name (`CatchACloudProfiles_v1`) so existing v1 records migrate in place.
-  - `tests/run.luau` — 14 tests against a fake DataStore (CI-verified, see above).
-  - `.github/workflows/build.yml` — new `luau-tests` job; workflow now also runs on pushes to `feature/**`.
-- **Catch rules extracted (commit d7434f7, behaviour-preserving):** `src/shared/CatchRules.luau` is pure (catalogs passed in): `resolveTool`, `canEquip`, `isInRange`, `coinReward`, `questProgress`, `applyCatch` (XP_PER_CATCH = 10, quest completion + rewards, sorted completed ids). `ProfileStore.AddCatch` and `CloudCatch.server.luau` now call it. `tests/CatchRulesSpec.luau` adds 13 tests, including data-integrity checks on the real species/tool/quest catalogs (ids match keys, numeric fields, quests reference real species, starter net always unlocked).
-- Design/roadmap/handoff in Notion; `docs/game-design.md`.
+## Latest pushed (write access restored)
+- Mutations.luau + CloudCatch wiring (spawn MutationId, tint, species:mutation tracking, coin bonus).
+- CloudCatalog: 40 species.
+- QuestCatalog: 10 quests.
+- CatchToolCatalog: 8 tools.
+- Inventory.client.luau: basic collection HUD (caught, unique, coins, level).
+- Commits: 15873f6 (inventory), 07ba35d (40 species), 735fffb (mutation wiring), ff7fd0b (quests), 2c5ae57 (tools).
 
-## What is and is not verified
-- VERIFIED (CI evidence): Rojo build, XML validity, static analysis of ProfileCore + CatchRules, 27 pure-logic unit tests (profile lock/migration/retry against a fake DataStore; catch/reward/quest rules; catalog integrity).
-- NOT VERIFIED: anything in Roblox Studio or a live server. Specifically the real `UpdateAsync` cancel-on-nil behaviour, DataStore request budgets, `BindToClose` timing, Players event ordering, kick flow, client UI, mobile, multiplayer, art.
-- `ProfileStore.luau`, `CloudCatch.server.luau` and everything under `src/client` have no automated tests (they depend on Roblox services).
+## Status
+Not Studio/runtime verified. CI not confirmed for these commits. All launch checklist items remain unchecked.
 
-## Known limitations / blockers
-- PR #11 remains unmerged; no completed game URL exists. Deployment workflow is manual **Saved** only, not Published.
-- If a final release-save fails after retries, the lock stays until the 300s timeout; the player may be kicked with "still open on another server" if they rejoin inside that window. Data from the failed final save is lost (autosave limits the loss to <= 90s).
-- A corrupt in-memory field is reset to 0 on save by `sanitize` (progress loss rather than rejection); revisit if the profile grows.
-- The refactor moved existing rules verbatim; the server wiring (`CloudCatch.server.luau`, `ProfileStore.luau` calling `CatchRules`) is still untested outside CI's build/XML check.
-- Cloud visuals are procedural primitive art, not professional final assets.
-- Content far from launch targets: 2/150+ species, 5/15+ tools, 2/100+ quests, 0/10 worlds beyond the starter island, 0/10 bosses, no islands/trading/guilds/travel/economy/localization.
-
-## Exact next actions
-1. Data-model step for scale: design the species data schema (spawn rules, rarity weights, mutations) as pure, tested modules before adding species; add a deterministic spawn-roll function with an injected RNG.
-2. Add leveling/XP curve as a pure module with tests (XP currently only accumulates).
-3. Roblox Studio runtime + mobile + 2-server lock playtest of the profile flow (needs the owner's Studio; preserve evidence).
-4. Expand content in dependency order (species data model -> 15 tools -> quest engine -> world 1), each with acceptance tests; do not count placeholders.
-5. Merge/publish only after verified integration, security review and release readiness; update Notion and this file with commit SHAs and test evidence.
-
-No background agent has been scheduled. Continue in an active session or configured automation.
-
-## Agent restart instructions — canonical
-1. Read the Notion Project Hub's CANONICAL LATEST HANDOFF section and launch checklist; all checklist boxes stay unchecked until runtime-verified.
-2. Read this file, PR #11 and the branch code; do NOT repeat the 82-question design interview.
-3. Existing code is partial, not a launch. Do not merge/publish without integration/runtime/security validation.
-4. CI proves build packaging and pure-logic tests only; it is not gameplay proof.
-5. Sandbox cannot reach the Luau/Rojo hosts; tests run on GitHub's runner. Push to the branch and read the run (`gh run list/view -R carlospeter582011-prog/Roblox-game`).
-6. After each milestone update this file and the same Notion hub with commit SHA and test evidence.
-
-## Continuation checkpoint — 2026-11-09, invalid XP handling
-- The branch now also contains `src/shared/SpawnRules.luau`, `src/shared/Leveling.luau`, and `tests/SpawnLevelSpec.luau`; `tests/run.luau` loads the new specs, and CloudCatch uses weighted spawn selection. These appeared after the previous canonical handoff and are not yet independently CI-verified in this checkpoint.
-- Fixed a concrete pure-logic crash: `Leveling.progress(nil)` / nonnumeric XP previously subtracted an invalid value. `Leveling.progress` now treats invalid XP as 0, consistent with `levelForXp`. Added regression test for nil/string/negative/NaN.
-- Fix commit `95aa8c049cba1dc358ce1206c0bb22052339d71a`; regression test commit `249b691cfd410c73bd423fdcc66c91e3dd0ef485`.
-- Pending: inspect GitHub Actions runs for these commits; do not claim tests passed without a run. Still no Studio runtime evidence, public publication, or launch acceptance completion.
-- Next: validate CI, wire level progress into player HUD, then tackle full species/world content and Studio playtesting. Check branch HEAD for concurrent changes before edits.
-
-## Continuation checkpoint — 2026-11-09, XP HUD
-- Implemented a live XP progress display in `src/client/CloudCatch.client.luau`: uses the existing pure `Leveling.progress` module and replicated `CloudXP` attribute to show current level progress, coins, and MAX at level cap. Commit `093363c1a7187225cc8bf4c1e7f73a3931e0a560`.
-- This is source code committed on the feature branch, **not yet CI or Studio runtime verified**. No launch checklist acceptance item is complete.
-- Next: inspect CI for this commit, verify the HUD in Studio on mobile and desktop, then continue data-driven species and quest expansion with tests. Check HEAD for concurrent agents before editing.
-
-## Continuation checkpoint — 2026-11-09, 20 cloud species
-- Expanded `src/shared/CloudCatalog.luau` from 2 to 20 distinct species, with rarity tiers Common/Uncommon/Rare/Epic/Legendary/Mythic, weighted spawning, unique visual tints and catch/reward metadata. Implementation commit `4571c6f798c1970f4ddcdf376358fd41ec7736f4`.
-- Added catalog integrity test and isolated the old 70/30 weighted-roll test fixture so expansion does not invalidate its assumptions. Test commit `fde00f87ccedbf7a79610f71f5a5dec0ad4f885a`.
-- GitHub PR workflow lookup for test commit returned no runs at time of check; **CI NOT CONFIRMED**. Roblox Studio runtime, mobile and multiplayer not tested; no merge or publication. These are catalog species, not 20 finished bespoke 3D assets.
-- Next: inspect Actions for this SHA, fix any test failures, expand quests and world progression, implement mutation/inventory systems, then verify in Roblox Studio before launch. Check branch HEAD and Notion handoff first.
-
-## Continuation checkpoint — 2026-11-09, data-driven quest HUD
-- Replaced hardcoded two-quest client tracker with catalog-driven quest ordering and progress UI (`686308a02d995147944c7b3d7a76faa5720b5d90`).
-- Server now replicates species-specific catch counters on load and catch, enabling correct catch-species progress (`4809691c05f18fa53304967ea0a5ecd7f8a3c4a5`).
-- These changes are committed, but NOT Studio tested or CI-confirmed. The client/server wiring needs multiplayer and mobile verification. Next: expand quest catalog safely with tests, validate CI, complete remaining systems and launch gates.
+## Next
+More species toward 150, inventory polish, worlds, bosses, trading, CI + Studio playtests. Do not mark acceptance complete without evidence.
