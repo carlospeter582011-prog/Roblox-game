@@ -75,3 +75,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added reusable `WorldAssetModels.skyArch` with actual Roblox Model/Part geometry, four placements on the starter island, decorative non-collidable pillars, and an illuminated keystone. No Canvas and no third-party asset needed. Commits `66734e34ea06da4a0f1dc2e007130f744c851c80` and `e381c8b849c9427785cda2a03049717e4af2cc85`.
 - Existing tree/crystal/floating rock are also 3D Model assemblies; optional MeshPart slots still need legitimately licensed uploaded mesh IDs. No internet mesh has been imported or uploaded; do not claim otherwise.
 - Not yet CI-checked, merged, published, or visually verified. Continue PR #17; verify Rojo/Luau CI and Roblox runtime before promotion. Preserve ScreenGui for player controls (it is not Canvas world art).
+
+## 2026-11-09 — 3D world models merged, production publish pending verification
+- PR #17 was marked ready and merged into `main` after GitHub Actions build/test run 42623506887 reported success on branch head ca46b94. Merge commit `7974731e5e2271e3bb6e4a2b423bc11951a76a3b`.
+- `StarterWorld` now uses original 3D Model assemblies for trees, crystals, floating rocks and four glowing sky arches. These are procedural Part-based Roblox Models, NOT imported external mesh assets. No external MeshPart asset ID has been uploaded or configured; no Canvas world art. ScreenGui stays for HUD.
+- `auto-publish.yml` triggers on main source changes and uploads `Published` after test/build gates. This merge triggers the workflow, but the result of THIS production run has not yet been independently verified. Do not say live published until GitHub Actions confirms the publish step.
+- Next: inspect production run and Roblox place, then implement licensed external mesh upload (Open Cloud asset type/permissions) with recorded provenance; no guessed asset IDs. No runtime/visual verification.
