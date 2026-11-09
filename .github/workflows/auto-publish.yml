@@ -42,7 +42,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau
+          luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau src/shared/Mutations.luau src/shared/Encyclopedia.luau
           luau tests/run.luau
       - name: Check project and build
         shell: bash

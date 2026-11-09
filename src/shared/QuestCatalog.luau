@@ -28,7 +28,6 @@ local Quests = {
     first_crystal = { id = "first_crystal", title = "Shining Stone", description = "Catch a Crystal Cloud.", objective = "catch_species", speciesId = "crystal", required = 1, rewardCoins = 380, rewardXP = 190, chapter = 3 },
     three_nebula = { id = "three_nebula", title = "Cosmic Trio", description = "Catch three Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 3, rewardCoins = 1500, rewardXP = 750, chapter = 5 },
     seventy_total = { id = "seventy_total", title = "Sky Veteran", description = "Catch seventy clouds.", objective = "total_catches", required = 70, rewardCoins = 900, rewardXP = 450, chapter = 4 },
-    first_moonveil = { id = "first_moonveil", title = "Veil of Night", description = "Catch an Aurora Cloud under the veil.", objective = "catch_species", speciesId = "aurora", required = 1, rewardCoins = 480, rewardXP = 240, chapter = 3 },
     five_aurora = { id = "five_aurora", title = "Aurora Dance", description = "Catch five Aurora Clouds.", objective = "catch_species", speciesId = "aurora", required = 5, rewardCoins = 700, rewardXP = 350, chapter = 4 },
     two_hundred_total = { id = "two_hundred_total", title = "Cloud Legend", description = "Catch two hundred clouds.", objective = "total_catches", required = 200, rewardCoins = 5000, rewardXP = 2500, chapter = 5 },
     five_sunbeam = { id = "five_sunbeam", title = "Sunlit Path", description = "Catch five Sunbeam Clouds.", objective = "catch_species", speciesId = "sunbeam", required = 5, rewardCoins = 180, rewardXP = 90, chapter = 2 },
