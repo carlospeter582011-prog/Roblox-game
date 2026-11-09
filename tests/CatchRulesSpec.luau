@@ -46,6 +46,27 @@ return function(test, eq)
         eq(Rules.isInRange(10, Species.drizzle, Tools.starter_net), true, "drizzle boundary")
     end)
 
+    test("vacuum burst picks nearest unique targets and breaks ties by id", function()
+        local ids = Rules.selectBurstTargets("main", {
+            { id = "far", distance = 18 },
+            { id = "b", distance = 4 },
+            { id = "a", distance = 4 },
+            { id = "a", distance = 4 },
+        }, 3)
+        eq(table.concat(ids, ","), "main,a,b", "nearest deterministic unique targets")
+    end)
+
+    test("burst selection excludes invalid distances and respects single-catch limit", function()
+        local candidates = {
+            { id = "bad", distance = -2 },
+            { id = "infinite", distance = math.huge },
+            { id = "good", distance = 2 },
+        }
+        eq(table.concat(Rules.selectBurstTargets("main", candidates, 3), ","), "main,good", "invalid filtered")
+        eq(table.concat(Rules.selectBurstTargets("main", candidates, 1), ","), "main", "normal tool")
+        eq(table.concat(Rules.selectBurstTargets("main", {}, 3), ","), "main", "empty burst")
+    end)
+
     test("coinReward applies the tool multiplier and floors", function()
         eq(Rules.coinReward(Species.breeze, Tools.starter_net), 10, "breeze starter")
         eq(Rules.coinReward(Species.breeze, Tools.golden_net), 15, "breeze golden")
