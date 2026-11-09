@@ -2,6 +2,7 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("RequestCloudCatch")
 local folder = Workspace:WaitForChild("CatchableClouds")
@@ -73,7 +74,7 @@ refreshQuest()
 
 local levelLabel = Instance.new("TextLabel")
 levelLabel.Name = "LevelLabel"
-levelLabel.Size = UDim2.fromOffset(190, 40)
+levelLabel.Size = UDim2.fromOffset(220, 52)
 levelLabel.Position = UDim2.new(0, 12, 0, 12)
 levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 levelLabel.BackgroundTransparency = 0.15
@@ -81,10 +82,11 @@ levelLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
 levelLabel.TextScaled = true
 levelLabel.Parent = gui
 local function refreshLevel()
-    levelLabel.Text = "Level " .. tostring(player:GetAttribute("CloudLevel") or 1)
-        .. "  |  " .. tostring(player:GetAttribute("CloudCoins") or 0) .. " coins"
+    local level, into, needed = Leveling.progress(player:GetAttribute("CloudXP"))
+    local xpText = needed == 0 and "MAX" or (tostring(math.floor(into)) .. "/" .. tostring(needed) .. " XP")
+    levelLabel.Text = "Lv " .. tostring(level) .. "  |  " .. tostring(player:GetAttribute("CloudCoins") or 0) .. " coins\n" .. xpText
 end
-for _, attribute in ipairs({ "CloudLevel", "CloudCoins" }) do
+for _, attribute in ipairs({ "CloudLevel", "CloudCoins", "CloudXP" }) do
     player:GetAttributeChangedSignal(attribute):Connect(refreshLevel)
 end
 refreshLevel()
