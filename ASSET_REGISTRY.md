@@ -46,3 +46,6 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 
 ## 2026-11-09 — recovery geometry audit
 - Spawn-aware recovery uses real Roblox SpawnLocation/CFrame, not Canvas; no new asset introduced. Model asset 104852877755332 remains a Model, not MeshPart MeshId. CI and runtime verification pending.
+
+## 2026-11-09 — interactive crystal geometry audit
+- Existing project-owned SkyCrystal3D models now host native Roblox ProximityPrompt interactions on a BasePart. No new asset, canvas world stand-in, Mesh ID or external license introduced. Discoveries are session-only player attributes, not persisted currency or quest rewards. Runtime and mobile verification pending.
