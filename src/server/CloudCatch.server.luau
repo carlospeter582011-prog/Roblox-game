@@ -141,7 +141,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 targetCloud:Destroy()
                 if visuals[targetId] then
                     visuals[targetId].model:Destroy()
-                    visuals[target.id] = nil
+                    visuals[targetId] = nil
                 end
                 caught += 1
                 task.delay(5, spawnCloud)
