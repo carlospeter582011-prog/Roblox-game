@@ -55,7 +55,7 @@ local function spawnCloud()
     cloud.Anchored = true
     cloud.CanCollide = false
     cloud.Transparency = 1
-    cloud.Position = Vector3.new(math.random(-72, 72), 9, math.random(-72, 72))
+    cloud.Position = Vector3.new(math.random(-55, 55), 9, math.random(-55, 55))
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
     if mutationId then cloud:SetAttribute("MutationId", mutationId) end
@@ -77,7 +77,8 @@ local function spawnCloud()
     visuals[id] = { model = model, offsets = offsets }
     active[id] = cloud
 end
-for _ = 1, 6 do spawnCloud() end
+-- Keep a dozen discoverable clouds near the starter activity zone.
+for _ = 1, 12 do spawnCloud() end
 remote.OnServerEvent:Connect(function(player, cloudId)
     if typeof(cloudId) ~= "string" or #cloudId > 24 then return end
     local now = os.clock()
