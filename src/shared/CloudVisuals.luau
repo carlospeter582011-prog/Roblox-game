@@ -5,20 +5,20 @@
 -- - Quaternius Ultimate Nature Pack: https://quaternius.com/packs/ultimatenature.html (CC0)
 -- - Sketchfab free clouds (check each license; prefer CC0/CC-BY)
 local CloudVisuals = {}
-local InsertService = game:GetService("InsertService")
+local AssetService = game:GetService("AssetService")
 local modelTemplate = nil
 local modelAttempted = false
 
 -- Only set this to a confirmed, creator-owned Roblox MODEL asset ID from Open Cloud.
 -- This is intentionally separate from MeshIds: a Model asset ID is NOT a MeshPart.MeshId.
-local VERIFIED_CLOUD_MODEL_ASSET_ID = nil
+local VERIFIED_CLOUD_MODEL_ASSET_ID = 104852877755332
 
 local function loadCloudTemplate()
     if modelAttempted then return modelTemplate end
     modelAttempted = true
     if type(VERIFIED_CLOUD_MODEL_ASSET_ID) ~= "number" or VERIFIED_CLOUD_MODEL_ASSET_ID <= 0 then return nil end
     local ok, container = pcall(function()
-        return InsertService:LoadAsset(VERIFIED_CLOUD_MODEL_ASSET_ID)
+        return AssetService:LoadAssetAsync(VERIFIED_CLOUD_MODEL_ASSET_ID)
     end)
     if not ok or not container then
         warn("Cloud model asset could not be loaded; using original 3D fallback")
