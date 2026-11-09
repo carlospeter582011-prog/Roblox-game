@@ -33,7 +33,8 @@ function Leveling.progress(xp)
         return level, 0, 0
     end
     local base = Leveling.xpForLevel(level)
-    return level, xp - base, Leveling.xpForLevel(level + 1) - base
+    local safeXp = (type(xp) == "number" and xp == xp and xp >= 0) and xp or 0
+    return level, safeXp - base, Leveling.xpForLevel(level + 1) - base
 end
 
 return Leveling
