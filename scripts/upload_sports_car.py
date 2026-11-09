@@ -29,7 +29,25 @@ def call(url,method="GET",body=None,content_type=None):
     try:
         with urllib.request.urlopen(req,timeout=60) as r:return json.load(r)
     except urllib.error.HTTPError as e:
-        sys.exit(f"Roblox API rejected {method} (HTTP {e.code}); check asset:write, creator ID and model moderation.")
+        # Print only known-safe structured error fields, never raw response,
+        # credentials, request headers or untrusted arbitrary strings.
+        try:
+            details=json.loads(e.read(8192).decode("utf-8"))
+        except (ValueError,UnicodeError):
+            details={}
+        codes=[]
+        if isinstance(details,dict):
+            for item in details.get("errors",[]) if isinstance(details.get("errors"),list) else []:
+                if isinstance(item,dict):
+                    code=item.get("code")
+                    if isinstance(code,(int,str)) and len(str(code))<80:
+                        codes.append(str(code))
+            for field in ("code","status"):
+                value=details.get(field)
+                if isinstance(value,(int,str)) and len(str(value))<80:
+                    codes.append(str(value))
+        print(f"Roblox API {method} HTTP {e.code}; error codes: {', '.join(codes) or 'not supplied'}",file=sys.stderr)
+        sys.exit("Upload rejected. Check creator ownership, API key validity, account restrictions, and request format.")
 op=call("https://apis.roblox.com/assets/v1/assets","POST",body,f"multipart/form-data; boundary={boundary}")
 path=op.get("path","")
 if not path.startswith("operations/"):sys.exit("No operation ID returned by Roblox.")
