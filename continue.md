@@ -142,3 +142,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Pushed `CloudCatch.client.luau` commit `5025a5dd`: separate level top-left and quest top-right, show catch messages temporarily rather than a permanent centered instruction. Pushed `CloudTools.client.luau` commit `d0f5d37e`: Tools moved away from joystick.
 - Concurrent agent updated `Inventory.client.luau` to position Collection top-right; a 409 conflict was detected, so latest file was re-read and preserved, not overwritten.
 - New CI/publish and actual Android appearance still unverified; inspect latest workflow and screenshot. Investigate player standing on tall trunk and model runtime visibility.
+
+## 2026-11-09 — mobile Collection vs Jump collision fixed in source
+- Owner provided new full-screen Android screenshot: Collection button at bottom-right overlays Roblox's native Jump control, blocking jumping. Second recents screenshot shows expanded Tools menu; not a full-screen view.
+- Updated `src/client/Inventory.client.luau` (`c1d9539c`) to position Collection button top-center at (0.5, 158px) and its hidden-by-default panel below at (0.5, 198px), anchored centrally, away from Jump and movement joystick. Tools remains left below HUD; Catch remains right. Preserve native Roblox Jump button.
+- Need inspect new auto-publish workflow and retest actual Android display before marking visual QA complete. Existing cloud Model import runtime appearance also still unverified.
