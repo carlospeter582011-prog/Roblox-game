@@ -113,4 +113,40 @@ function Assets.floatingRock(parent, position)
     return model
 end
 
+
+-- A fully procedural, reusable 3D arch. No external asset, Canvas or Studio import.
+-- The arch is decorative and non-collidable so it cannot trap players.
+function Assets.skyArch(parent, position, scale, yaw)
+    scale = scale or 1
+    yaw = yaw or 0
+    local model = Instance.new("Model")
+    model.Name = "SkyArch3D"
+    model.Parent = parent
+    local origin = CFrame.new(position) * CFrame.Angles(0, yaw, 0)
+    local stone = Color3.fromRGB(169, 180, 218)
+    for side = -1, 1, 2 do
+        local pillar = solid(model, "ArchPillar", Vector3.new(3, 11, 3) * scale,
+            origin * CFrame.new(side * 7 * scale, 5.5 * scale, 0),
+            stone, Enum.Material.Slate)
+        pillar.CanCollide = false
+        local cap = solid(model, "ArchCapital", Vector3.new(4.2, 2, 4.2) * scale,
+            origin * CFrame.new(side * 7 * scale, 11 * scale, 0),
+            Color3.fromRGB(205, 204, 238), Enum.Material.Marble)
+        cap.CanCollide = false
+    end
+    local lintel = solid(model, "ArchLintel", Vector3.new(17, 3, 4) * scale,
+        origin * CFrame.new(0, 13 * scale, 0),
+        stone, Enum.Material.Marble)
+    lintel.CanCollide = false
+    local gem = solid(model, "ArchKeystone", Vector3.new(3, 4, 3) * scale,
+        origin * CFrame.new(0, 13 * scale, -2.5 * scale),
+        Color3.fromRGB(152, 225, 255), Enum.Material.Neon, Enum.PartType.Ball)
+    gem.CanCollide = false
+    local light = Instance.new("PointLight")
+    light.Brightness = 0.6
+    light.Range = 14 * scale
+    light.Parent = gem
+    return model
+end
+
 return Assets
