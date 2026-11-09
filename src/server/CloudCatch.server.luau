@@ -8,6 +8,7 @@ local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
+local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -44,27 +45,14 @@ local function spawnCloud()
     cloud.Material = Enum.Material.Neon
     cloud.Anchored = true
     cloud.CanCollide = false
+    cloud.Transparency = 1
     cloud.Position = Vector3.new(math.random(-28, 28), 9, math.random(-28, 28))
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
     if mutationId then cloud:SetAttribute("MutationId", mutationId) end
-    cloud.Transparency = 1
     cloud.Parent = cloudFolder
-    local model = Instance.new("Model")
+    local model = CloudVisuals.createCloudVisual(cloudFolder, cloud.Position, tint, speciesId)
     model.Name = speciesId .. "CloudVisual_" .. id
-    model.Parent = cloudFolder
-    for i, offset in ipairs({Vector3.new(-2,0,0),Vector3.new(0,1,0),Vector3.new(2.2,0,0),Vector3.new(0,-0.4,1.3)}) do
-        local puff = Instance.new("Part")
-        puff.Name = "Puff" .. i
-        puff.Shape = Enum.PartType.Ball
-        puff.Size = Vector3.new(3.8,3,3.5)
-        puff.Color = tint:Lerp(Color3.new(1, 1, 1), 0.5)
-        puff.Material = Enum.Material.SmoothPlastic
-        puff.Anchored = true
-        puff.CanCollide = false
-        puff.Position = cloud.Position + offset
-        puff.Parent = model
-    end
     local glow = Instance.new("PointLight")
     glow.Color = tint
     glow.Brightness = 1
@@ -127,11 +115,10 @@ task.spawn(function()
         for id, model in pairs(visuals) do
             local cloud = active[id]
             if cloud and cloud.Parent and model.Parent then
-                local offsets = {Vector3.new(-2,0,0),Vector3.new(0,1,0),Vector3.new(2.2,0,0),Vector3.new(0,-0.4,1.3)}
-                local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.6, 0)
-                for index, part in ipairs(model:GetChildren()) do
+                local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.5, 0)
+                for _, part in ipairs(model:GetChildren()) do
                     if part:IsA("BasePart") then
-                        part.Position = cloud.Position + offsets[index] + bob
+                        part.Position = cloud.Position + bob
                     end
                 end
             end
