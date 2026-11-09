@@ -136,3 +136,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - User supplied full-screen landscape Android screenshot. XP/status/quest labels overlap; Tools and Collection buttons cover Roblox movement joystick. Avatar appears on/against a tall tree trunk; investigate collision/spawn/camera separately. Trees are clearly procedural Part-based 3D; screenshot cannot prove GLB cloud Model loaded.
 - Concurrent agent had already moved `message` to top y18 and quest/level to y118 in `CloudCatch.client.luau` (latest main), so did not overwrite its newer change. Moved `Collection` toggle/panel to right side (`e149b2fd`) and `Tools` button/panel to right side (`2c8e9142`) away from movement joystick. New CI publish and Android visual results not verified.
 - Next: confirm CI publish, inspect fresh screenshot, review cloud model runtime loading and player spawn/collision; improve responsive HUD instead of overlapping fixed-width labels.
+
+## 2026-11-09 — second Android screenshot HUD QA
+- Actual screenshot shows XP/quest/status overlap and bottom-left controls overlapping mobile joystick; 3D geometry visible but imported GLB appearance not proven.
+- Pushed `CloudCatch.client.luau` commit `5025a5dd`: separate level top-left and quest top-right, show catch messages temporarily rather than a permanent centered instruction. Pushed `CloudTools.client.luau` commit `d0f5d37e`: Tools moved away from joystick.
+- Concurrent agent updated `Inventory.client.luau` to position Collection top-right; a 409 conflict was detected, so latest file was re-read and preserved, not overwritten.
+- New CI/publish and actual Android appearance still unverified; inspect latest workflow and screenshot. Investigate player standing on tall trunk and model runtime visibility.
