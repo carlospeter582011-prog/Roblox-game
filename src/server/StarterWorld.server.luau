@@ -4,10 +4,7 @@ local Lighting = game:GetService("Lighting")
 local WorldAssetModels = require(script.Parent:WaitForChild("WorldAssetModels"))
 local CrystalRules = require(game:GetService("ReplicatedStorage"):WaitForChild("CrystalRules"))
 local Players = game:GetService("Players")
-local crystalDiscoveries = {} -- [UserId] = {[index] = true}; bounded per-player session state
-Players.PlayerRemoving:Connect(function(player)
-    crystalDiscoveries[player.UserId] = nil
-end)
+local Profile = require(script.Parent:WaitForChild("ProfileStore"))
 local world = Instance.new("Folder")
 world.Name = "CatchACloudStarterIsland"
 world.Parent = Workspace
@@ -50,7 +47,7 @@ for i=1,18 do
     local radius=28+math.sqrt(i)*11
     local crystal = WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
     -- Server-owned interactive 3D discovery. ProximityPrompt supports touch and gamepad.
-    -- Session-only discovery; do not grant currency or claim quest persistence here.
+    -- Discovery is server-authoritative and saved with the player profile.
     local target = crystal and (crystal:IsA("BasePart") and crystal or crystal:FindFirstChildWhichIsA("BasePart", true))
     if target then
         local prompt = Instance.new("ProximityPrompt")
@@ -68,18 +65,13 @@ for i=1,18 do
             local humanoid = character and character:FindFirstChildOfClass("Humanoid")
             local root = character and character:FindFirstChild("HumanoidRootPart")
             if not root or not humanoid or humanoid.Health <= 0 then return end
-            local discovered = crystalDiscoveries[player.UserId]
-            if not discovered then
-                discovered = {}
-                crystalDiscoveries[player.UserId] = discovered
-            end
+            local profile = Profile.Get(player)
+            local discovered = profile and profile.crystals or {}
             local distance = (root.Position - target.Position).Magnitude
             if not CrystalRules.canDiscover(i, distance, discovered[i], player:GetAttribute("ProfileReady")) then
                 return
             end
-            discovered[i] = true
-            player:SetAttribute("SkyCrystalsDiscovered", CrystalRules.count(discovered))
-            player:SetAttribute("LastSkyCrystal", crystalId)
+            Profile.DiscoverCrystal(player, i)
         end)
     end
 end
