@@ -10,8 +10,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 
 ## Current state of `main`
 - Auto-publish runs on every push to `main` touching `src/**` or `tests/**`: Luau analysis + unit tests gate, Rojo build, Open Cloud **Published** upload. Latest publish on e72725a: workflow success and "Roblox accepted Published place version" (run 42613759016). Earlier publishes of broken commits were correctly blocked by the test gate (runs 42611741575, 42611843837, 42612080150, 42612123159).
-- Open PR #13 (`fix/mutation-attributes-and-docs`): defect fixes below. CI on b89520f: both jobs green, 55 tests, 0 failed (run 42620069899).
-- Published builds contain the defects PR #13 fixes until it is merged and republished.
+- PR #13 (defect fixes below) merged as 1d8a8a1. PR CI on 31b485c: both jobs green (run 42620397761; code verified on b89520f in run 42620069899), 55 tests, 0 failed.
+- Publish after merge: run 42620586236 on 1d8a8a1: 55 tests, 0 failed, "Roblox accepted Published place version". The live build now includes the fixes (runtime still unverified).
 
 ## What actually exists (counts are rows in data files, not finished content)
 - Systems with code: server-authoritative catching (range/cooldown/unlock), weighted spawns with mutations (golden/rainbow/electric/storm, 8% chance), tool picker, quests tracker, level/coins/XP HUD, collection HUD, first-catch tutorial overlay, procedural starter island, persistent profile (session lock, v2 schema, v1 migration, retries).
@@ -19,7 +19,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - **Data-only, referenced by no script (not features yet):** WorldCatalog (10 worlds), BossCatalog (10 bosses), TravelCatalog, IslandCatalog, Encyclopedia helper. There is only one Place/world (the starter island). No bosses, islands, travel, trading, guilds, evolution/fusion, audio, localization.
 - Art: procedural Parts only; `CloudVisuals` supports a real MeshPart but `MeshIds` is empty, so the multi-part fallback is what renders.
 
-## Defects found and fixed in PR #13 (found by reading, not by running the game)
+## Defects found and fixed in PR #13 (merged; found by reading, not by running the game)
 1. Mutated catches were saved/replicated under keys like `breeze:golden`, and `SetAttribute("SpeciesCount_breeze:golden")` uses a character Roblox attribute names do not allow (documented rule; not observed in Studio) so ~8% of catches likely threw mid-handler, and returning players with such a saved key would error on load. Now only attribute-safe ids are replicated; legacy keys are skipped on load.
 2. Mutated catches did not advance species quests; mutation XP multiplier was never applied. Now base species is always counted, variants tracked separately, XP multiplier applied.
 3. Cloud bobbing moved every puff to one point (collapsed shape). Offsets preserved.
@@ -43,7 +43,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Owner decision needed on whether each push to `main` should keep auto-publishing while runtime behaviour is unverified (current setting follows the owner's "auto-publish after validation" authorisation).
 
 ## Next planned actions (in order)
-1. Merge PR #13 (CI green), confirm the publish run succeeds, and have the owner play the published build on the tablet and report what they see (only runtime evidence available; no Studio automation exists here).
+1. Owner plays the published build (1d8a8a1) on the tablet and reports what they see: first catch time, whether mutated clouds (golden/rainbow/electric/storm tint) can be caught without errors, button placement, HUD readability. This is the only runtime evidence available; no Studio automation exists here.
 2. Wire the data-only catalogs into real systems one at a time, each with pure logic + tests: encyclopedia UI using `Encyclopedia`, world unlock/travel with teleport fallback, boss encounter state machine, island ownership/persistence.
 3. Species behaviour data model (movement patterns, abilities, spawn conditions by world/weather) before adding species toward 150; do not count stat variants as distinct species.
 4. Asset pipeline: pick CC0 cloud/vegetation meshes, upload via Open Cloud, set `CloudVisuals.MeshIds`, record in ASSET_REGISTRY.md, inspect every MeshPart.
