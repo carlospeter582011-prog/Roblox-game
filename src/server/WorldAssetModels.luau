@@ -159,4 +159,29 @@ function Assets.skyArch(parent, position, scale, yaw)
     return model
 end
 
+
+-- Original three-dimensional wayfinding lantern: real Parts, not a GUI or decal stand-in.
+-- The floating marker remains non-collidable so it cannot obstruct players.
+function Assets.skyLantern(parent, position, scale)
+    scale = scale or 1
+    local model = Instance.new("Model")
+    model.Name = "SkyLantern3D"
+    model.Parent = parent
+    local origin = CFrame.new(position)
+    local metal = Color3.fromRGB(94, 119, 157)
+    local glow = Color3.fromRGB(255, 218, 132)
+    solid(model, "Pedestal", Vector3.new(2.4, 0.6, 2.4) * scale,
+        origin * CFrame.new(0, 0.3 * scale, 0), metal, Enum.Material.Metal)
+    solid(model, "Post", Vector3.new(0.45, 5, 0.45) * scale,
+        origin * CFrame.new(0, 3 * scale, 0), metal, Enum.Material.Metal)
+    local bulb = solid(model, "LightOrb", Vector3.new(2.2, 2.2, 2.2) * scale,
+        origin * CFrame.new(0, 6.2 * scale, 0), glow, Enum.Material.Neon, Enum.PartType.Ball)
+    local light = Instance.new("PointLight")
+    light.Color = glow
+    light.Brightness = 0.7
+    light.Range = 14 * scale
+    light.Parent = bulb
+    return model
+end
+
 return Assets
