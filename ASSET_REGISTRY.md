@@ -56,3 +56,6 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 
 ## Persistent crystal discovery checkpoint — 2026-11-09
 - SkyCrystal3D still uses original Roblox 3D Model/Part geometry and ProximityPrompt; persistence changes add no third-party asset, MeshPart ID, or Canvas world stand-in. Runtime and asset appearance remain unverified.
+
+## 2026-11-10 — CI-only profile migration fix
+- No art, 3D geometry, external assets, license status, Model IDs or MeshPart IDs changed in commit `12a9a858`. Existing asset appearance and runtime moderation remain unverified. 3D-only world audit is still open.
