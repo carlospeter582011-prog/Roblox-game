@@ -32,7 +32,7 @@ jobs:
       - name: Upload licensed GLB via Roblox Open Cloud
         env:
           ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
-          ROBLOX_CREATOR_USER_ID: ${{ vars.ROBLOX_CREATOR_USER_ID }}
+          ROBLOX_CREATOR_USER_ID: "7550783083"
         run: python3 scripts/upload_sports_car.py assets/sports-car.glb
       - uses: actions/upload-artifact@v4
         with:
