@@ -58,17 +58,38 @@ questLabel.BackgroundTransparency=0.15
 questLabel.TextColor3=Color3.fromRGB(245,250,255)
 questLabel.TextScaled=true
 questLabel.Parent=gui
-local function refreshQuest()
-    if not player:GetAttribute("Quest_first_breeze") then
-        questLabel.Text="Story: Catch your first Breeze Cloud"
-    elseif not player:GetAttribute("Quest_three_clouds") then
-        questLabel.Text="Story: Catch 3 clouds ("..tostring(player:GetAttribute("CloudCount") or 0).."/3)"
-    else
-        questLabel.Text="Chapter 1 complete! More adventures ahead."
-    end
+local QuestCatalog = require(ReplicatedStorage:WaitForChild("QuestCatalog"))
+local orderedQuests = {}
+for _, quest in pairs(QuestCatalog) do
+    table.insert(orderedQuests, quest)
 end
-for _,attribute in ipairs({"Quest_first_breeze","Quest_three_clouds","CloudCount"}) do
-    player:GetAttributeChangedSignal(attribute):Connect(refreshQuest)
+table.sort(orderedQuests, function(a, b)
+    if a.chapter ~= b.chapter then return a.chapter < b.chapter end
+    if a.required ~= b.required then return a.required < b.required end
+    return a.id < b.id
+end)
+local function refreshQuest()
+    for _, quest in ipairs(orderedQuests) do
+        if not player:GetAttribute("Quest_" .. quest.id) then
+            local current = 0
+            if quest.objective == "total_catches" then
+                current = player:GetAttribute("CloudCount") or 0
+            else
+                current = player:GetAttribute("SpeciesCount_" .. quest.speciesId) or 0
+            end
+            questLabel.Text = quest.title .. " (" .. tostring(math.min(current, quest.required))
+                .. "/" .. tostring(quest.required) .. ")"
+            return
+        end
+    end
+    questLabel.Text = "All available quests completed!"
+end
+player:GetAttributeChangedSignal("CloudCount"):Connect(refreshQuest)
+for _, quest in ipairs(orderedQuests) do
+    player:GetAttributeChangedSignal("Quest_" .. quest.id):Connect(refreshQuest)
+    if quest.objective == "catch_species" then
+        player:GetAttributeChangedSignal("SpeciesCount_" .. quest.speciesId):Connect(refreshQuest)
+    end
 end
 refreshQuest()
 
