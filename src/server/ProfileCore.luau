@@ -20,6 +20,7 @@ function Core.defaultData(now)
         captures = 0,
         species = {},
         quests = {},
+        ownedTools = { starter_net = true },
         lastSeen = now or 0,
     }
 end
@@ -51,6 +52,13 @@ function Core.sanitize(raw, validQuests, now)
         for id, done in pairs(raw.quests) do
             if type(id) == "string" and validQuests[id] and done == true then
                 clean.quests[id] = true
+            end
+        end
+    end
+    if type(raw.ownedTools) == "table" then
+        for id, owned in pairs(raw.ownedTools) do
+            if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$") and owned == true then
+                clean.ownedTools[id] = true
             end
         end
     end
