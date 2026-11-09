@@ -13,6 +13,7 @@ cloudFolder.Parent = Workspace
 local active = {}
 local lastAttempt = {}
 local nextId = 0
+local visuals = {}
 local function spawnCloud()
     nextId += 1
     local id = tostring(nextId)
@@ -27,7 +28,29 @@ local function spawnCloud()
     cloud.Position = Vector3.new(math.random(-28, 28), 9, math.random(-28, 28))
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", "breeze")
+    cloud.Transparency = 1
     cloud.Parent = cloudFolder
+    local model = Instance.new("Model")
+    model.Name = "BreezeCloudVisual_" .. id
+    model.Parent = cloudFolder
+    for i, offset in ipairs({Vector3.new(-2,0,0),Vector3.new(0,1,0),Vector3.new(2.2,0,0),Vector3.new(0,-0.4,1.3)}) do
+        local puff = Instance.new("Part")
+        puff.Name = "Puff" .. i
+        puff.Shape = Enum.PartType.Ball
+        puff.Size = Vector3.new(3.8,3,3.5)
+        puff.Color = Color3.fromRGB(226,242,255)
+        puff.Material = Enum.Material.SmoothPlastic
+        puff.Anchored = true
+        puff.CanCollide = false
+        puff.Position = cloud.Position + offset
+        puff.Parent = model
+    end
+    local glow = Instance.new("PointLight")
+    glow.Color = Color3.fromRGB(148,207,255)
+    glow.Brightness = 1
+    glow.Range = 12
+    glow.Parent = cloud
+    visuals[id] = model
     active[id] = cloud
 end
 for _ = 1, 6 do spawnCloud() end
@@ -54,9 +77,31 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         return
     end
     cloud:Destroy()
+    if visuals[cloudId] then visuals[cloudId]:Destroy(); visuals[cloudId] = nil end
     remote:FireClient(player, true, "Caught a Breeze Cloud!")
     task.delay(5, spawnCloud)
 end)
 Players.PlayerRemoving:Connect(function(player)
     lastAttempt[player] = nil
+end)
+
+-- Lightweight idle animation for original multi-part cloud models.
+task.spawn(function()
+    local phase = 0
+    while true do
+        task.wait(0.12)
+        phase += 0.12
+        for id, model in pairs(visuals) do
+            local cloud = active[id]
+            if cloud and cloud.Parent and model.Parent then
+                local offsets = {Vector3.new(-2,0,0),Vector3.new(0,1,0),Vector3.new(2.2,0,0),Vector3.new(0,-0.4,1.3)}
+                local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.6, 0)
+                for index, part in ipairs(model:GetChildren()) do
+                    if part:IsA("BasePart") then
+                        part.Position = cloud.Position + offsets[index] + bob
+                    end
+                end
+            end
+        end
+    end
 end)
