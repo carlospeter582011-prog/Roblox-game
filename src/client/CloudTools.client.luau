@@ -11,7 +11,7 @@ gui.ResetOnSpawn = false
 gui.Parent = player:WaitForChild("PlayerGui")
 local button = Instance.new("TextButton")
 button.Size = UDim2.fromOffset(80, 32)
-button.Position = UDim2.new(0, 8, 1, -44)
+button.Position = UDim2.new(0, 16, 0, 158)
 button.Text = "Tools"
 button.TextSize = 14
 button.Font = Enum.Font.GothamBold
@@ -21,7 +21,7 @@ button.Parent = gui
 -- Scrolls so all tools fit on a small touch screen.
 local panel = Instance.new("ScrollingFrame")
 panel.Size = UDim2.new(0, 210, 0, 220)
-panel.Position = UDim2.new(0, 8, 1, -272)
+panel.Position = UDim2.new(0, 16, 0, 198)
 panel.Visible = false
 panel.BackgroundColor3 = Color3.fromRGB(24, 48, 81)
 panel.CanvasSize = UDim2.new(0, 0, 0, 0)
