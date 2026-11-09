@@ -125,3 +125,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Server checks fallen characters near starter island at 4Hz, rescues to 3D spawn area and clears velocity; ignores distant locations to avoid interfering with future worlds. Pure policy tests cover threshold, distance, cooldown and invalid values.
 - All geometry remains Roblox 3D; HUD remains legitimate ScreenGui. No external model imported in this run; original cloud Model ID 104852877755332 remains type Model, not MeshPart MeshId.
 - **UNVERIFIED**: CI outcome for these commits, live auto-publish, Roblox runtime/mobile, spawn safety and visual correctness. Never check launch acceptance until verified. Next: inspect publish gate and actual in-game behavior; integrate additional worlds and gameplay.
+
+## 2026-11-09 — Deep-void rescue hardening (automation)
+- Changed `src/shared/RecoveryRules.luau` to rescue players who fall below -500 studs even outside the starter island radius; previously those players could fall forever. Normal nearby recovery at -85 remains, with the existing cooldown. Added finite-value, nonnegative-distance and monotonic-time guards.
+- Added two test cases in `tests/RecoverySpec.luau` for deep-void rescue and invalid inputs. Implementation commits `1b01d64e`, `9a8c9798`.
+- This is actual Roblox 3D character/physics policy, not a 2D world object. No new mesh/GLB was sourced; existing Model asset `104852877755332` is still a Model, not a MeshPart MeshId. ASSET_REGISTRY remains unchanged because the asset inventory did not change.
+- **Unverified:** latest CI execution, Published Open Cloud result, in-game fall behavior, and mobile visuals. Keep acceptance checklist open. Next: inspect publishing workflow result, Android test, world checkpoints and playable boss encounters.
