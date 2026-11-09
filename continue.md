@@ -182,3 +182,11 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commit 57c66e0c04d93b639aa13fbd6fa749afc2587ee9 adds native ProximityPrompt interactions to up to 18 actual SkyCrystal3D objects on StarterWorld. Server checks character distance, limits each crystal to one discovery per user per server session, and exposes session-only SkyCrystalsDiscovered/LastSkyCrystal attributes. No currency, persistent quest state or remote trust introduced.
 - GitHub connector write confirmed. No CI, live Roblox or mobile runtime test confirmed for this change. No external asset imported; Model ID 104852877755332 remains distinct from MeshPart IDs.
 - Next: inspect CI/publish results; connect discoveries to validated persistent quest progression and visual feedback; verify touch/gamepad interaction in Roblox.
+
+## 2026-11-09 — Crystal discovery security and lifecycle hardening
+- Added pure `src/shared/CrystalRules.luau` with finite distance / index bounds, duplicate and profile-readiness checks (commit `04f9e95`).
+- Added four unit cases in `tests/CrystalRulesSpec.luau` and registered in `tests/run.luau` (commits `1e7eea4`, `eaa9920`).
+- Updated `StarterWorld.server.luau` (commit `6e16aa2`) to reject dead/unloaded players, enforce profile-ready, track crystal discoveries in a bounded per-user table, clean it on PlayerRemoving, and recompute count from validated keys rather than trusting a client-facing attribute.
+- Crystal discoveries remain session-only; do NOT claim persistent quest/currency rewards. All objects remain native 3D Roblox Parts/Models; no new GLB or asset IDs.
+- Source commits confirmed. CI and Open Cloud Published status for these commits NOT verified; Studio/Android runtime and actual imported cloud Model appearance NOT verified. Keep launch/3D checklist acceptance unchecked.
+- Next: check push-triggered CI and publish logs, implement persistent discovery with a schema migration and tests, and add playable world/boss logic.
