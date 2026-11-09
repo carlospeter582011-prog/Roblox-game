@@ -43,13 +43,27 @@ function Rules.questProgress(quest, data)
     return data.captures
 end
 
+-- Roblox attribute names may only contain letters, digits, underscores and hyphens (per the
+-- documented rules; not Studio-verified here). Anything else would make SetAttribute error, so
+-- only ids passing this check may be replicated as attributes.
+function Rules.isAttributeSafe(name)
+    return type(name) == "string" and #name > 0 and #name <= 90 and string.match(name, "^[%w_%-]+$") ~= nil
+end
+
 -- Records one catch on data and completes every quest it newly satisfies, awarding quest
 -- rewards. Mutates data. Returns the newly completed quest ids, sorted.
-function Rules.applyCatch(data, speciesId, coins, quests)
+-- options (optional): variantId = extra collection key for a mutated catch (e.g. "breeze:golden");
+-- the base species is ALWAYS counted too so species quests and the encyclopedia stay correct.
+-- xp = XP for this catch (default XP_PER_CATCH), used for mutation XP multipliers.
+function Rules.applyCatch(data, speciesId, coins, quests, options)
     data.species[speciesId] = (data.species[speciesId] or 0) + 1
+    local variantId = options and options.variantId
+    if variantId and variantId ~= speciesId then
+        data.species[variantId] = (data.species[variantId] or 0) + 1
+    end
     data.captures += 1
     data.coins += coins
-    data.xp += Rules.XP_PER_CATCH
+    data.xp += (options and options.xp) or Rules.XP_PER_CATCH
     local completed = {}
     for id, quest in pairs(quests) do
         if not data.quests[id] and Rules.questProgress(quest, data) >= quest.required then

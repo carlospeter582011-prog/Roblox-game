@@ -51,16 +51,20 @@ function Profile.Get(player)
     return sessions[player]
 end
 
-function Profile.AddCatch(player, speciesId, coins)
+-- options: { variantId = "breeze:golden", xp = number } for mutated catches (see CatchRules).
+function Profile.AddCatch(player, speciesId, coins, options)
     local data = sessions[player]
     if not data then
         return false
     end
-    for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog)) do
+    for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, options)) do
         player:SetAttribute("Quest_" .. id, true)
     end
     player:SetAttribute("CloudCount", data.captures)
-    player:SetAttribute("SpeciesCount_" .. speciesId, data.species[speciesId])
+    -- Only attribute-safe ids are replicated; mutation keys contain ":" and stay server-side.
+    if CatchRules.isAttributeSafe("SpeciesCount_" .. speciesId) then
+        player:SetAttribute("SpeciesCount_" .. speciesId, data.species[speciesId])
+    end
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
@@ -141,7 +145,10 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     for speciesId, count in pairs(data.species) do
-        player:SetAttribute("SpeciesCount_" .. speciesId, count)
+        -- Saves written by earlier builds may hold mutation keys like "breeze:golden".
+        if CatchRules.isAttributeSafe("SpeciesCount_" .. speciesId) then
+            player:SetAttribute("SpeciesCount_" .. speciesId, count)
+        end
     end
     for id in pairs(questCatalog) do
         player:SetAttribute("Quest_" .. id, data.quests[id] == true)

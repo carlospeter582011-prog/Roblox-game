@@ -53,12 +53,19 @@ local function spawnCloud()
     cloud.Parent = cloudFolder
     local model = CloudVisuals.createCloudVisual(cloudFolder, cloud.Position, tint, speciesId)
     model.Name = speciesId .. "CloudVisual_" .. id
+    -- Remember each part's offset from the cloud so the bobbing keeps the puffs' shape.
+    local offsets = {}
+    for _, part in ipairs(model:GetChildren()) do
+        if part:IsA("BasePart") then
+            offsets[part] = part.Position - cloud.Position
+        end
+    end
     local glow = Instance.new("PointLight")
     glow.Color = tint
     glow.Brightness = 1
     glow.Range = 12
     glow.Parent = cloud
-    visuals[id] = model
+    visuals[id] = { model = model, offsets = offsets }
     active[id] = cloud
 end
 for _ = 1, 6 do spawnCloud() end
@@ -89,16 +96,19 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     end
     active[cloudId] = nil
     local mut = cloud:GetAttribute("MutationId")
-    local trackId = Mutations.key(species.id, mut)
     local baseCoins = CatchRules.coinReward(species, tool)
     local coins = Mutations.bonusCoins(baseCoins, mut)
-    if not ProfileStore.AddCatch(player, trackId, coins) then
+    local catchOptions = {
+        variantId = mut and Mutations.key(species.id, mut) or nil,
+        xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
+    }
+    if not ProfileStore.AddCatch(player, species.id, coins, catchOptions) then
         active[cloudId] = cloud
         remote:FireClient(player, false, "Profile unavailable. Please rejoin.")
         return
     end
     cloud:Destroy()
-    if visuals[cloudId] then visuals[cloudId]:Destroy(); visuals[cloudId] = nil end
+    if visuals[cloudId] then visuals[cloudId].model:Destroy(); visuals[cloudId] = nil end
     local label = mut and (Mutations[mut].name .. " " .. species.name) or species.name
     remote:FireClient(player, true, "Caught a " .. label .. "!")
     task.delay(5, spawnCloud)
@@ -112,13 +122,13 @@ task.spawn(function()
     while true do
         task.wait(0.12)
         phase += 0.12
-        for id, model in pairs(visuals) do
+        for id, entry in pairs(visuals) do
             local cloud = active[id]
-            if cloud and cloud.Parent and model.Parent then
+            if cloud and cloud.Parent and entry.model.Parent then
                 local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.5, 0)
-                for _, part in ipairs(model:GetChildren()) do
-                    if part:IsA("BasePart") then
-                        part.Position = cloud.Position + bob
+                for part, offset in pairs(entry.offsets) do
+                    if part.Parent then
+                        part.Position = cloud.Position + offset + bob
                     end
                 end
             end

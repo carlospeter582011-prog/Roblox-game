@@ -39,8 +39,9 @@ end
 -- Compact catch button (fixed size, no TextScaled)
 local button = Instance.new("TextButton")
 button.Name = "CatchButton"
-button.AnchorPoint = Vector2.new(1, 1)
-button.Position = UDim2.new(1, -12, 1, -12)
+-- Mid-right, clear of Roblox's own jump button at the bottom-right on touch devices.
+button.AnchorPoint = Vector2.new(1, 0.5)
+button.Position = UDim2.new(1, -16, 0.6, 0)
 button.Size = UDim2.fromOffset(120, 40)
 button.BackgroundColor3 = Color3.fromRGB(71, 137, 230)
 button.TextColor3 = Color3.new(1, 1, 1)
@@ -134,7 +135,7 @@ refreshQuest()
 -- Compact level/coins
 local levelLabel = Instance.new("TextLabel")
 levelLabel.Name = "LevelLabel"
-levelLabel.Size = UDim2.fromOffset(140, 36)
+levelLabel.Size = UDim2.fromOffset(250, 36)
 levelLabel.Position = UDim2.new(0, 8, 0, 8)
 levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 levelLabel.BackgroundTransparency = 0.2
@@ -145,7 +146,7 @@ levelLabel.Parent = gui
 local function refreshLevel()
     local level, into, needed = Leveling.progress(player:GetAttribute("CloudXP"))
     local xpText = needed == 0 and "MAX" or (tostring(math.floor(into)) .. "/" .. tostring(needed))
-    levelLabel.Text = "Lv " .. tostring(level) .. "  " .. tostring(player:GetAttribute("CloudCoins") or 0) .. " coins"
+    levelLabel.Text = "Lv " .. tostring(level) .. "  " .. xpText .. " XP  " .. tostring(player:GetAttribute("CloudCoins") or 0) .. " coins"
 end
 for _, attribute in ipairs({ "CloudLevel", "CloudCoins", "CloudXP" }) do
     player:GetAttributeChangedSignal(attribute):Connect(refreshLevel)

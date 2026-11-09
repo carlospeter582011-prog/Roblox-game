@@ -1,25 +1,24 @@
 # Roadmap
 
 Status key: DONE (implemented, integrated, verified to the stated level), PARTIAL, TODO.
-"Verified" here means the evidence listed in `TEST_REPORT.md`; nothing is runtime-verified in
-Roblox yet.
+"Verified" means the evidence in `TEST_REPORT.md`; nothing is runtime-verified in Roblox yet.
+Counts are rows in data files, not finished, distinct content.
 
 | Milestone | Scope | Acceptance criteria | Status |
 |---|---|---|---|
-| M0 | Baseline, docs, CI audit | Baseline branch exists; docs current; CI audited | DONE (baseline: branch `baseline/house-car-prototype` at cb91b2f) |
-| M1 | Modular foundation and tests | Pure modules + CI unit tests; server-authoritative profile with session locking | PARTIAL: pure-logic part DONE (CI); no Studio verification |
-| M2 | Starter island, first spawn/chase/catch, mobile controls | First catch in < 2 min on an Android tablet; no errors in Studio output | PARTIAL: code exists, unverified on device |
-| M3 | Collection, saving, encyclopedia | Species collection persists across sessions and servers; encyclopedia UI | PARTIAL: counts persist (logic tested); no encyclopedia |
+| M0 | Baseline, docs, CI audit | Baseline branch; docs current; CI audited | DONE (branch `baseline/house-car-prototype`) |
+| M1 | Modular foundation and tests | Pure modules + CI unit tests; locked, retried, migrated profile | PARTIAL: logic DONE (55 CI tests); no Studio verification |
+| M2 | Starter island, first spawn/chase/catch, mobile controls | First catch in < 2 min on an Android tablet; no Studio output errors | PARTIAL: code published, unverified on device |
+| M3 | Collection, saving, encyclopedia | Collection persists across sessions/servers; encyclopedia UI | PARTIAL: counts persist (logic tested); collection HUD only; `Encyclopedia` helper unused |
 | M4 | Growth, habitats, production | Cloud XP/evolution/fusion; habitats produce with offline cap | TODO |
-| M5 | First world, boss, story | World 1 art/secrets, boss, quest chain, chapters | TODO |
-| M6 | Travel and additional Places | Portals/teleport with failure fallback; cross-Place progression | TODO |
+| M5 | First world, boss, story | World 1 art/secrets, boss, quest chain, chapters | TODO (BossCatalog/WorldCatalog are unused data) |
+| M6 | Travel and additional Places | Portals/teleport with failure fallback; cross-Place progression | TODO (TravelCatalog unused data) |
 | M7 | Trade, economy, parties, guilds | Atomic trades, anti-dupe, party/guild flows | TODO |
-| M8 | Scale content to launch targets | 10 worlds, 150+ species, 15+ tools, 100+ quests, 10 bosses | TODO (2 species, 5 tools, 2 quests today) |
-| M9 | Optimization, localization, security, staged release, QA | Arabic RTL, perf budgets, exploit audit, release sign-off | TODO |
+| M8 | Scale content to launch targets | 10 worlds, 150+ distinct species, 15+ tools, 100+ quests, 10 bosses | TODO: 86 species rows (no distinct behaviour), 15 tools (numeric variants), 38 catch-count quests, 0 playable extra worlds, 0 boss fights |
+| M9 | Optimization, localization, security, staged release, QA | Arabic RTL, perf budgets, exploit audit, sign-off | TODO |
 
 ## Next actions (in order)
-1. Merge the foundation PR once gated CI is green (publishes via `auto-publish.yml`).
-2. Owner plays the published build on the Android tablet and reports Studio-less runtime findings
-   (the only available runtime verification path).
-3. Fix what that finds; then the persistence data model for cloud instances (not just counts).
-4. Tool/ability/spawn-rule data model; then World 1 content.
+1. Merge PR #13; confirm publish; owner plays the build on the tablet and reports.
+2. Wire data-only catalogs into systems one at a time with pure logic + tests (encyclopedia, world unlock/travel, boss state machine, islands).
+3. Species behaviour data model before adding more species.
+4. Asset pipeline through Open Cloud (no Studio on the owner's device), recorded in ASSET_REGISTRY.md.
