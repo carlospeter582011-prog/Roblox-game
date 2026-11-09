@@ -106,24 +106,54 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         remote:FireClient(player, false, "Move closer to the cloud!")
         return
     end
-    active[cloudId] = nil
-    local mut = cloud:GetAttribute("MutationId")
-    local baseCoins = CatchRules.coinReward(species, tool)
-    local coins = Mutations.bonusCoins(baseCoins, mut)
-    local catchOptions = {
-        variantId = mut and Mutations.key(species.id, mut) or nil,
-        xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
-    }
-    if not ProfileStore.AddCatch(player, species.id, coins, catchOptions) then
-        active[cloudId] = cloud
-        remote:FireClient(player, false, "Profile unavailable. Please rejoin.")
-        return
+    -- Vacuum tools can collect nearby clouds in a single server-authoritative burst.
+    -- Only the explicitly targeted cloud needs to be in range to start a burst.
+    local targets = { { id = cloudId, cloud = cloud } }
+    if toolId == "storm_vacuum" then
+        local candidates = {}
+        for otherId, otherCloud in pairs(active) do
+            if otherId ~= cloudId and otherCloud.Parent then
+                local otherSpecies = catalog[otherCloud:GetAttribute("SpeciesId")]
+                local distance = (root.Position - otherCloud.Position).Magnitude
+                if otherSpecies and CatchRules.isInRange(distance, otherSpecies, tool) then
+                    table.insert(candidates, { id = otherId, cloud = otherCloud, distance = distance })
+                end
+            end
+        end
+        table.sort(candidates, function(left, right) return left.distance < right.distance end)
+        for i = 1, math.min(2, #candidates) do
+            table.insert(targets, candidates[i])
+        end
     end
-    cloud:Destroy()
-    if visuals[cloudId] then visuals[cloudId].model:Destroy(); visuals[cloudId] = nil end
-    local label = mut and (Mutations[mut].name .. " " .. species.name) or species.name
-    remote:FireClient(player, true, "Caught a " .. label .. "!")
-    task.delay(5, spawnCloud)
+    local caught = 0
+    for _, target in ipairs(targets) do
+        local targetCloud = target.cloud
+        local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
+        if targetSpecies and active[target.id] == targetCloud then
+            local mut = targetCloud:GetAttribute("MutationId")
+            local baseCoins = CatchRules.coinReward(targetSpecies, tool)
+            local coins = Mutations.bonusCoins(baseCoins, mut)
+            local options = {
+                variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
+                xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
+            }
+            if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
+                active[target.id] = nil
+                targetCloud:Destroy()
+                if visuals[target.id] then
+                    visuals[target.id].model:Destroy()
+                    visuals[target.id] = nil
+                end
+                caught += 1
+                task.delay(5, spawnCloud)
+            end
+        end
+    end
+    if caught > 0 then
+        remote:FireClient(player, true, caught > 1 and ("Vacuum burst! Caught " .. caught .. " clouds!") or "Cloud caught!")
+    else
+        remote:FireClient(player, false, "Unable to save catch. Try again.")
+    end
 end)
 Players.PlayerRemoving:Connect(function(player)
     lastAttempt[player] = nil
