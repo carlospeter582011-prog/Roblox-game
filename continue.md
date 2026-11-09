@@ -11,7 +11,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## Current state of `main`
 - Auto-publish runs on every push to `main` touching `src/**` or `tests/**`: Luau analysis + unit tests gate, Rojo build, Open Cloud **Published** upload. Latest publish on e72725a: workflow success and "Roblox accepted Published place version" (run 42613759016). Earlier publishes of broken commits were correctly blocked by the test gate (runs 42611741575, 42611843837, 42612080150, 42612123159).
 - PR #13 (defect fixes below) merged as 1d8a8a1. PR CI on 31b485c: both jobs green (run 42620397761; code verified on b89520f in run 42620069899), 55 tests, 0 failed.
-- Branch `feature/world-progress-and-encyclopedia` (code 34af60a): CI green, 67 tests, 0 failed (run 42621245689). Wires `ProgressRules`/`Encyclopedia` into the HUD and tool picker (see below). Becomes live after merge + publish.
+- PR #15 (world progress, encyclopedia, full tool picker) merged as da83396. CI: 67 tests, 0 failed (runs 42621245689, 42621468279). Publish run 42621658072: 67 tests, 0 failed, "Roblox accepted Published place version". Live build now includes it (runtime unverified).
 - Publish after PR #13 merge: run 42620586236 on 1d8a8a1: 55 tests, 0 failed, "Roblox accepted Published place version". The live build now includes the fixes (runtime still unverified).
 
 ## What actually exists (counts are rows in data files, not finished content)
@@ -20,7 +20,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - **Data-only, not playable (not features yet):** WorldCatalog (10 worlds; only read by the HUD's "next world" line), BossCatalog (10 bosses), TravelCatalog, IslandCatalog. `Encyclopedia` now feeds the collection HUD. There is only one Place/world (the starter island). No bosses, islands, travel, trading, guilds, evolution/fusion, audio, localization.
 - Art: procedural Parts only; `CloudVisuals` supports a real MeshPart but `MeshIds` is empty, so the multi-part fallback is what renders.
 
-## Wired this session (branch above; unverified in-game)
+## Wired in PR #15 (merged and published; unverified in-game)
 - `ProgressRules.luau` (pure): unlock ordering/status for tools and worlds.
 - Tool picker listed 5 hardcoded tools, so 10 of 15 could never be equipped by a player; now lists all tools in unlock order in a scrolling panel.
 - Collection HUD compared 12 characters to the 13-character `SpeciesCount_` prefix, so "Unique" was always 0. Parsing is now `Encyclopedia.fromAttributes` (tested); HUD shows species n/total with percent and "Next world ... (coming soon)". Worlds remain data only; nothing teleports or loads a world yet.
@@ -51,7 +51,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Owner decision needed on whether each push to `main` should keep auto-publishing while runtime behaviour is unverified (current setting follows the owner's "auto-publish after validation" authorisation).
 
 ## Next planned actions (in order)
-1. Owner plays the published build (1d8a8a1) on the tablet and reports what they see: first catch time, whether mutated clouds (golden/rainbow/electric/storm tint) can be caught without errors, button placement, HUD readability. This is the only runtime evidence available; no Studio automation exists here.
+1. Owner plays the published build (da83396) on the tablet and reports what they see: first catch time, whether mutated clouds (golden/rainbow/electric/storm tint) can be caught without errors, button placement, HUD readability. This is the only runtime evidence available; no Studio automation exists here.
 2. Wire the remaining data-only catalogs into real systems one at a time, each with pure logic + tests: world unlock/travel with teleport fallback (needs additional Places), boss encounter state machine, island ownership/persistence.
 3. Species behaviour data model (movement patterns, abilities, spawn conditions by world/weather) before adding species toward 150; do not count stat variants as distinct species.
 4. Asset pipeline: pick CC0 cloud/vegetation meshes, upload via Open Cloud, set `CloudVisuals.MeshIds`, record in ASSET_REGISTRY.md, inspect every MeshPart.
