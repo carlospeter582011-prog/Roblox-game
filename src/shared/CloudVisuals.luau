@@ -5,6 +5,50 @@
 -- - Quaternius Ultimate Nature Pack: https://quaternius.com/packs/ultimatenature.html (CC0)
 -- - Sketchfab free clouds (check each license; prefer CC0/CC-BY)
 local CloudVisuals = {}
+local InsertService = game:GetService("InsertService")
+local modelTemplate = nil
+local modelAttempted = false
+
+-- Only set this to a confirmed, creator-owned Roblox MODEL asset ID from Open Cloud.
+-- This is intentionally separate from MeshIds: a Model asset ID is NOT a MeshPart.MeshId.
+local VERIFIED_CLOUD_MODEL_ASSET_ID = nil
+
+local function loadCloudTemplate()
+    if modelAttempted then return modelTemplate end
+    modelAttempted = true
+    if type(VERIFIED_CLOUD_MODEL_ASSET_ID) ~= "number" or VERIFIED_CLOUD_MODEL_ASSET_ID <= 0 then return nil end
+    local ok, container = pcall(function()
+        return InsertService:LoadAsset(VERIFIED_CLOUD_MODEL_ASSET_ID)
+    end)
+    if not ok or not container then
+        warn("Cloud model asset could not be loaded; using original 3D fallback")
+        return nil
+    end
+    -- Treat uploaded assets as untrusted: copy ONLY geometry, never scripts or remotes.
+    local template = Instance.new("Model")
+    template.Name = "VerifiedCloudGeometry"
+    for _, descendant in ipairs(container:GetDescendants()) do
+        if descendant:IsA("BasePart") then
+            local geometry = descendant:Clone()
+            for _, child in ipairs(geometry:GetDescendants()) do
+                if not child:IsA("SpecialMesh") and not child:IsA("DataModelMesh") then
+                    child:Destroy()
+                end
+            end
+            geometry.Anchored = true
+            geometry.CanCollide = false
+            geometry.Parent = template
+        end
+    end
+    container:Destroy()
+    if #template:GetChildren() == 0 then
+        template:Destroy()
+        warn("Cloud Model asset contained no usable geometry; using 3D fallback")
+        return nil
+    end
+    modelTemplate = template
+    return modelTemplate
+end
 
 -- Set these after you upload meshes to Roblox and copy the MeshIds.
 CloudVisuals.MeshIds = {
@@ -17,6 +61,22 @@ function CloudVisuals.createCloudVisual(parent, position, tint, speciesId)
     local model = Instance.new("Model")
     model.Name = (speciesId or "cloud") .. "Visual"
     model.Parent = parent
+
+    local template = loadCloudTemplate()
+    if template then
+        local imported = template:Clone()
+        imported.Name = "ImportedCloudGeometry"
+        imported.Parent = model
+        imported:PivotTo(CFrame.new(position))
+        for _, part in ipairs(imported:GetDescendants()) do
+            if part:IsA("BasePart") then
+                part.Color = tint
+                part.Anchored = true
+                part.CanCollide = false
+            end
+        end
+        return model
+    end
 
     local meshId = CloudVisuals.MeshIds.cloud
     if meshId and meshId ~= "" and meshId ~= "rbxassetid://YOUR_CLOUD_MESH_ID" then
