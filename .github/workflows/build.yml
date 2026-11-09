@@ -22,7 +22,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Install Luau CLI (latest release; version is printed below so it can be pinned)
+      - name: Install Luau CLI (latest release; tag is printed so it can be pinned)
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
@@ -31,7 +31,7 @@ jobs:
           unzip -q /tmp/luau/luau-ubuntu.zip -d /tmp/luau/bin
           chmod +x /tmp/luau/bin/luau /tmp/luau/bin/luau-analyze
           echo "/tmp/luau/bin" >> "$GITHUB_PATH"
-          /tmp/luau/bin/luau --version || true
+          echo "Luau release tag: $(gh release view --repo luau-lang/luau --json tagName --jq .tagName || echo unknown)"
       - name: Static analysis of pure modules
         run: luau-analyze src/server/ProfileCore.luau
       - name: Run unit tests
