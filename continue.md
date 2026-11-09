@@ -222,3 +222,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commit `adb634f`: removed the center x=0 lantern post from the spawn approach; four real 3D lanterns remain. **Unconfirmed** whether this was the exact long stick the owner reported; screenshot/runtime check still needed.
 - Previously committed crystal ProximityPrompt/glare fixes still require Android runtime verification. No new GLB or Mesh IDs; existing Roblox Model ID is not a MeshPart ID.
 - Outstanding: genuinely distinct tool abilities (magnet pull, vacuum multi-target, traps), rewarding quests/bosses, 3D audit, latest GitHub Actions publish evidence and mobile playtest. No runtime or publish success claimed.
+
+## 2026-11-10 — Storm Vacuum active gameplay
+- `a3739a3`: Storm Vacuum now performs a server-authoritative burst of up to 3 clouds per activation (target plus 2 closest in tool range). Existing unlock, ownership, cooldown, range, persistence and rewards still apply. Each captured cloud is removed only after ProfileStore.AddCatch succeeds; replacements respawn after five seconds. No new RemoteEvent or client-controlled batch list.
+- `f9825c9`: tool picker explicitly labels its `3-cloud burst` ability.
+- Source implemented, **NOT verified** by CI or Roblox runtime; potential race and balance need live testing. Follow-up: add deterministic pure targeting tests, additional distinct tools, inspect auto-publish, test on Android. No 3D assets or Model/Mesh IDs changed.
