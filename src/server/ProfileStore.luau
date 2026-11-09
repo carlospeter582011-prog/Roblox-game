@@ -60,6 +60,7 @@ function Profile.AddCatch(player, speciesId, coins)
         player:SetAttribute("Quest_" .. id, true)
     end
     player:SetAttribute("CloudCount", data.captures)
+    player:SetAttribute("SpeciesCount_" .. speciesId, data.species[speciesId])
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
@@ -139,6 +140,9 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    for speciesId, count in pairs(data.species) do
+        player:SetAttribute("SpeciesCount_" .. speciesId, count)
+    end
     for id in pairs(questCatalog) do
         player:SetAttribute("Quest_" .. id, data.quests[id] == true)
     end
