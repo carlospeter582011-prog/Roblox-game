@@ -241,6 +241,30 @@ test("a lock that frees up mid-retry lets the waiting server in", function()
     eq(attempts, 3, "attempts")
 end)
 
+
+test("crystal discoveries survive profile save and reload", function()
+    clock.t = 1000
+    local store = FakeStore.new()
+    local a = repoFor(store, "crystal-A")
+    local data = a:Load("crystal-player").data
+    data.crystals[1] = true
+    data.crystals[18] = true
+    eq(a:Save("crystal-player", data, true).ok, true, "saved")
+    local b = repoFor(store, "crystal-B"):Load("crystal-player")
+    eq(b.ok, true, "reloaded")
+    eq(b.data.crystals[1], true, "first crystal")
+    eq(b.data.crystals[18], true, "last crystal")
+end)
+
+test("crystal migration drops invalid keys and values", function()
+    local clean = Core.sanitize({crystals = {[1]=true, [18]=true, [19]=true, [0]=true, [2]="yes", [3.5]=true, bogus=true}}, validQuests, 0)
+    eq(clean.crystals[1], true, "first kept")
+    eq(clean.crystals[18], true, "last kept")
+    eq(clean.crystals[19], nil, "out of bounds")
+    eq(clean.crystals[2], nil, "non boolean")
+    eq(clean.crystals[3.5], nil, "fraction")
+end)
+
 require("./CatchRulesSpec")(test, eq)
 require("./SpawnLevelSpec")(test, eq)
 require("./MutationsSpec")(test, eq)
