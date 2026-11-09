@@ -20,7 +20,6 @@ local Quests = {
     three_comet = { id = "three_comet", title = "Streaking Stars", description = "Catch three Comet Clouds.", objective = "catch_species", speciesId = "comet", required = 3, rewardCoins = 700, rewardXP = 350, chapter = 4 },
     first_solarflare = { id = "first_solarflare", title = "Heart of the Sun", description = "Catch a Solarflare Cloud.", objective = "catch_species", speciesId = "solarflare", required = 1, rewardCoins = 1200, rewardXP = 600, chapter = 5 },
     hundred_total = { id = "hundred_total", title = "Legend of the Clouds", description = "Catch one hundred clouds.", objective = "total_catches", required = 100, rewardCoins = 2000, rewardXP = 1000, chapter = 5 },
-
     ten_cirrus = { id = "ten_cirrus", title = "High Winds", description = "Catch ten Cirrus Clouds.", objective = "catch_species", speciesId = "cirrus", required = 10, rewardCoins = 220, rewardXP = 110, chapter = 2 },
     five_voltage = { id = "five_voltage", title = "Charged Skies", description = "Catch five Voltage Clouds.", objective = "catch_species", speciesId = "voltage", required = 5, rewardCoins = 400, rewardXP = 200, chapter = 3 },
     first_meteor = { id = "first_meteor", title = "Falling Star", description = "Catch a Meteor Cloud.", objective = "catch_species", speciesId = "meteor", required = 1, rewardCoins = 450, rewardXP = 225, chapter = 3 },
@@ -28,7 +27,7 @@ local Quests = {
     first_crystal = { id = "first_crystal", title = "Shining Stone", description = "Catch a Crystal Cloud.", objective = "catch_species", speciesId = "crystal", required = 1, rewardCoins = 380, rewardXP = 190, chapter = 3 },
     three_nebula = { id = "three_nebula", title = "Cosmic Trio", description = "Catch three Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 3, rewardCoins = 1500, rewardXP = 750, chapter = 5 },
     seventy_total = { id = "seventy_total", title = "Sky Veteran", description = "Catch seventy clouds.", objective = "total_catches", required = 70, rewardCoins = 900, rewardXP = 450, chapter = 4 },
-    first_moonveil = { id = "first_moonveil", title = "Veil of Night", description = "Catch a Moonveil Cloud.", objective = "catch_species", speciesId = "moonveil", required = 1, rewardCoins = 480, rewardXP = 240, chapter = 3 },
+    first_moonveil = { id = "first_moonveil", title = "Veil of Night", description = "Catch an Aurora Cloud under the veil.", objective = "catch_species", speciesId = "aurora", required = 1, rewardCoins = 480, rewardXP = 240, chapter = 3 },
     five_aurora = { id = "five_aurora", title = "Aurora Dance", description = "Catch five Aurora Clouds.", objective = "catch_species", speciesId = "aurora", required = 5, rewardCoins = 700, rewardXP = 350, chapter = 4 },
     two_hundred_total = { id = "two_hundred_total", title = "Cloud Legend", description = "Catch two hundred clouds.", objective = "total_catches", required = 200, rewardCoins = 5000, rewardXP = 2500, chapter = 5 },
 }
