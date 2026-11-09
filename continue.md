@@ -131,3 +131,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added two test cases in `tests/RecoverySpec.luau` for deep-void rescue and invalid inputs. Implementation commits `1b01d64e`, `9a8c9798`.
 - This is actual Roblox 3D character/physics policy, not a 2D world object. No new mesh/GLB was sourced; existing Model asset `104852877755332` is still a Model, not a MeshPart MeshId. ASSET_REGISTRY remains unchanged because the asset inventory did not change.
 - **Unverified:** latest CI execution, Published Open Cloud result, in-game fall behavior, and mobile visuals. Keep acceptance checklist open. Next: inspect publishing workflow result, Android test, world checkpoints and playable boss encounters.
+
+## 2026-11-09 — second Android screenshot UX QA
+- User supplied full-screen landscape Android screenshot. XP/status/quest labels overlap; Tools and Collection buttons cover Roblox movement joystick. Avatar appears on/against a tall tree trunk; investigate collision/spawn/camera separately. Trees are clearly procedural Part-based 3D; screenshot cannot prove GLB cloud Model loaded.
+- Concurrent agent had already moved `message` to top y18 and quest/level to y118 in `CloudCatch.client.luau` (latest main), so did not overwrite its newer change. Moved `Collection` toggle/panel to right side (`e149b2fd`) and `Tools` button/panel to right side (`2c8e9142`) away from movement joystick. New CI publish and Android visual results not verified.
+- Next: confirm CI publish, inspect fresh screenshot, review cloud model runtime loading and player spawn/collision; improve responsive HUD instead of overlapping fixed-width labels.
