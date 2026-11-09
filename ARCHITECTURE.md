@@ -18,7 +18,8 @@ modules. New logic goes into pure modules first.
 | `src/shared/SpawnRules.luau` | pure | Weighted species roll with injected RNG |
 | `src/shared/Leveling.luau` | pure | XP -> level curve (25*(L-1)*L, cap 100) |
 | `src/shared/Mutations.luau` | pure | Mutation roll (8%), multipliers, variant key (`species:mutation`, server-side only; not attribute-safe) |
-| `src/shared/Encyclopedia.luau` | pure | Unique/completion helpers (not yet used by any script) |
+| `src/shared/Encyclopedia.luau` | pure | Unique/completion/missing helpers and `fromAttributes` parsing; used by the collection HUD |
+| `src/shared/ProgressRules.luau` | pure | Unlock ordering/status for tools and worlds; used by the tool picker and HUD |
 | `src/shared/CloudVisuals.luau` | wiring | Cloud visual: MeshPart if `MeshIds.cloud` set, else multi-part fallback |
 | `src/client/Inventory.client.luau` | client | Compact collection HUD (caught/unique) |
 | `src/shared/CloudCatalog.luau` | data | Species (id, name, rarity, radius, reward, spawnWeight, colorRGB, element): 86 stat/colour variants |

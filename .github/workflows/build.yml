@@ -32,7 +32,7 @@ jobs:
           chmod +x /tmp/luau/bin/luau /tmp/luau/bin/luau-analyze
           echo "/tmp/luau/bin" >> "$GITHUB_PATH"
       - name: Static analysis of pure modules
-        run: luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau src/shared/Mutations.luau src/shared/Encyclopedia.luau
+        run: luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau src/shared/Mutations.luau src/shared/Encyclopedia.luau src/shared/ProgressRules.luau
       - name: Run unit tests
         run: luau tests/run.luau
 

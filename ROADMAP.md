@@ -7,9 +7,9 @@ Counts are rows in data files, not finished, distinct content.
 | Milestone | Scope | Acceptance criteria | Status |
 |---|---|---|---|
 | M0 | Baseline, docs, CI audit | Baseline branch; docs current; CI audited | DONE (branch `baseline/house-car-prototype`) |
-| M1 | Modular foundation and tests | Pure modules + CI unit tests; locked, retried, migrated profile | PARTIAL: logic DONE (55 CI tests); no Studio verification |
+| M1 | Modular foundation and tests | Pure modules + CI unit tests; locked, retried, migrated profile | PARTIAL: logic DONE (67 CI tests); no Studio verification |
 | M2 | Starter island, first spawn/chase/catch, mobile controls | First catch in < 2 min on an Android tablet; no Studio output errors | PARTIAL: code published, unverified on device |
-| M3 | Collection, saving, encyclopedia | Collection persists across sessions/servers; encyclopedia UI | PARTIAL: counts persist (logic tested); collection HUD only; `Encyclopedia` helper unused |
+| M3 | Collection, saving, encyclopedia | Collection persists across sessions/servers; encyclopedia UI | PARTIAL: counts persist (logic tested); HUD shows species n/total and %; no browsable encyclopedia screen |
 | M4 | Growth, habitats, production | Cloud XP/evolution/fusion; habitats produce with offline cap | TODO |
 | M5 | First world, boss, story | World 1 art/secrets, boss, quest chain, chapters | TODO (BossCatalog/WorldCatalog are unused data) |
 | M6 | Travel and additional Places | Portals/teleport with failure fallback; cross-Place progression | TODO (TravelCatalog unused data) |
