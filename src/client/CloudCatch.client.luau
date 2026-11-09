@@ -54,7 +54,7 @@ button.Text = "Catch"
 button.Parent = gui
 local function updateCatchButton()
     local tool = tools[player:GetAttribute("EquippedCatchTool")] or tools.starter_net
-    button.Text = "Catch | +" .. tostring(tool.rangeBonus) .. " range"
+    button.Text = "Catch +" .. tostring(tool.rangeBonus)
 end
 player:GetAttributeChangedSignal("EquippedCatchTool"):Connect(updateCatchButton)
 updateCatchButton()
@@ -84,13 +84,13 @@ button.Activated:Connect(function()
             if d < distance then nearest, distance = cloud, d end
         end
     end
-    if nearest then
+    if nearest and distance <= 48 then
         remote:FireServer(nearest:GetAttribute("CloudId"))
     else
-        message.Text = "No clouds nearby yet."
+        message.Text = "Move closer to a cloud!"
         message.Visible = true
         task.delay(3, function()
-            if message.Text == "No clouds nearby yet." then message.Visible = false end
+            if message.Text == "Move closer to a cloud!" then message.Visible = false end
         end)
     end
 end)
