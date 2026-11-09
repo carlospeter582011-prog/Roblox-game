@@ -72,6 +72,23 @@ function Profile.AddCatch(player, speciesId, coins, options)
     return true
 end
 
+function Profile.DiscoverCrystal(player, index)
+    local data = sessions[player]
+    if not data or type(index) ~= "number" or index ~= math.floor(index) or index < 1 or index > 18 then
+        return false
+    end
+    data.crystals = data.crystals or {}
+    if data.crystals[index] then return false end
+    data.crystals[index] = true
+    local total = 0
+    for _, found in pairs(data.crystals) do
+        if found then total += 1 end
+    end
+    player:SetAttribute("SkyCrystalsDiscovered", total)
+    player:SetAttribute("LastSkyCrystal", "sky-crystal-" .. index)
+    return true
+end
+
 function Profile.BuyTool(player, toolId)
     local data = sessions[player]
     local tool = type(toolId) == "string" and toolCatalog[toolId] or nil
@@ -156,6 +173,11 @@ local function onPlayerAdded(player)
     local data = result.data
     sessions[player] = data
     player:SetAttribute("ProfileReady", true)
+    local crystalCount = 0
+    for _, found in pairs(data.crystals or {}) do
+        if found then crystalCount += 1 end
+    end
+    player:SetAttribute("SkyCrystalsDiscovered", crystalCount)
     player:SetAttribute("CloudCount", data.captures)
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
