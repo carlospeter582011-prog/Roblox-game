@@ -80,29 +80,49 @@ local ok, assetOrError = pcall(function()
 end)
 if ok and assetOrError then
     local assetContainer = assetOrError
-    local sourceMesh = assetContainer:FindFirstChildWhichIsA("MeshPart", true)
-    if sourceMesh then
-        local visual = sourceMesh:Clone()
-        visual.Name = "SportsCarMesh"
-        for _, descendant in ipairs(visual:GetDescendants()) do
-            if descendant:IsA("Script") or descendant:IsA("LocalScript") or descendant:IsA("ModuleScript") then
-                descendant:Destroy()
+    -- Preserve the whole imported car, not just the first MeshPart.
+    -- GLB imports can contain dozens of separate mesh parts.
+    local visual = Instance.new("Model")
+    visual.Name = "SportsCarVisual"
+    local meshCount = 0
+    for _, descendant in ipairs(assetContainer:GetDescendants()) do
+        if descendant:IsA("MeshPart") then
+            local piece = descendant:Clone()
+            piece.Name = descendant.Name
+            -- Never execute scripts supplied with a third-party model.
+            for _, child in ipairs(piece:GetDescendants()) do
+                if child:IsA("BaseScript") or child:IsA("ModuleScript") then
+                    child:Destroy()
+                end
             end
+            piece.Anchored = true
+            piece.CanCollide = false
+            piece.CanTouch = false
+            piece.CanQuery = false
+            piece.Massless = true
+            piece.Parent = visual
+            meshCount += 1
         end
-        visual.Anchored = true
-        visual.CanCollide = false
-        visual.CanTouch = false
-        visual.CanQuery = false
-        visual.Massless = true
-        -- Normalize the visual mesh to the existing arcade car footprint.
-        local sourceSize = visual.Size
-        local scale = math.min(7 / math.max(sourceSize.X, 0.01), 11 / math.max(sourceSize.Z, 0.01), 2.8 / math.max(sourceSize.Y, 0.01))
-        visual.Size = sourceSize * scale
-        visual.CFrame = carCFrame
+    end
+    if meshCount > 0 then
         visual.Parent = car
+        -- Preserve relative geometry of all mesh pieces while scaling.
+        local _, initialSize = visual:GetBoundingBox()
+        local length = math.max(initialSize.X, initialSize.Z)
+        local width = math.min(initialSize.X, initialSize.Z)
+        local scale = math.min(10 / math.max(length, .01), 6.5 / math.max(width, .01), 3.2 / math.max(initialSize.Y, .01))
+        visual:ScaleTo(scale)
+        local bbox, size = visual:GetBoundingBox()
+        -- Rotate the longer horizontal axis to the vehicle's Z direction.
+        local yaw = size.X > size.Z and math.rad(90) or 0
+        local desired = carCFrame * CFrame.new(0, -.25, 0) * CFrame.Angles(0, yaw, 0)
+        local centerOffset = CFrame.new(-bbox.Position) -- use world-space translation only
+        visual:PivotTo(desired * centerOffset * visual:GetPivot())
         meshLoaded = true
+        print("Sports car meshes loaded:", meshCount, "original bounds:", initialSize, "scaled bounds:", size)
     else
-        warn("Sports car asset did not contain a MeshPart; using fallback car.")
+        visual:Destroy()
+        warn("Sports car asset has no MeshParts; using fallback car.")
     end
     assetContainer:Destroy()
 else
