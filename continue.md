@@ -65,3 +65,9 @@ No background agent has been scheduled. Continue in an active session or configu
 - Implemented a live XP progress display in `src/client/CloudCatch.client.luau`: uses the existing pure `Leveling.progress` module and replicated `CloudXP` attribute to show current level progress, coins, and MAX at level cap. Commit `093363c1a7187225cc8bf4c1e7f73a3931e0a560`.
 - This is source code committed on the feature branch, **not yet CI or Studio runtime verified**. No launch checklist acceptance item is complete.
 - Next: inspect CI for this commit, verify the HUD in Studio on mobile and desktop, then continue data-driven species and quest expansion with tests. Check HEAD for concurrent agents before editing.
+
+## Continuation checkpoint — 2026-11-09, 20 cloud species
+- Expanded `src/shared/CloudCatalog.luau` from 2 to 20 distinct species, with rarity tiers Common/Uncommon/Rare/Epic/Legendary/Mythic, weighted spawning, unique visual tints and catch/reward metadata. Implementation commit `4571c6f798c1970f4ddcdf376358fd41ec7736f4`.
+- Added catalog integrity test and isolated the old 70/30 weighted-roll test fixture so expansion does not invalidate its assumptions. Test commit `fde00f87ccedbf7a79610f71f5a5dec0ad4f885a`.
+- GitHub PR workflow lookup for test commit returned no runs at time of check; **CI NOT CONFIRMED**. Roblox Studio runtime, mobile and multiplayer not tested; no merge or publication. These are catalog species, not 20 finished bespoke 3D assets.
+- Next: inspect Actions for this SHA, fix any test failures, expand quests and world progression, implement mutation/inventory systems, then verify in Roblox Studio before launch. Check branch HEAD and Notion handoff first.
