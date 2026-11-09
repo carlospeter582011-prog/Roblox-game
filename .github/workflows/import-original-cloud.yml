@@ -1,0 +1,41 @@
+name: Import Original Cloud 3D Model
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/generate_cloud_glb.py'
+      - 'scripts/upload_original_cloud.py'
+      - '.github/workflows/import-original-cloud.yml'
+permissions:
+  contents: read
+jobs:
+  import-cloud:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install mesh generator dependency
+        run: python3 -m pip install --user 'trimesh==4.9.0'
+      - name: Generate original cloud model
+        run: python3 scripts/generate_cloud_glb.py assets/original-cloud.glb
+      - name: Validate GLB geometry and bounds
+        run: |
+          python3 - <<'PY'
+          import pathlib, trimesh
+          p = pathlib.Path('assets/original-cloud.glb')
+          s = trimesh.load(p, force='scene')
+          assert len(s.geometry) == 5, len(s.geometry)
+          assert all(len(g.faces) <= 400 for g in s.geometry.values())
+          assert p.stat().st_size < 20_000_000
+          print('Original GLB validated: 5 mesh components')
+          PY
+      - name: Upload original model through Roblox Open Cloud
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_CREATOR_USER_ID: '7550783083'
+        run: python3 scripts/upload_original_cloud.py assets/original-cloud.glb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: original-cloud-model-asset-id
+          path: uploaded-original-cloud-id.txt
+          if-no-files-found: error
