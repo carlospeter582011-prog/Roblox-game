@@ -177,3 +177,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - RecoveryRules.recoveryPosition (75b122f), PlayerRecovery (bbaedc8), and two pure tests (b07eb0a): rescue now targets the actual SkyArrival SpawnLocation with safe clearance instead of hardcoded (0,9,0). Missing spawn fails closed. No Canvas world art added.
 - GitHub combined status and PR-run lookup returned empty; these do NOT establish publish failure or success. Push-triggered auto-publish, CI and Roblox runtime remain unverified.
 - No new GLB imported. Model asset 104852877755332 is NOT a MeshPart MeshId. Next: inspect publish job logs, Android rescue, then real world/boss gameplay.
+
+## 2026-11-09 — server-validated Sky Crystal discovery
+- Commit 57c66e0c04d93b639aa13fbd6fa749afc2587ee9 adds native ProximityPrompt interactions to up to 18 actual SkyCrystal3D objects on StarterWorld. Server checks character distance, limits each crystal to one discovery per user per server session, and exposes session-only SkyCrystalsDiscovered/LastSkyCrystal attributes. No currency, persistent quest state or remote trust introduced.
+- GitHub connector write confirmed. No CI, live Roblox or mobile runtime test confirmed for this change. No external asset imported; Model ID 104852877755332 remains distinct from MeshPart IDs.
+- Next: inspect CI/publish results; connect discoveries to validated persistent quest progression and visual feedback; verify touch/gamepad interaction in Roblox.
