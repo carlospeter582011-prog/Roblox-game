@@ -147,3 +147,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Owner provided new full-screen Android screenshot: Collection button at bottom-right overlays Roblox's native Jump control, blocking jumping. Second recents screenshot shows expanded Tools menu; not a full-screen view.
 - Updated `src/client/Inventory.client.luau` (`c1d9539c`) to position Collection button top-center at (0.5, 158px) and its hidden-by-default panel below at (0.5, 198px), anchored centrally, away from Jump and movement joystick. Tools remains left below HUD; Catch remains right. Preserve native Roblox Jump button.
 - Need inspect new auto-publish workflow and retest actual Android display before marking visual QA complete. Existing cloud Model import runtime appearance also still unverified.
+
+## 2026-11-09 — 3D world visual overhaul, phase 1
+- Based on Android screenshots, fixed climbable tree trunk/underside rock collision in `WorldAssetModels.luau` and added three tiered 3D canopy levels to trees (commit `ccca3805`). This targets player standing atop a tall trunk and simplistic sphere-only trees. Existing 5 spherical foliage parts remain for rounded fantasy styling.
+- Improved `StarterWorld.server.luau` floating-island underside with 12 staggered noncollidable 3D slate cliff ledges; disabled collision on decorative base cylinder; changed spawn pad from bright Neon to subdued semi-transparent SmoothPlastic; reduced ambient/lighting brightness (commit `e8b568a4`).
+- Changes are genuine Roblox Parts/Models, not Canvas. They do NOT replace all trees with imported meshes. Uploaded cloud GLB Model asset `104852877755332` is configured in `CloudVisuals.luau`, but actual runtime appearance/load is unverified; need screenshot/diagnostics. Current production CI/publish status also unverified.
+- Next: verify workflow, inspect Android screenshot for spawn/clipping, improve mesh asset integration and cloud variety; avoid claiming full game complete.
