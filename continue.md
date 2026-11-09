@@ -1,6 +1,6 @@
 # Catch a Cloud — Agent Handoff
 
-Updated: 2026-11-09 (quest integration checkpoint)
+Updated: 2026-11-09 (tool gameplay checkpoint) (quest integration checkpoint)
 Notion: https://app.notion.com/p/413edc0cac2381a4b42bd36df3e25183
 PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/11
 Branch: feature/catch-a-cloud-foundation
@@ -16,6 +16,8 @@ Latest implementation commit: 31e2ce17c6798001e8f9d1b70b2a2966bdeb96b0
 
 - Added `src/shared/QuestCatalog.luau` with two chapter-one story objectives and rewards, integrated into server-side profile updates and client quest tracker; NOT runtime verified. Commit `554f03cb5056c3eb1969eba3268b2f01574eee92`.
 - Notion project hub now includes full checkbox acceptance checklist; no unchecked launch item is considered done without tests.
+
+- Added `CatchToolCatalog.luau` (five progression-gated tools with server-enforced range/cooldown/reward differences) and `CloudTools.client.luau` selection UI. Commit `81b0ab451aec5c3ca65a76eb8719d324502834bd`. **NOT runtime tested; only 5/15+ tool target and effects are basic.**
 
 ## Critical limitations / blockers
 - PR #11 remains unmerged. GitHub Actions run 42575074543 completed SUCCESS for commit 554f03cb5056c3eb1969eba3268b2f01574eee92 (Rojo build, XML check, artifact upload). This is not a runtime test.
