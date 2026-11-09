@@ -42,7 +42,31 @@ end
 for i=1,18 do
     local angle=i*2.399963
     local radius=28+math.sqrt(i)*11
-    WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
+    local crystal = WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
+    -- Server-owned interactive 3D discovery. ProximityPrompt supports touch and gamepad.
+    -- Session-only discovery; do not grant currency or claim quest persistence here.
+    local target = crystal and (crystal:IsA("BasePart") and crystal or crystal:FindFirstChildWhichIsA("BasePart", true))
+    if target then
+        local prompt = Instance.new("ProximityPrompt")
+        prompt.Name = "DiscoverCrystal"
+        prompt.ActionText = "Discover"
+        prompt.ObjectText = "Sky Crystal"
+        prompt.MaxActivationDistance = 10
+        prompt.HoldDuration = 0.35
+        prompt.RequiresLineOfSight = false
+        prompt.Parent = target
+        local crystalId = "sky-crystal-" .. tostring(i)
+        local discovered = {}
+        prompt.Triggered:Connect(function(player)
+            if not player or not player:IsA("Player") or discovered[player.UserId] then return end
+            local character = player.Character
+            local root = character and character:FindFirstChild("HumanoidRootPart")
+            if not root or (root.Position - target.Position).Magnitude > 13 then return end
+            discovered[player.UserId] = true
+            player:SetAttribute("SkyCrystalsDiscovered", (player:GetAttribute("SkyCrystalsDiscovered") or 0) + 1)
+            player:SetAttribute("LastSkyCrystal", crystalId)
+        end)
+    end
 end
 -- Four original 3D stone arches frame the meadow paths; no Canvas or asset IDs needed.
 for _, placement in ipairs({
