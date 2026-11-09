@@ -1,10 +1,11 @@
 # Catch a Cloud — Agent Handoff
 
-Updated: 2026-11-09 (tool gameplay checkpoint) (quest integration checkpoint)
+Updated: 2026-11-09 — verified handoff checkpoint
 Notion: https://app.notion.com/p/413edc0cac2381a4b42bd36df3e25183
 PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/11
 Branch: feature/catch-a-cloud-foundation
-Latest implementation commit: 31e2ce17c6798001e8f9d1b70b2a2966bdeb96b0
+Latest verified implementation commit: 81b0ab451aec5c3ca65a76eb8719d324502834bd
+Latest verified build: https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42575281062 (success for implementation commit)
 
 ## Implemented in branch (NOT runtime verified)
 - Procedural starter floating island with trees, crystals and spawn.
@@ -20,7 +21,7 @@ Latest implementation commit: 31e2ce17c6798001e8f9d1b70b2a2966bdeb96b0
 - Added `CatchToolCatalog.luau` (five progression-gated tools with server-enforced range/cooldown/reward differences) and `CloudTools.client.luau` selection UI. Commit `81b0ab451aec5c3ca65a76eb8719d324502834bd`. **NOT runtime tested; only 5/15+ tool target and effects are basic.**
 
 ## Critical limitations / blockers
-- PR #11 remains unmerged. GitHub Actions run 42575074543 completed SUCCESS for commit 554f03cb5056c3eb1969eba3268b2f01574eee92 (Rojo build, XML check, artifact upload). This is not a runtime test.
+- PR #11 remains unmerged. GitHub Actions run 42575281062 completed SUCCESS for implementation commit 81b0ab451aec5c3ca65a76eb8719d324502834bd (Rojo build, XML check, artifact upload). This is not a runtime test.
 - ProfileStore v1 is preliminary: lacks robust cross-server session locking, retry queue and migration test suite; do not claim reliable persistence yet.
 - Cloud visuals are procedural primitive art, not professional final assets.
 - No verified runtime playtest, screenshots, mobile benchmarks or Roblox publication.
@@ -35,3 +36,11 @@ Latest implementation commit: 31e2ce17c6798001e8f9d1b70b2a2966bdeb96b0
 5. Only merge and publish after verified integration, safety checks and release readiness; update Notion and this file with evidence.
 
 No background agent has been scheduled. Continue in an active session or configured automation.
+
+## Agent restart instructions — canonical
+1. Read Notion Project Hub and its checkbox launch acceptance checklist. All boxes are unchecked because no runtime tests verified features.
+2. Read current PR #11 and this file, inspect branch code; do NOT repeat 82-question design interview.
+3. Existing code is partial, not a game launch. Do not merge/publish without integration/runtime/security validation.
+4. Latest verified Rojo build is run 42575281062; XML/package validation is NOT gameplay proof.
+5. Continue code development on existing repository; after each substantial milestone update both this file and the same Notion hub, with commit SHA and test evidence.
+6. Deployment workflow currently uploads Saved only; publishing requires explicit Published workflow and Roblox eligibility checks.
