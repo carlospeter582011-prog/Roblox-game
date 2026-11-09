@@ -62,3 +62,16 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 2. `git fetch`, read `git log origin/main`, `gh run list -R carlospeter582011-prog/Roblox-game` (GraphQL is blocked: use `gh api` REST for PRs; tags cannot be pushed).
 3. Sandbox cannot download Luau/Rojo; tests run on GitHub's runner: push a `feature/**` branch or open a PR, then read the run.
 4. Never check an acceptance box or claim completion without runtime evidence. Update this file and Notion after each milestone with commit SHAs and run IDs.
+
+## 2026-11-09 — 3D world model conversion (PR #17, draft)
+- Read latest `main` and reconciled previous agent's work: main already has 86 species rows, 15 tools, 38 quests, mutation/encyclopedia/tool UI, and an Open Cloud Published upload with CI evidence, but no Roblox Studio runtime evidence.
+- New branch `feature/3d-model-world-assets` from `main`; draft PR https://github.com/carlospeter582011-prog/Roblox-game/pull/17.
+- Added `src/server/WorldAssetModels.luau`: reusable Roblox 3D Model assemblies for SkyTree3D, SkyCrystal3D, FloatingRock3D, with optional MeshPart slots for approved verified Mesh IDs. Wired `StarterWorld.server.luau` to instantiate these. Registered provenance and caveats in ASSET_REGISTRY.md.
+- No Canvas is used for world objects. ScreenGui remains for necessary HUD controls. **No real external MeshPart IDs are yet configured**, so this is not a completed professional mesh replacement. Do not treat Model asset IDs as MeshPart IDs. No external asset was uploaded.
+- PR #17 is DRAFT, NOT merged or published. Needs CI, Roblox runtime visual verification and approved mesh asset IDs. Do not claim success before evidence.
+
+## 2026-11-09 — continuation: original 3D sky arches
+- Inspected current main and this branch via GitHub connector (private repository cannot be assumed cloned locally). Earlier handoff on `feature/catch-a-cloud-foundation` was stale: PR #11 and PR #15 are already merged/published according to main handoff.
+- Added reusable `WorldAssetModels.skyArch` with actual Roblox Model/Part geometry, four placements on the starter island, decorative non-collidable pillars, and an illuminated keystone. No Canvas and no third-party asset needed. Commits `66734e34ea06da4a0f1dc2e007130f744c851c80` and `e381c8b849c9427785cda2a03049717e4af2cc85`.
+- Existing tree/crystal/floating rock are also 3D Model assemblies; optional MeshPart slots still need legitimately licensed uploaded mesh IDs. No internet mesh has been imported or uploaded; do not claim otherwise.
+- Not yet CI-checked, merged, published, or visually verified. Continue PR #17; verify Rojo/Luau CI and Roblox runtime before promotion. Preserve ScreenGui for player controls (it is not Canvas world art).

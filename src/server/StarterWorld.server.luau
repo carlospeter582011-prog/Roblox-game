@@ -1,6 +1,7 @@
 -- Original procedural starter environment; all geometry created in Roblox, no external licenses.
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
+local WorldAssetModels = require(script.Parent:WaitForChild("WorldAssetModels"))
 local world = Instance.new("Folder")
 world.Name = "CatchACloudStarterIsland"
 world.Parent = Workspace
@@ -20,20 +21,25 @@ base.Shape=Enum.PartType.Cylinder
 base.Orientation=Vector3.new(0,0,90)
 -- Main safe walkable square over a sculpted underside.
 part("WalkableMeadow",Vector3.new(95,2,95),Vector3.new(0,0,0),Color3.fromRGB(102,191,134),Enum.Material.Grass)
-local underside=part("FloatingRock",Vector3.new(72,20,72),Vector3.new(0,-15,0),Color3.fromRGB(95,106,135),Enum.Material.Slate)
-underside.Shape=Enum.PartType.Ball
+WorldAssetModels.floatingRock(world, Vector3.new(0, -15, 0))
 for i=1,14 do
     local angle=i*math.pi*2/14
     local x,z=math.cos(angle)*37,math.sin(angle)*37
-    local trunk=part("SkyTreeTrunk",Vector3.new(2,12,2),Vector3.new(x,7,z),Color3.fromRGB(112,76,76),Enum.Material.Wood)
-    local canopy=part("SkyTreeCanopy",Vector3.new(11,11,11),trunk.Position+Vector3.new(0,8,0),Color3.fromRGB(130,215,194),Enum.Material.SmoothPlastic)
-    canopy.Shape=Enum.PartType.Ball
+    WorldAssetModels.tree(world, Vector3.new(x, 1, z), 0.85 + (i % 4) * 0.08)
 end
 for i=1,18 do
     local angle=i*2.399963
     local radius=12+math.sqrt(i)*6
-    local crystal=part("LuminousCrystal",Vector3.new(2,math.random(4,9),2),Vector3.new(math.cos(angle)*radius,4,math.sin(angle)*radius),Color3.fromRGB(156,136,247),Enum.Material.Neon)
-    crystal.Orientation=Vector3.new(0,math.random(0,180),20)
+    WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
+end
+-- Four original 3D stone arches frame the meadow paths; no Canvas or asset IDs needed.
+for _, placement in ipairs({
+    { Vector3.new(0, 1, -29), 0 },
+    { Vector3.new(0, 1, 29), 0 },
+    { Vector3.new(-29, 1, 0), math.pi / 2 },
+    { Vector3.new(29, 1, 0), math.pi / 2 },
+}) do
+    WorldAssetModels.skyArch(world, placement[1], 0.75, placement[2])
 end
 local spawn=Instance.new("SpawnLocation")
 spawn.Name="SkyArrival"
