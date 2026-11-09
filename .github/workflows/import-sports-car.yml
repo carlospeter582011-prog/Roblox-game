@@ -1,0 +1,41 @@
+name: Import 3D Sports Car (staging only)
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  import-model:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download CC0 sports car model and verify format
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p assets /tmp/sports-car-kit
+          curl --fail --location --retry 3 --silent --show-error \
+            'https://toolbenchdev.com/downloads/lowpoly-vehicles-kit-1.0.zip' \
+            --output /tmp/sports-car-kit.zip
+          python3 - <<'PY'
+          import pathlib,zipfile,sys
+          archive=zipfile.ZipFile('/tmp/sports-car-kit.zip')
+          names=[n for n in archive.namelist() if n.lower().endswith('.glb') and not n.startswith('__MACOSX/')]
+          candidates=[n for n in names if 'sport' in pathlib.PurePosixPath(n).stem.lower()]
+          if len(candidates)!=1:
+              sys.exit(f'Expected exactly one sports-car GLB; found {len(candidates)}. Available GLBs: {names}')
+          data=archive.read(candidates[0])
+          if not data.startswith(b'glTF') or len(data)>20_000_000:
+              sys.exit('Downloaded sports car is not a valid-sized GLB')
+          pathlib.Path('assets/sports-car.glb').write_bytes(data)
+          print('Selected licensed sports car:',candidates[0], 'bytes:',len(data))
+          PY
+      - name: Upload licensed GLB via Roblox Open Cloud
+        env:
+          ROBLOX_API_KEY: ${{ secrets.ROBLOX_API_KEY }}
+          ROBLOX_CREATOR_USER_ID: ${{ vars.ROBLOX_CREATOR_USER_ID }}
+        run: python3 scripts/upload_sports_car.py assets/sports-car.glb
+      - uses: actions/upload-artifact@v4
+        with:
+          name: uploaded-sports-car-id
+          path: uploaded-sports-car-id.txt
+          if-no-files-found: error
