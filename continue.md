@@ -60,3 +60,8 @@ No background agent has been scheduled. Continue in an active session or configu
 - Fix commit `95aa8c049cba1dc358ce1206c0bb22052339d71a`; regression test commit `249b691cfd410c73bd423fdcc66c91e3dd0ef485`.
 - Pending: inspect GitHub Actions runs for these commits; do not claim tests passed without a run. Still no Studio runtime evidence, public publication, or launch acceptance completion.
 - Next: validate CI, wire level progress into player HUD, then tackle full species/world content and Studio playtesting. Check branch HEAD for concurrent changes before edits.
+
+## Continuation checkpoint — 2026-11-09, XP HUD
+- Implemented a live XP progress display in `src/client/CloudCatch.client.luau`: uses the existing pure `Leveling.progress` module and replicated `CloudXP` attribute to show current level progress, coins, and MAX at level cap. Commit `093363c1a7187225cc8bf4c1e7f73a3931e0a560`.
+- This is source code committed on the feature branch, **not yet CI or Studio runtime verified**. No launch checklist acceptance item is complete.
+- Next: inspect CI for this commit, verify the HUD in Studio on mobile and desktop, then continue data-driven species and quest expansion with tests. Check HEAD for concurrent agents before editing.
