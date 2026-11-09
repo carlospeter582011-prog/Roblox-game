@@ -71,3 +71,8 @@ No background agent has been scheduled. Continue in an active session or configu
 - Added catalog integrity test and isolated the old 70/30 weighted-roll test fixture so expansion does not invalidate its assumptions. Test commit `fde00f87ccedbf7a79610f71f5a5dec0ad4f885a`.
 - GitHub PR workflow lookup for test commit returned no runs at time of check; **CI NOT CONFIRMED**. Roblox Studio runtime, mobile and multiplayer not tested; no merge or publication. These are catalog species, not 20 finished bespoke 3D assets.
 - Next: inspect Actions for this SHA, fix any test failures, expand quests and world progression, implement mutation/inventory systems, then verify in Roblox Studio before launch. Check branch HEAD and Notion handoff first.
+
+## Continuation checkpoint — 2026-11-09, data-driven quest HUD
+- Replaced hardcoded two-quest client tracker with catalog-driven quest ordering and progress UI (`686308a02d995147944c7b3d7a76faa5720b5d90`).
+- Server now replicates species-specific catch counters on load and catch, enabling correct catch-species progress (`4809691c05f18fa53304967ea0a5ecd7f8a3c4a5`).
+- These changes are committed, but NOT Studio tested or CI-confirmed. The client/server wiring needs multiplayer and mobile verification. Next: expand quest catalog safely with tests, validate CI, complete remaining systems and launch gates.
