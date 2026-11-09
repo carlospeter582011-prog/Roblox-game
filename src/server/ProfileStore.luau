@@ -9,6 +9,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local questCatalog = require(ReplicatedStorage:WaitForChild("QuestCatalog"))
 local ProfileCore = require(script.Parent:WaitForChild("ProfileCore"))
+local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -54,20 +55,8 @@ function Profile.AddCatch(player, speciesId, coins)
     if not data then
         return false
     end
-    data.species[speciesId] = (data.species[speciesId] or 0) + 1
-    data.captures += 1
-    data.coins += coins
-    data.xp += 10
-    for id, quest in pairs(questCatalog) do
-        if not data.quests[id] then
-            local progress = quest.objective == "catch_species" and (data.species[quest.speciesId] or 0) or data.captures
-            if progress >= quest.required then
-                data.quests[id] = true
-                data.coins += quest.rewardCoins
-                data.xp += quest.rewardXP
-                player:SetAttribute("Quest_" .. id, true)
-            end
-        end
+    for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog)) do
+        player:SetAttribute("Quest_" .. id, true)
     end
     player:SetAttribute("CloudCount", data.captures)
     player:SetAttribute("CloudCoins", data.coins)

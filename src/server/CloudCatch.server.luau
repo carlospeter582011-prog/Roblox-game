@@ -5,6 +5,7 @@ local Workspace = game:GetService("Workspace")
 local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
+local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -12,10 +13,8 @@ local equipRemote = Instance.new("RemoteEvent")
 equipRemote.Name = "EquipCatchTool"
 equipRemote.Parent = ReplicatedStorage
 equipRemote.OnServerEvent:Connect(function(player,toolId)
-    if typeof(toolId)~="string" or #toolId>40 then return end
     local profile=ProfileStore.Get(player)
-    local tool=toolCatalog[toolId]
-    if not profile or not tool or profile.captures<tool.unlockCatches then return end
+    if not profile or not CatchRules.canEquip(toolId,profile.captures,toolCatalog) then return end
     player:SetAttribute("EquippedCatchTool",toolId)
 end)
 local cloudFolder = Instance.new("Folder")
@@ -73,11 +72,10 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         remote:FireClient(player,false,"Profile unavailable. Please rejoin.")
         return
     end
-    local toolId=player:GetAttribute("EquippedCatchTool") or "starter_net"
-    local tool=toolCatalog[toolId]
-    if not tool or profile.captures<tool.unlockCatches then
-        tool=toolCatalog.starter_net
-        player:SetAttribute("EquippedCatchTool","starter_net")
+    local equipped=player:GetAttribute("EquippedCatchTool")
+    local tool,toolId=CatchRules.resolveTool(equipped,profile.captures,toolCatalog)
+    if equipped~=nil and equipped~=toolId then
+        player:SetAttribute("EquippedCatchTool",toolId)
     end
     if now - (lastAttempt[player] or -100) < tool.cooldown then return end
     lastAttempt[player] = now
@@ -87,12 +85,12 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     if not root then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
-    if (root.Position - cloud.Position).Magnitude > species.baseCatchRadius + tool.rangeBonus then
+    if not CatchRules.isInRange((root.Position - cloud.Position).Magnitude, species, tool) then
         remote:FireClient(player, false, "Move closer to the cloud!")
         return
     end
     active[cloudId] = nil
-    if not ProfileStore.AddCatch(player, species.id, math.floor(species.baseRewardCoins * tool.coinMultiplier)) then
+    if not ProfileStore.AddCatch(player, species.id, CatchRules.coinReward(species, tool)) then
         -- Player profile unavailable: preserve the cloud rather than grant an unsaved catch.
         active[cloudId] = cloud
         remote:FireClient(player, false, "Profile unavailable. Please rejoin.")

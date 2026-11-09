@@ -241,6 +241,8 @@ test("a lock that frees up mid-retry lets the waiting server in", function()
     eq(attempts, 3, "attempts")
 end)
 
+require("./CatchRulesSpec")(test, eq)
+
 local failures = 0
 for _, t in ipairs(tests) do
     local ok, err = pcall(t.fn)
