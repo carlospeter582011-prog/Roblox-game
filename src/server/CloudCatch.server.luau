@@ -55,7 +55,7 @@ local function spawnCloud()
     model.Name = speciesId .. "CloudVisual_" .. id
     -- Remember each part's offset from the cloud so the bobbing keeps the puffs' shape.
     local offsets = {}
-    for _, part in ipairs(model:GetChildren()) do
+    for _, part in ipairs(model:GetDescendants()) do
         if part:IsA("BasePart") then
             offsets[part] = part.Position - cloud.Position
         end
