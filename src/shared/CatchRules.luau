@@ -32,6 +32,35 @@ function Rules.isInRange(distance, species, tool)
     return distance <= species.baseCatchRadius + tool.rangeBonus
 end
 
+-- Deterministic server-side multi-catch target selection. The requested target must
+-- already have passed the ordinary catch-range check; candidates cannot be supplied
+-- by the client. Stable id ordering breaks equal-distance ties.
+function Rules.selectBurstTargets(requestedId, candidates, limit)
+    local selected = { requestedId }
+    local nearby = {}
+    if type(candidates) ~= "table" or type(limit) ~= "number" then return selected end
+    for _, candidate in ipairs(candidates) do
+        if type(candidate.id) == "string" and candidate.id ~= requestedId
+            and type(candidate.distance) == "number"
+            and candidate.distance >= 0 and candidate.distance < math.huge then
+            table.insert(nearby, candidate)
+        end
+    end
+    table.sort(nearby, function(a, b)
+        if a.distance == b.distance then return a.id < b.id end
+        return a.distance < b.distance
+    end)
+    local seen = { [requestedId] = true }
+    for _, candidate in ipairs(nearby) do
+        if #selected >= math.max(1, math.min(3, math.floor(limit))) then break end
+        if not seen[candidate.id] then
+            seen[candidate.id] = true
+            table.insert(selected, candidate.id)
+        end
+    end
+    return selected
+end
+
 function Rules.coinReward(species, tool)
     return math.floor(species.baseRewardCoins * tool.coinMultiplier)
 end
