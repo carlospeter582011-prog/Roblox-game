@@ -4,11 +4,38 @@ on:
   pull_request:
     paths:
       - 'src/**'
+      - 'tests/**'
+      - 'default.project.json'
+      - '.github/workflows/build.yml'
+  push:
+    branches:
+      - 'feature/**'
+    paths:
+      - 'src/**'
+      - 'tests/**'
       - 'default.project.json'
       - '.github/workflows/build.yml'
 permissions:
   contents: read
 jobs:
+  luau-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install pinned Luau CLI 0.746
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh release download 0.746 --repo luau-lang/luau --pattern 'luau-ubuntu.zip' --dir /tmp/luau
+          unzip -q /tmp/luau/luau-ubuntu.zip -d /tmp/luau/bin
+          chmod +x /tmp/luau/bin/luau /tmp/luau/bin/luau-analyze
+          echo "/tmp/luau/bin" >> "$GITHUB_PATH"
+      - name: Static analysis of pure modules
+        run: luau-analyze src/server/ProfileCore.luau src/shared/CatchRules.luau src/shared/SpawnRules.luau src/shared/Leveling.luau
+      - name: Run unit tests
+        run: luau tests/run.luau
+
   build:
     runs-on: ubuntu-latest
     steps:
