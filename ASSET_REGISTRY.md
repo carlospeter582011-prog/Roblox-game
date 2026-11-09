@@ -53,3 +53,6 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 ## Crystal interaction security audit — 2026-11-09
 - Existing SkyCrystal3D remains project-original native Roblox Model/Part geometry; no Canvas stand-ins, new external assets or MeshIds introduced.
 - Server crystal interaction now uses bounded per-user discovery state and pure distance/readiness validation. CI and Roblox runtime not yet confirmed. Imported cloud Model 104852877755332 remains a Model asset, never a MeshPart.MeshId.
+
+## Persistent crystal discovery checkpoint — 2026-11-09
+- SkyCrystal3D still uses original Roblox 3D Model/Part geometry and ProximityPrompt; persistence changes add no third-party asset, MeshPart ID, or Canvas world stand-in. Runtime and asset appearance remain unverified.
