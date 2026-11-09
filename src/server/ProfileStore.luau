@@ -12,6 +12,7 @@ local ProfileCore = require(script.Parent:WaitForChild("ProfileCore"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
+local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -79,7 +80,13 @@ function Profile.DiscoverCrystal(player, index)
     end
     data.crystals = data.crystals or {}
     if data.crystals[index] then return false end
+    local coins, xp = CrystalRules.reward(index, false)
     data.crystals[index] = true
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     local total = 0
     for _, found in pairs(data.crystals) do
         if found then total += 1 end
