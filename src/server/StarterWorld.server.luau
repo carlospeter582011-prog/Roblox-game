@@ -19,9 +19,21 @@ end
 local base=part("FloatingMeadow",Vector3.new(115,5,115),Vector3.new(0,-3,0),Color3.fromRGB(104,184,125),Enum.Material.Grass)
 base.Shape=Enum.PartType.Cylinder
 base.Orientation=Vector3.new(0,0,90)
+base.CanCollide = false
 -- Main safe walkable square over a sculpted underside.
 part("WalkableMeadow",Vector3.new(95,2,95),Vector3.new(0,0,0),Color3.fromRGB(102,191,134),Enum.Material.Grass)
 WorldAssetModels.floatingRock(world, Vector3.new(0, -15, 0))
+-- Sculpted underside silhouette: staggered 3D slate ledges and smaller hanging rock islands.
+for i = 1, 12 do
+    local angle = i * math.pi * 2 / 12
+    local radius = 39 + (i % 3) * 3
+    local ledge = part("CliffLedge" .. i,
+        Vector3.new(17 + (i % 3) * 4, 8 + (i % 4) * 2, 14 + (i % 2) * 4),
+        Vector3.new(math.cos(angle) * radius, -8 - (i % 3) * 3, math.sin(angle) * radius),
+        Color3.fromRGB(100 + (i % 3) * 8, 112, 131), Enum.Material.Slate)
+    ledge.Shape = Enum.PartType.Ball
+    ledge.CanCollide = false
+end
 for i=1,14 do
     local angle=i*math.pi*2/14
     local x,z=math.cos(angle)*37,math.sin(angle)*37
@@ -47,10 +59,11 @@ spawn.Size=Vector3.new(12,1,12)
 spawn.Position=Vector3.new(0,2,0)
 spawn.Anchored=true
 spawn.Neutral=true
-spawn.Material=Enum.Material.Neon
-spawn.Color=Color3.fromRGB(128,222,247)
+spawn.Material=Enum.Material.SmoothPlastic
+spawn.Color=Color3.fromRGB(123,193,172)
+spawn.Transparency = 0.35
 spawn.Parent=world
 Lighting.ClockTime=14
-Lighting.Brightness=2.5
-Lighting.Ambient=Color3.fromRGB(145,170,218)
-Lighting.OutdoorAmbient=Color3.fromRGB(166,197,235)
+Lighting.Brightness=1.5
+Lighting.Ambient=Color3.fromRGB(115,142,173)
+Lighting.OutdoorAmbient=Color3.fromRGB(145,175,197)
