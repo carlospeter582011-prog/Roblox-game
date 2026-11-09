@@ -102,7 +102,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     if not root then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
-    if not CatchRules.isInRange((root.Position - cloud.Position).Magnitude, species, tool) then
+    local targetDistance = (root.Position - cloud.Position).Magnitude
+    local magnetPull = CatchRules.canMagnetPull(targetDistance, species, toolId, tool)
+    if not CatchRules.isInRange(targetDistance, species, tool) and not magnetPull then
         remote:FireClient(player, false, "Move closer to the cloud!")
         return
     end
@@ -147,7 +149,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         end
     end
     if caught > 0 then
-        remote:FireClient(player, true, caught > 1 and ("Vacuum burst! Caught " .. caught .. " clouds!") or "Cloud caught!")
+        remote:FireClient(player, true, caught > 1 and ("Vacuum burst! Caught " .. caught .. " clouds!") or (magnetPull and "Magnet pull! Cloud caught!" or "Cloud caught!"))
     else
         remote:FireClient(player, false, "Unable to save catch. Try again.")
     end
