@@ -37,3 +37,8 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 
 ## Imported cloud normalization guard — 2026-11-09
 - `src/shared/CloudVisuals.luau` commit `94b3203` limits copied geometry to 32 BaseParts, rejects invalid bounds, scales longest dimension to 6 studs and recenters the Model bounding box before world placement. Model ID `104852877755332` remains a Model package, never a MeshPart.MeshId. **Code committed; CI, actual loading permissions, rendered scale and Android appearance not verified.**
+
+
+## 2026-11-09 — 3D-only audit follow-up
+- New player fall recovery uses Roblox character CFrame and HumanoidRootPart physics, not a 2D world stand-in. No new external asset or MeshId was added. Original cloud Model 104852877755332 remains a Model asset and must not be used as MeshPart.MeshId.
+- CI, visual rendering, asset loading permissions and published outcome for the new commits are pending independent verification.
