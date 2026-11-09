@@ -103,6 +103,19 @@ return function(test, eq)
         end
     end)
 
+    test("progress safely handles invalid XP", function()
+        for _, value in ipairs({ "bad", -5, 0 / 0 }) do
+            local level, into, needed = Leveling.progress(value)
+            eq(level, 1, "invalid level")
+            eq(into, 0, "invalid progress")
+            eq(needed, 50, "invalid threshold")
+        end
+        local level, into, needed = Leveling.progress(nil)
+        eq(level, 1, "nil level")
+        eq(into, 0, "nil progress")
+        eq(needed, 50, "nil threshold")
+    end)
+
     test("progress reports xp into the level and xp needed", function()
         local level, into, needed = Leveling.progress(0)
         eq(level, 1, "L at 0")
