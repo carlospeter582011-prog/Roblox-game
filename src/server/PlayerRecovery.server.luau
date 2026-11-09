@@ -2,6 +2,7 @@
 -- Uses actual character physics/3D CFrames, never a Canvas world substitute.
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
+local Workspace = game:GetService("Workspace")
 local Rules = require(game:GetService("ReplicatedStorage"):WaitForChild("RecoveryRules"))
 local lastRescue = {}
 local elapsed = 0
@@ -23,10 +24,19 @@ RunService.Heartbeat:Connect(function(dt)
             local pos = root.Position
             local distance = Vector2.new(pos.X, pos.Z).Magnitude
             if Rules.shouldRecover(pos.Y, distance, now, lastRescue[player]) then
-                lastRescue[player] = now
-                character:PivotTo(CFrame.new(0, 9, 0))
-                root.AssemblyLinearVelocity = Vector3.zero
-                root.AssemblyAngularVelocity = Vector3.zero
+                local spawn = Workspace:FindFirstChild("SkyArrival", true)
+                if spawn and spawn:IsA("SpawnLocation") then
+                    local targetX, targetY, targetZ = Rules.recoveryPosition(
+                        spawn.Position.X, spawn.Position.Y, spawn.Position.Z,
+                        math.max(5, spawn.Size.Y / 2 + 4)
+                    )
+                    if targetX then
+                        lastRescue[player] = now
+                        character:PivotTo(CFrame.new(targetX, targetY, targetZ))
+                        root.AssemblyLinearVelocity = Vector3.zero
+                        root.AssemblyAngularVelocity = Vector3.zero
+                    end
+                end
             end
         end
     end
