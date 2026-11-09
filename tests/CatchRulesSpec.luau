@@ -46,6 +46,14 @@ return function(test, eq)
         eq(Rules.isInRange(10, Species.drizzle, Tools.starter_net), true, "drizzle boundary")
     end)
 
+    test("Cloud Magnet pulls beyond normal range but only when server resolves magnet", function()
+        eq(Rules.canMagnetPull(31, Species.breeze, "cloud_magnet", Tools.cloud_magnet), true, "pull within field")
+        eq(Rules.canMagnetPull(32, Species.breeze, "cloud_magnet", Tools.cloud_magnet), false, "outside field")
+        eq(Rules.canMagnetPull(31, Species.breeze, "starter_net", Tools.starter_net), false, "wrong tool")
+        eq(Rules.canMagnetPull(-1, Species.breeze, "cloud_magnet", Tools.cloud_magnet), false, "negative")
+        eq(Rules.canMagnetPull(math.huge, Species.breeze, "cloud_magnet", Tools.cloud_magnet), false, "infinite")
+    end)
+
     test("vacuum burst picks nearest unique targets and breaks ties by id", function()
         local ids = Rules.selectBurstTargets("main", {
             { id = "far", distance = 18 },
