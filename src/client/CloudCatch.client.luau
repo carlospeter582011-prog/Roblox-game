@@ -46,3 +46,26 @@ remote.OnClientEvent:Connect(function(success, text)
     message.Text = text
     if success then button.Text = "Catch Another" end
 end)
+
+local questLabel=Instance.new("TextLabel")
+questLabel.Name="QuestTracker"
+questLabel.Size=UDim2.new(0.75,0,0,54)
+questLabel.Position=UDim2.new(0.125,0,0.16,0)
+questLabel.BackgroundColor3=Color3.fromRGB(24,53,91)
+questLabel.BackgroundTransparency=0.15
+questLabel.TextColor3=Color3.fromRGB(245,250,255)
+questLabel.TextScaled=true
+questLabel.Parent=gui
+local function refreshQuest()
+    if not player:GetAttribute("Quest_first_breeze") then
+        questLabel.Text="Story: Catch your first Breeze Cloud"
+    elseif not player:GetAttribute("Quest_three_clouds") then
+        questLabel.Text="Story: Catch 3 clouds ("..tostring(player:GetAttribute("CloudCount") or 0).."/3)"
+    else
+        questLabel.Text="Chapter 1 complete! More adventures ahead."
+    end
+end
+for _,attribute in ipairs({"Quest_first_breeze","Quest_three_clouds","CloudCount"}) do
+    player:GetAttributeChangedSignal(attribute):Connect(refreshQuest)
+end
+refreshQuest()
