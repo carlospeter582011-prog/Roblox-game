@@ -161,3 +161,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Pushed `CloudCatch.client.luau` `81d90f7c`: wallet level/coins readout increased to 290x40, font 16.
 - Pushed `CloudVisuals.luau` `f112ea66`: `VisualSource` attribute on each cloud visual distinguishes `ImportedRobloxModel`, `MeshPart`, `Procedural3DParts`; `ModelAssetId` attribute for imported; log failure reason. Inspect live instances or server logs to confirm model load, not screenshots alone.
 - Changes not yet validated by newest CI/Roblox runtime; verify publish and user mobile QA. Next implement true imported tree model and check cloud runtime load permissions.
+
+## 2026-11-09 — larger island, spawn/UI and coin-based tool shop
+- Expanded walkable island from 95x95 to 205x205, decorative base 115 to 225, moved trees/arches/cliffs outward, moved spawn to (0,2,-25) to clear central trunk; cloud spawns now spread across +/-72 studs (`155676be`, `6afb5d5`). No Roblox runtime test yet.
+- Tutorial reduced to short prompt near upper center and dismisses after 7 seconds (`b8591c6`, `3fe8d32`), to avoid overlap with wallet/quest.
+- Tool purchases implemented: prices 5 coins per required catch (minimum 50), starter free; server validates coin balance, catch unlock and ownership; purchased tools are stored in `ProfileCore` ownedTools and replicated via `OwnsTool_` attributes; server only allows owned tools to equip; client displays Buy/Equip/Equipped (`c1ff741`, `488d529`, `116b7b8`, `6afb5d5`, `6ffcb8f`). Existing profiles migrate with starter ownership. **Not yet tested in live game; review CI and purchase/save/rejoin behavior before marking done.**
+- Multiplayer: players who join the same Roblox server share the same Workspace/map/cloud spawns; per-player coins and ownership remain separate. Joining same experience alone does not guarantee same server.
