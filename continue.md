@@ -87,3 +87,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Pipeline builds and validates a real 3D GLB, attempts owner upload through Open Cloud using existing GitHub secret `ROBLOX_API_KEY`, and publishes `original-cloud-model-asset-id` artifact on success. **Workflow outcome not verified in this session; don't claim upload success.**
 - Roblox GLB uploads are Model packages, NOT directly usable MeshPart.MeshIds. The ID must not be pasted into `CloudVisuals.MeshIds.cloud`; requires a validated model insertion/integration route and runtime testing. `ASSET_REGISTRY.md` updated. No mesh asset integrated yet. Production publish of PR #17 remains unverified from GitHub Actions.
 - Next: inspect GitHub Actions `Import Original Cloud 3D Model` run, diagnose API failure if any, extract confirmed ID, integrate Model safely (e.g. server asset loading with validated ownership and fallback), run CI, publish and visually QA. No Roblox Studio available to owner.
+
+## 2026-11-09 — tablet-first asset workflow documentation correction
+- Corrected `docs/3d-assets.md` on main (commit `1f87244db43ab5dc0b0bd3383009d4297b520cdd`): removed Studio-only import instructions; documented GitHub Actions original GLB generation/upload, asset provenance and validation, and explicit distinction between Model asset IDs and MeshPart MeshIds.
+- No asset upload, mesh insertion, runtime test or new CI verification performed in this checkpoint. Existing original-cloud upload workflow outcome remains unknown. No acceptance checkbox changed.
+- Next: inspect `Import Original Cloud 3D Model` Actions run and moderation/asset artifact, then build an ownership-validated Model insertion adapter with procedural fallback; verify actual appearance in Roblox on mobile.
