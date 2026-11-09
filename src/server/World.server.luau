@@ -71,12 +71,12 @@ car.Parent = world
 local carCFrame = CFrame.new(34, 2.1, 13)
 local body = part("Body", Vector3.new(7, 1.6, 11), carCFrame, Color3.fromRGB(218, 55, 55), Enum.Material.Metal, car)
 car.PrimaryPart = body
--- Creator Store sports car MeshPart asset by @JonathasBus (6014137456).
+-- Sports car model uploaded via Open Cloud under creator 7550783083 (asset 124315115505635).
 -- Load only its visual geometry; never run scripts from third-party assets.
 -- Keep our own trusted VehicleSeat, driving logic and fallback geometry.
 local meshLoaded = false
 local ok, assetOrError = pcall(function()
-    return game:GetService("InsertService"):LoadAsset(6014137456)
+    return game:GetService("InsertService"):LoadAsset(124315115505635)
 end)
 if ok and assetOrError then
     local assetContainer = assetOrError
@@ -106,7 +106,7 @@ if ok and assetOrError then
     end
     assetContainer:Destroy()
 else
-    warn("Sports car asset unavailable to this experience; using fallback car.")
+    warn("Sports car asset 124315115505635 unavailable to this experience. Grant experience permission to use this asset or transfer ownership; using fallback car.")
 end
 body.Transparency = meshLoaded and 1 or 0
 local cabin = part("Cabin", Vector3.new(6, 1.5, 5), carCFrame * CFrame.new(0, 1.35, -1), Color3.fromRGB(72, 139, 174), Enum.Material.Glass, car)
