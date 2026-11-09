@@ -9,13 +9,15 @@ local folder = Workspace:WaitForChild("CatchableClouds")
 local gui = Instance.new("ScreenGui")
 gui.Name = "CloudCatchHUD"
 gui.ResetOnSpawn = false
+gui.IgnoreGuiInset = false
 gui.Parent = player:WaitForChild("PlayerGui")
 
 -- Tutorial overlay (first time only)
 local tutorial = Instance.new("Frame")
 tutorial.Name = "Tutorial"
-tutorial.Size = UDim2.new(0.85, 0, 0, 90)
-tutorial.Position = UDim2.new(0.075, 0, 0.35, 0)
+tutorial.Size = UDim2.fromOffset(300, 76)
+tutorial.AnchorPoint = Vector2.new(0.5, 0.5)
+tutorial.Position = UDim2.new(0.5, 0, 0.43, 0)
 tutorial.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 tutorial.BackgroundTransparency = 0.1
 tutorial.Parent = gui
@@ -41,7 +43,7 @@ local button = Instance.new("TextButton")
 button.Name = "CatchButton"
 -- Mid-right, clear of Roblox's own jump button at the bottom-right on touch devices.
 button.AnchorPoint = Vector2.new(1, 0.5)
-button.Position = UDim2.new(1, -16, 0.6, 0)
+button.Position = UDim2.new(1, -20, 0.62, 0)
 button.Size = UDim2.fromOffset(120, 40)
 button.BackgroundColor3 = Color3.fromRGB(71, 137, 230)
 button.TextColor3 = Color3.new(1, 1, 1)
@@ -52,11 +54,13 @@ button.Parent = gui
 
 -- Compact status message
 local message = Instance.new("TextLabel")
-message.Size = UDim2.new(0.7, 0, 0, 28)
-message.Position = UDim2.new(0.15, 0, 0.05, 0)
+message.Size = UDim2.fromOffset(270, 30)
+message.AnchorPoint = Vector2.new(0.5, 0)
+message.Position = UDim2.new(0.5, 0, 0, 52)
 message.BackgroundTransparency = 0.4
 message.BackgroundColor3 = Color3.fromRGB(20, 30, 50)
-message.TextSize = 14
+message.TextSize = 12
+message.TextWrapped = true
 message.Font = Enum.Font.Gotham
 message.TextColor3 = Color3.new(1, 1, 1)
 message.Text = "Find a glowing cloud and get close!"
@@ -90,12 +94,14 @@ end)
 -- Compact quest tracker
 local questLabel = Instance.new("TextLabel")
 questLabel.Name = "QuestTracker"
-questLabel.Size = UDim2.new(0.6, 0, 0, 28)
-questLabel.Position = UDim2.new(0.2, 0, 0.1, 0)
+questLabel.Size = UDim2.fromOffset(240, 28)
+questLabel.AnchorPoint = Vector2.new(0.5, 0)
+questLabel.Position = UDim2.new(0.5, 0, 0, 82)
 questLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 questLabel.BackgroundTransparency = 0.2
 questLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
-questLabel.TextSize = 13
+questLabel.TextSize = 12
+questLabel.TextTruncate = Enum.TextTruncate.AtEnd
 questLabel.Font = Enum.Font.Gotham
 questLabel.Parent = gui
 local QuestCatalog = require(ReplicatedStorage:WaitForChild("QuestCatalog"))
@@ -135,12 +141,12 @@ refreshQuest()
 -- Compact level/coins
 local levelLabel = Instance.new("TextLabel")
 levelLabel.Name = "LevelLabel"
-levelLabel.Size = UDim2.fromOffset(250, 36)
-levelLabel.Position = UDim2.new(0, 8, 0, 8)
+levelLabel.Size = UDim2.fromOffset(235, 28)
+levelLabel.Position = UDim2.new(0, 8, 0, 48)
 levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 levelLabel.BackgroundTransparency = 0.2
 levelLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
-levelLabel.TextSize = 13
+levelLabel.TextSize = 12
 levelLabel.Font = Enum.Font.Gotham
 levelLabel.Parent = gui
 local function refreshLevel()
