@@ -49,3 +49,7 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 
 ## 2026-11-09 — interactive crystal geometry audit
 - Existing project-owned SkyCrystal3D models now host native Roblox ProximityPrompt interactions on a BasePart. No new asset, canvas world stand-in, Mesh ID or external license introduced. Discoveries are session-only player attributes, not persisted currency or quest rewards. Runtime and mobile verification pending.
+
+## Crystal interaction security audit — 2026-11-09
+- Existing SkyCrystal3D remains project-original native Roblox Model/Part geometry; no Canvas stand-ins, new external assets or MeshIds introduced.
+- Server crystal interaction now uses bounded per-user discovery state and pure distance/readiness validation. CI and Roblox runtime not yet confirmed. Imported cloud Model 104852877755332 remains a Model asset, never a MeshPart.MeshId.
