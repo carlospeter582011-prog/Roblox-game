@@ -3,7 +3,7 @@
 -- ProfileStore.luau wires this to the real DataStore, Players events and the shutdown flow.
 local Core = {}
 
-Core.SCHEMA_VERSION = 2
+Core.SCHEMA_VERSION = 3
 -- A lock not refreshed for this many seconds is treated as dead (crashed server).
 -- Autosave refreshes it every 90s, so this tolerates several missed saves.
 Core.LOCK_TIMEOUT = 300
@@ -21,6 +21,7 @@ function Core.defaultData(now)
         species = {},
         quests = {},
         ownedTools = { starter_net = true },
+        crystals = {},
         lastSeen = now or 0,
     }
 end
@@ -59,6 +60,13 @@ function Core.sanitize(raw, validQuests, now)
         for id, owned in pairs(raw.ownedTools) do
             if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$") and owned == true then
                 clean.ownedTools[id] = true
+            end
+        end
+    end
+    if type(raw.crystals) == "table" then
+        for index, found in pairs(raw.crystals) do
+            if type(index) == "number" and index == math.floor(index) and index >= 1 and index <= 18 and found == true then
+                clean.crystals[index] = true
             end
         end
     end
