@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased (PR #13)
+## Unreleased (feature/world-progress-and-encyclopedia)
+- Tool picker now lists all 15 tools (was 5 hardcoded); collection HUD fixed (unique count was always 0), shows species n/total, percent and next world ("coming soon").
+- `ProgressRules` pure module; `Encyclopedia` counts catalog species only. 67 tests.
+
+## Merged: PR #13
 - Fixed likely crash on mutated catches (invalid attribute name `SpeciesCount_<species>:<mutation>`), base-species accounting and mutation XP, collapsed cloud puffs, hidden XP HUD text, catch button placement; removed duplicate quest `first_moonveil`.
 - CI now runs `tests/MutationsSpec.luau` (previously unloaded) and analyses Mutations/Encyclopedia: 55 tests.
 

@@ -13,8 +13,9 @@ Command: `luau tests/run.luau` plus `luau-analyze` on the pure modules
 | `tests/SpawnLevelSpec.luau` | 12 | Spawn rolls, leveling |
 | `tests/MutationsSpec.luau` | 4 | Mutation roll/key/bonus (was never loaded until PR #13) |
 | `tests/MutationAccountingSpec.luau` | 12 | Attribute-safe ids, mutated-catch accounting, quest catalog integrity |
+| `tests/ProgressSpec.luau` | 12 | Unlock ordering/status, encyclopedia counting and attribute parsing, world/boss catalog integrity |
 
-Latest result: **55 tests, 0 failed** on b89520f ([PR #13 run 42620069899](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42620069899)), both jobs green.
+Latest result: **67 tests, 0 failed** on 34af60a ([run 42621245689](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42621245689)), both jobs green. Previous: 55 on b89520f ([run 42620069899](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42620069899)).
 Before PR #13 the reported "39 tests" excluded the mutation tests.
 
 Publish evidence: run 42613759016 (main, e72725a): workflow success; Roblox API accepted a Published place version. The gate blocked four earlier broken publishes.
@@ -32,4 +33,5 @@ Not release-ready as a finished game. Builds that pass CI are published as early
 - Profile save guard could never trigger: fixed by session locking (67052d6).
 - Publish workflow file check referenced the removed prototype: fixed.
 - Four publishes blocked by the test gate (quests pointing at missing species): fixed upstream by e1ba85d.
+- Tool picker offered 5 of 15 tools and the collection HUD's unique count was always 0 (off-by-one prefix length): fixed on `feature/world-progress-and-encyclopedia`.
 - Mutated-catch attribute names, species-quest accounting, dead XP multiplier, collapsed puff animation, hidden XP HUD text, duplicate quest, unloaded MutationsSpec: fixed in PR #13.
