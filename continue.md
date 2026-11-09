@@ -153,3 +153,11 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Improved `StarterWorld.server.luau` floating-island underside with 12 staggered noncollidable 3D slate cliff ledges; disabled collision on decorative base cylinder; changed spawn pad from bright Neon to subdued semi-transparent SmoothPlastic; reduced ambient/lighting brightness (commit `e8b568a4`).
 - Changes are genuine Roblox Parts/Models, not Canvas. They do NOT replace all trees with imported meshes. Uploaded cloud GLB Model asset `104852877755332` is configured in `CloudVisuals.luau`, but actual runtime appearance/load is unverified; need screenshot/diagnostics. Current production CI/publish status also unverified.
 - Next: verify workflow, inspect Android screenshot for spawn/clipping, improve mesh asset integration and cloud variety; avoid claiming full game complete.
+
+## 2026-11-09 — mobile screenshot: cloud/tree source verified in code, UI controls revised
+- Screenshot in Android recents shows 3D world geometry (not Canvas). `WorldAssetModels.tree` creates Roblox Model/Part trunk, foliage balls and canopy tiers, **not imported tree MeshPart** (`Assets.MeshIds.tree=nil`). `CloudVisuals.createCloudVisual` attempts Roblox Model `104852877755332` through AssetService and otherwise creates six 3D Part puffs; image alone cannot distinguish imported Model from fallback. Neither is Canvas.
+- Pushed `Inventory.client.luau` `78417fab`: Collection moved beside Tools at x=112, y=144, panel x=112 y=184; no longer centered or on native Jump.
+- Pushed `CloudTools.client.luau` `88863bb4`: Tools y=144, compact scroll panel y=184, selected/locked tool feedback and active button name; existing equip remote remains server-authoritative. Need test in live Roblox.
+- Pushed `CloudCatch.client.luau` `81d90f7c`: wallet level/coins readout increased to 290x40, font 16.
+- Pushed `CloudVisuals.luau` `f112ea66`: `VisualSource` attribute on each cloud visual distinguishes `ImportedRobloxModel`, `MeshPart`, `Procedural3DParts`; `ModelAssetId` attribute for imported; log failure reason. Inspect live instances or server logs to confirm model load, not screenshots alone.
+- Changes not yet validated by newest CI/Roblox runtime; verify publish and user mobile QA. Next implement true imported tree model and check cloud runtime load permissions.
