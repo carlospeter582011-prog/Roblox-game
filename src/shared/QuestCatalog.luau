@@ -30,5 +30,15 @@ local Quests = {
     first_moonveil = { id = "first_moonveil", title = "Veil of Night", description = "Catch an Aurora Cloud under the veil.", objective = "catch_species", speciesId = "aurora", required = 1, rewardCoins = 480, rewardXP = 240, chapter = 3 },
     five_aurora = { id = "five_aurora", title = "Aurora Dance", description = "Catch five Aurora Clouds.", objective = "catch_species", speciesId = "aurora", required = 5, rewardCoins = 700, rewardXP = 350, chapter = 4 },
     two_hundred_total = { id = "two_hundred_total", title = "Cloud Legend", description = "Catch two hundred clouds.", objective = "total_catches", required = 200, rewardCoins = 5000, rewardXP = 2500, chapter = 5 },
+    five_sunbeam = { id = "five_sunbeam", title = "Sunlit Path", description = "Catch five Sunbeam Clouds.", objective = "catch_species", speciesId = "sunbeam", required = 5, rewardCoins = 180, rewardXP = 90, chapter = 2 },
+    ten_pebble = { id = "ten_pebble", title = "Rocky Start", description = "Catch ten Pebble Clouds.", objective = "catch_species", speciesId = "pebble", required = 10, rewardCoins = 200, rewardXP = 100, chapter = 2 },
+    first_comet = { id = "first_comet", title = "Shooting Star", description = "Catch a Comet Cloud.", objective = "catch_species", speciesId = "comet", required = 1, rewardCoins = 600, rewardXP = 300, chapter = 4 },
+    forty_total = { id = "forty_total", title = "Sky Explorer", description = "Catch forty clouds.", objective = "total_catches", required = 40, rewardCoins = 500, rewardXP = 250, chapter = 3 },
+    three_rainbow = { id = "three_rainbow", title = "Triple Rainbow", description = "Catch three Rainbow Clouds.", objective = "catch_species", speciesId = "rainbow", required = 3, rewardCoins = 800, rewardXP = 400, chapter = 4 },
+    first_voidrift = { id = "first_voidrift", title = "Rift Walker", description = "Catch a Voidrift Cloud.", objective = "catch_species", speciesId = "voidrift", required = 1, rewardCoins = 900, rewardXP = 450, chapter = 4 },
+    eighty_total = { id = "eighty_total", title = "Cloud Master", description = "Catch eighty clouds.", objective = "total_catches", required = 80, rewardCoins = 1200, rewardXP = 600, chapter = 4 },
+    five_nebula = { id = "five_nebula", title = "Nebula Hunt", description = "Catch five Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 5, rewardCoins = 2000, rewardXP = 1000, chapter = 5 },
+    first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
+    three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
 }
 return table.freeze(Quests)
