@@ -32,6 +32,15 @@ for i=1,18 do
     local radius=12+math.sqrt(i)*6
     WorldAssetModels.crystal(world, Vector3.new(math.cos(angle)*radius, 1, math.sin(angle)*radius), 0.7 + (i % 4) * 0.15)
 end
+-- Four original 3D stone arches frame the meadow paths; no Canvas or asset IDs needed.
+for _, placement in ipairs({
+    { Vector3.new(0, 1, -29), 0 },
+    { Vector3.new(0, 1, 29), 0 },
+    { Vector3.new(-29, 1, 0), math.pi / 2 },
+    { Vector3.new(29, 1, 0), math.pi / 2 },
+}) do
+    WorldAssetModels.skyArch(world, placement[1], 0.75, placement[2])
+end
 local spawn=Instance.new("SpawnLocation")
 spawn.Name="SkyArrival"
 spawn.Size=Vector3.new(12,1,12)
