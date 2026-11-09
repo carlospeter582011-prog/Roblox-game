@@ -172,3 +172,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added original `SkyLantern3D` model in `WorldAssetModels.luau` and five non-colliding lanterns near the starter spawn in `StarterWorld.server.luau`. Uses actual Roblox Model/Part/PointLight geometry; no Canvas stand-ins, external assets or new asset IDs. Commits: `89a6aca`, `2be3f76`.
 - Registered original geometry in ASSET_REGISTRY.md. This is an incremental environment/navigation improvement, not a completed world.
 - CI, Published upload, mobile visual readability, placement and runtime are **not yet verified** for these commits. Keep all full-launch acceptance boxes unchecked. Next: inspect the new auto-publish run, check actual Roblox appearance, fix overlap/layout, then implement playable world mechanics and bosses.
+
+## 2026-11-09 — spawn-aware fall recovery
+- RecoveryRules.recoveryPosition (75b122f), PlayerRecovery (bbaedc8), and two pure tests (b07eb0a): rescue now targets the actual SkyArrival SpawnLocation with safe clearance instead of hardcoded (0,9,0). Missing spawn fails closed. No Canvas world art added.
+- GitHub combined status and PR-run lookup returned empty; these do NOT establish publish failure or success. Push-triggered auto-publish, CI and Roblox runtime remain unverified.
+- No new GLB imported. Model asset 104852877755332 is NOT a MeshPart MeshId. Next: inspect publish job logs, Android rescue, then real world/boss gameplay.
