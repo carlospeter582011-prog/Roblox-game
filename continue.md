@@ -18,7 +18,7 @@ Latest implementation commit: 31e2ce17c6798001e8f9d1b70b2a2966bdeb96b0
 - Notion project hub now includes full checkbox acceptance checklist; no unchecked launch item is considered done without tests.
 
 ## Critical limitations / blockers
-- PR #11 remains unmerged. No verified GitHub Actions run found in latest lookup.
+- PR #11 remains unmerged. GitHub Actions run 42575074543 completed SUCCESS for commit 554f03cb5056c3eb1969eba3268b2f01574eee92 (Rojo build, XML check, artifact upload). This is not a runtime test.
 - ProfileStore v1 is preliminary: lacks robust cross-server session locking, retry queue and migration test suite; do not claim reliable persistence yet.
 - Cloud visuals are procedural primitive art, not professional final assets.
 - No verified runtime playtest, screenshots, mobile benchmarks or Roblox publication.
@@ -26,7 +26,7 @@ Latest implementation commit: 31e2ce17c6798001e8f9d1b70b2a2966bdeb96b0
 - 10 worlds, 150+ fully functional species, 15+ tools, 100+ quests, 10 bosses, story, islands, trading, guilds, cross-server events and polish remain outstanding.
 
 ## Exact next actions
-1. Inspect PR #11 checks and GitHub Actions logs. Repair workflow/build errors. Validate profile and quest logic in real Roblox Studio; no CI run verified.
+1. CI build passed for an earlier branch commit; validate latest commit checks and profile/quest logic in real Roblox Studio. Do not mistake XML build for runtime test.
 2. Improve profile session locking and write-failure handling before player testing.
 3. Build integrated first-world quest, tools, cloud abilities and real art assets; validate in Roblox runtime.
 4. Expand remaining systems/worlds in dependency order, with acceptance tests.
