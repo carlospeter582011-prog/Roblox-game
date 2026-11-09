@@ -2,6 +2,12 @@
 local Workspace = game:GetService("Workspace")
 local Lighting = game:GetService("Lighting")
 local WorldAssetModels = require(script.Parent:WaitForChild("WorldAssetModels"))
+local CrystalRules = require(game:GetService("ReplicatedStorage"):WaitForChild("CrystalRules"))
+local Players = game:GetService("Players")
+local crystalDiscoveries = {} -- [UserId] = {[index] = true}; bounded per-player session state
+Players.PlayerRemoving:Connect(function(player)
+    crystalDiscoveries[player.UserId] = nil
+end)
 local world = Instance.new("Folder")
 world.Name = "CatchACloudStarterIsland"
 world.Parent = Workspace
@@ -56,14 +62,23 @@ for i=1,18 do
         prompt.RequiresLineOfSight = false
         prompt.Parent = target
         local crystalId = "sky-crystal-" .. tostring(i)
-        local discovered = {}
         prompt.Triggered:Connect(function(player)
-            if not player or not player:IsA("Player") or discovered[player.UserId] then return end
+            if not player or not player:IsA("Player") or not player.Parent then return end
             local character = player.Character
+            local humanoid = character and character:FindFirstChildOfClass("Humanoid")
             local root = character and character:FindFirstChild("HumanoidRootPart")
-            if not root or (root.Position - target.Position).Magnitude > 13 then return end
-            discovered[player.UserId] = true
-            player:SetAttribute("SkyCrystalsDiscovered", (player:GetAttribute("SkyCrystalsDiscovered") or 0) + 1)
+            if not root or not humanoid or humanoid.Health <= 0 then return end
+            local discovered = crystalDiscoveries[player.UserId]
+            if not discovered then
+                discovered = {}
+                crystalDiscoveries[player.UserId] = discovered
+            end
+            local distance = (root.Position - target.Position).Magnitude
+            if not CrystalRules.canDiscover(i, distance, discovered[i], player:GetAttribute("ProfileReady")) then
+                return
+            end
+            discovered[i] = true
+            player:SetAttribute("SkyCrystalsDiscovered", CrystalRules.count(discovered))
             player:SetAttribute("LastSkyCrystal", crystalId)
         end)
     end
