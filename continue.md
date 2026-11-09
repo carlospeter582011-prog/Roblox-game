@@ -167,3 +167,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Tutorial reduced to short prompt near upper center and dismisses after 7 seconds (`b8591c6`, `3fe8d32`), to avoid overlap with wallet/quest.
 - Tool purchases implemented: prices 5 coins per required catch (minimum 50), starter free; server validates coin balance, catch unlock and ownership; purchased tools are stored in `ProfileCore` ownedTools and replicated via `OwnsTool_` attributes; server only allows owned tools to equip; client displays Buy/Equip/Equipped (`c1ff741`, `488d529`, `116b7b8`, `6afb5d5`, `6ffcb8f`). Existing profiles migrate with starter ownership. **Not yet tested in live game; review CI and purchase/save/rejoin behavior before marking done.**
 - Multiplayer: players who join the same Roblox server share the same Workspace/map/cloud spawns; per-player coins and ownership remain separate. Joining same experience alone does not guarantee same server.
+
+## 2026-11-09 — original 3D navigation markers
+- Added original `SkyLantern3D` model in `WorldAssetModels.luau` and five non-colliding lanterns near the starter spawn in `StarterWorld.server.luau`. Uses actual Roblox Model/Part/PointLight geometry; no Canvas stand-ins, external assets or new asset IDs. Commits: `89a6aca`, `2be3f76`.
+- Registered original geometry in ASSET_REGISTRY.md. This is an incremental environment/navigation improvement, not a completed world.
+- CI, Published upload, mobile visual readability, placement and runtime are **not yet verified** for these commits. Keep all full-launch acceptance boxes unchecked. Next: inspect the new auto-publish run, check actual Roblox appearance, fix overlap/layout, then implement playable world mechanics and bosses.
