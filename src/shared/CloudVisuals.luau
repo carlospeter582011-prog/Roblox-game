@@ -27,8 +27,10 @@ local function loadCloudTemplate()
     -- Treat uploaded assets as untrusted: copy ONLY geometry, never scripts or remotes.
     local template = Instance.new("Model")
     template.Name = "VerifiedCloudGeometry"
+    local partCount = 0
     for _, descendant in ipairs(container:GetDescendants()) do
-        if descendant:IsA("BasePart") then
+        if descendant:IsA("BasePart") and partCount < 32 then
+            partCount += 1
             local geometry = descendant:Clone()
             for _, child in ipairs(geometry:GetDescendants()) do
                 if not child:IsA("SpecialMesh") and not child:IsA("DataModelMesh") then
@@ -46,6 +48,18 @@ local function loadCloudTemplate()
         warn("Cloud Model asset contained no usable geometry; using 3D fallback")
         return nil
     end
+    -- Normalize imported GLB dimensions and origin before cloning into the world.
+    -- The Open Cloud package may have a different pivot or meter-to-stud scale.
+    local bounds, size = template:GetBoundingBox()
+    local longest = math.max(size.X, size.Y, size.Z)
+    if longest < 0.001 or longest ~= longest or longest > 100000 then
+        template:Destroy()
+        warn("Cloud Model has invalid geometry bounds; using 3D fallback")
+        return nil
+    end
+    template:ScaleTo(6 / longest)
+    bounds = template:GetBoundingBox()
+    template:PivotTo(CFrame.new(-bounds.Position) * template:GetPivot())
     modelTemplate = template
     return modelTemplate
 end
