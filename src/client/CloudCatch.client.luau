@@ -54,16 +54,17 @@ button.Parent = gui
 
 -- Compact status message
 local message = Instance.new("TextLabel")
-message.Size = UDim2.fromOffset(270, 30)
+message.Size = UDim2.fromOffset(250, 30)
 message.AnchorPoint = Vector2.new(0.5, 0)
-message.Position = UDim2.new(0.5, 0, 0, 52)
+message.Position = UDim2.new(0.5, 0, 0, 18)
 message.BackgroundTransparency = 0.4
 message.BackgroundColor3 = Color3.fromRGB(20, 30, 50)
 message.TextSize = 12
 message.TextWrapped = true
 message.Font = Enum.Font.Gotham
 message.TextColor3 = Color3.new(1, 1, 1)
-message.Text = "Find a glowing cloud and get close!"
+message.Text = ""
+message.Visible = false
 message.Parent = gui
 
 button.Activated:Connect(function()
@@ -80,11 +81,19 @@ button.Activated:Connect(function()
         remote:FireServer(nearest:GetAttribute("CloudId"))
     else
         message.Text = "No clouds nearby yet."
+        message.Visible = true
+        task.delay(3, function()
+            if message.Text == "No clouds nearby yet." then message.Visible = false end
+        end)
     end
 end)
 
 remote.OnClientEvent:Connect(function(success, text)
     message.Text = text
+    message.Visible = true
+    task.delay(3, function()
+        if message.Text == text then message.Visible = false end
+    end)
     if success then
         button.Text = "Catch"
         hideTutorial()
@@ -94,9 +103,9 @@ end)
 -- Compact quest tracker
 local questLabel = Instance.new("TextLabel")
 questLabel.Name = "QuestTracker"
-questLabel.Size = UDim2.fromOffset(240, 28)
-questLabel.AnchorPoint = Vector2.new(0.5, 0)
-questLabel.Position = UDim2.new(0.5, 0, 0, 82)
+questLabel.Size = UDim2.fromOffset(250, 28)
+questLabel.AnchorPoint = Vector2.new(1, 0)
+questLabel.Position = UDim2.new(1, -16, 0, 118)
 questLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 questLabel.BackgroundTransparency = 0.2
 questLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
@@ -142,7 +151,7 @@ refreshQuest()
 local levelLabel = Instance.new("TextLabel")
 levelLabel.Name = "LevelLabel"
 levelLabel.Size = UDim2.fromOffset(235, 28)
-levelLabel.Position = UDim2.new(0, 8, 0, 48)
+levelLabel.Position = UDim2.new(0, 16, 0, 118)
 levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 levelLabel.BackgroundTransparency = 0.2
 levelLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
