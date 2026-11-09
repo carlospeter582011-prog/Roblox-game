@@ -16,7 +16,8 @@ local function solid(parent, name, size, cf, color, material, shape)
     p.Color = color
     p.Material = material
     p.Anchored = true
-    p.CanCollide = name == "Trunk" or name == "Rock"
+    -- Decorative trees and underside rocks must not trap players or create climbable towers.
+    p.CanCollide = false
     if shape then p.Shape = shape end
     p.Parent = parent
     return p
@@ -52,7 +53,16 @@ function Assets.tree(parent, position, scale)
     solid(model, "Trunk", Vector3.new(2.4, 11, 2.4) * scale,
         cf * CFrame.new(0, 5.5 * scale, 0),
         Color3.fromRGB(120, 85, 75), Enum.Material.Wood)
-    local foliage = Color3.fromRGB(132, 215, 187)
+    -- Tapered canopy tiers and branches create a recognizable fantasy tree silhouette.
+    local foliage = Color3.fromRGB(105, 191, 169)
+    for tier = 1, 3 do
+        local height = (8 + tier * 2.3) * scale
+        local crown = solid(model, "CanopyTier" .. tier,
+            Vector3.new((10 - tier * 1.6) * scale, 3.2 * scale, (10 - tier * 1.6) * scale),
+            cf * CFrame.new(0, height, 0),
+            foliage:Lerp(Color3.fromRGB(190, 244, 217), tier / 5), Enum.Material.Grass)
+        crown.CanCollide = false
+    end
     for i, offset in ipairs({
         Vector3.new(-3, 12, 0), Vector3.new(3, 12, 0),
         Vector3.new(0, 15, 0), Vector3.new(0, 12, 3),
@@ -108,7 +118,7 @@ function Assets.floatingRock(parent, position)
             Vector3.new(i == 1 and 68 or 30, i == 1 and 22 or 15, i == 1 and 68 or 30),
             CFrame.new(position + Vector3.new(math.cos(angle) * radius, -i * 0.5, math.sin(angle) * radius)),
             Color3.fromRGB(95, 106, 135), Enum.Material.Slate, Enum.PartType.Ball)
-        rock.CanCollide = true
+        rock.CanCollide = false
     end
     return model
 end
