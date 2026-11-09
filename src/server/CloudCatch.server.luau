@@ -7,6 +7,7 @@ local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
+local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -30,7 +31,11 @@ local function spawnCloud()
     local id = tostring(nextId)
     local speciesId = SpawnRules.rollSpecies(catalog, math.random) or "breeze"
     local species = catalog[speciesId]
+    local mutationId = Mutations.roll(math.random)
     local tint = Color3.fromRGB(species.colorRGB[1], species.colorRGB[2], species.colorRGB[3])
+    if mutationId == "golden" then tint = Color3.fromRGB(255, 215, 0) end
+    if mutationId == "rainbow" then tint = Color3.fromRGB(255, 100, 255) end
+    if mutationId == "electric" then tint = Color3.fromRGB(100, 200, 255) end
     local cloud = Instance.new("Part")
     cloud.Name = speciesId .. "Cloud_" .. id
     cloud.Shape = Enum.PartType.Ball
@@ -42,6 +47,7 @@ local function spawnCloud()
     cloud.Position = Vector3.new(math.random(-28, 28), 9, math.random(-28, 28))
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
+    if mutationId then cloud:SetAttribute("MutationId", mutationId) end
     cloud.Transparency = 1
     cloud.Parent = cloudFolder
     local model = Instance.new("Model")
@@ -94,22 +100,25 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         return
     end
     active[cloudId] = nil
-    if not ProfileStore.AddCatch(player, species.id, CatchRules.coinReward(species, tool)) then
-        -- Player profile unavailable: preserve the cloud rather than grant an unsaved catch.
+    local mut = cloud:GetAttribute("MutationId")
+    local trackId = Mutations.key(species.id, mut)
+    local baseCoins = CatchRules.coinReward(species, tool)
+    local coins = Mutations.bonusCoins(baseCoins, mut)
+    if not ProfileStore.AddCatch(player, trackId, coins) then
         active[cloudId] = cloud
         remote:FireClient(player, false, "Profile unavailable. Please rejoin.")
         return
     end
     cloud:Destroy()
     if visuals[cloudId] then visuals[cloudId]:Destroy(); visuals[cloudId] = nil end
-    remote:FireClient(player, true, "Caught a " .. species.name .. "!")
+    local label = mut and (Mutations[mut].name .. " " .. species.name) or species.name
+    remote:FireClient(player, true, "Caught a " .. label .. "!")
     task.delay(5, spawnCloud)
 end)
 Players.PlayerRemoving:Connect(function(player)
     lastAttempt[player] = nil
 end)
 
--- Lightweight idle animation for original multi-part cloud models.
 task.spawn(function()
     local phase = 0
     while true do
