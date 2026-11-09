@@ -21,7 +21,7 @@ def part(name,body,ctype=None):
     h+="\r\n"
     if ctype:h+=f"Content-Type: {ctype}\r\n"
     return h.encode()+b"\r\n"+body+b"\r\n"
-body=part("request",json.dumps(request).encode(),"application/json")+part("fileContent",data,"model/gltf-binary")+f"--{boundary}--\r\n".encode()
+body=part("request",json.dumps(request,separators=(",",":")).encode())+part("fileContent",data,"model/gltf-binary")+f"--{boundary}--\r\n".encode()
 def call(url,method="GET",body=None,content_type=None):
     headers={"x-api-key":key}
     if content_type:headers["Content-Type"]=content_type
@@ -36,17 +36,24 @@ def call(url,method="GET",body=None,content_type=None):
         except (ValueError,UnicodeError):
             details={}
         codes=[]
+        messages=[]
         if isinstance(details,dict):
             for item in details.get("errors",[]) if isinstance(details.get("errors"),list) else []:
                 if isinstance(item,dict):
                     code=item.get("code")
+                    msg=item.get("message")
+                    if isinstance(msg,str) and len(msg)<240 and not any(s in msg.lower() for s in ("key", "token", "secret", "authorization")):
+                        messages.append(msg)
                     if isinstance(code,(int,str)) and len(str(code))<80:
                         codes.append(str(code))
+            msg=details.get("message")
+            if isinstance(msg,str) and len(msg)<240 and not any(s in msg.lower() for s in ("key", "token", "secret", "authorization")):
+                messages.append(msg)
             for field in ("code","status"):
                 value=details.get(field)
                 if isinstance(value,(int,str)) and len(str(value))<80:
                     codes.append(str(value))
-        print(f"Roblox API {method} HTTP {e.code}; error codes: {', '.join(codes) or 'not supplied'}",file=sys.stderr)
+        print(f"Roblox API {method} HTTP {e.code}; error codes: {', '.join(codes) or 'not supplied'}; messages: {'; '.join(messages) or 'not supplied'}",file=sys.stderr)
         sys.exit("Upload rejected. Check creator ownership, API key validity, account restrictions, and request format.")
 op=call("https://apis.roblox.com/assets/v1/assets","POST",body,f"multipart/form-data; boundary={boundary}")
 path=op.get("path","")
