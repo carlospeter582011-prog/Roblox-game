@@ -15,9 +15,9 @@ gui.Parent = player:WaitForChild("PlayerGui")
 -- Tutorial overlay (first time only)
 local tutorial = Instance.new("Frame")
 tutorial.Name = "Tutorial"
-tutorial.Size = UDim2.fromOffset(300, 76)
+tutorial.Size = UDim2.fromOffset(280, 58)
 tutorial.AnchorPoint = Vector2.new(0.5, 0.5)
-tutorial.Position = UDim2.new(0.5, 0, 0.43, 0)
+tutorial.Position = UDim2.new(0.5, 0, 0, 96)
 tutorial.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
 tutorial.BackgroundTransparency = 0.1
 tutorial.Parent = gui
@@ -26,7 +26,7 @@ tutorialLabel.Size = UDim2.new(1, -12, 1, -12)
 tutorialLabel.Position = UDim2.new(0, 6, 0, 6)
 tutorialLabel.BackgroundTransparency = 1
 tutorialLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
-tutorialLabel.TextSize = 16
+tutorialLabel.TextSize = 13
 tutorialLabel.TextWrapped = true
 tutorialLabel.Font = Enum.Font.Gotham
 tutorialLabel.Text = "Tutorial: Walk near a glowing cloud, then tap the blue Catch button."
@@ -169,4 +169,4 @@ end
 refreshLevel()
 
 -- Hide tutorial after 20s or first successful catch
-task.delay(20, hideTutorial)
+task.delay(7, hideTutorial)
