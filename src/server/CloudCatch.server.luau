@@ -138,7 +138,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 active[targetId] = nil
                 targetCloud:Destroy()
                 if visuals[targetId] then
-                    visuals[target.id].model:Destroy()
+                    visuals[targetId].model:Destroy()
                     visuals[target.id] = nil
                 end
                 caught += 1
