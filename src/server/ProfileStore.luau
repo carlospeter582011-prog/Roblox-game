@@ -14,6 +14,7 @@ local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
+local SpeciesMastery = require(ReplicatedStorage:WaitForChild("SpeciesMastery"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
@@ -68,8 +69,18 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
     catchOptions.xp = baseXp + resonance
+    local previousSpeciesCount = data.species[speciesId] or 0
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
+    end
+    -- Milestone bonuses are derived from the persistent base-species count; no separate
+    -- claim flags, client remotes or resettable session state are required.
+    local masteryCoins, masteryXp, masteryTier = SpeciesMastery.reward(previousSpeciesCount, data.species[speciesId])
+    if masteryTier then
+        data.coins += masteryCoins
+        data.xp += masteryXp
+        player:SetAttribute("LastMasteredSpecies", speciesId)
+        player:SetAttribute("LastMasteryTier", masteryTier)
     end
     if data.companionSpecies == "" then
         data.companionSpecies = speciesId
