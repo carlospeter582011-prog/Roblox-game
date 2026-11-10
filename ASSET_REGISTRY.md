@@ -97,3 +97,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## Observatory asset audit (2026-11-10)
 - PR #40 observatories remain original server-generated Roblox Parts/Models, no third-party meshes or new IDs. Reconnect-safe cooldown update changes server profile logic only, not visual assets. **No Roblox visual inspection or runtime evidence.**
+
+| Sky Observatory durable reward/cooldown receipt | n/a (server-only change to original 3D observatories) | Project (original code) | Original | none | Project-owned | PR #40 branch, save-before-acknowledge | Source changed in commits 5d9f780 / 858344f; no new asset, CI or Roblox runtime verification |
