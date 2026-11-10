@@ -361,3 +361,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - PR #40 branch: `Profile.AwardObservatory` now commits the Coins/XP and per-station cooldown in the same profile Save before success feedback. A pending guard prevents simultaneous observatory awards; an in-flight autosave is awaited. Failed/uncertain writes fail closed and disconnect the player rather than allowing repeated rewards. Code commits: 5d9f780 and 858344f.
 - This is NOT a fully transactional DataStore operation: unrelated in-flight profile mutations and shutdown races still need stress tests. No CI, real DataStore, Android runtime or Roblox publish verified for these commits. Draft PR must remain unmerged until tests and integration review.
 - Next: add focused fake-DataStore regression tests for concurrent autosave, ambiguous save failure, retry and rejoin; inspect PR CI and reconcile overlapping profile/economy PRs. Do not check launch acceptance boxes.
+
+## 2026-11-10 — Observatory reward state transition hardening
+- PR #40 branch: pure `ObservatoryRules.applyReward` now validates finite bounded Coins/XP and commits cooldown + both rewards in one non-yielding state mutation. `ProfileStore.AwardObservatory` uses it before the existing serialized DataStore save; duplicate/overflow/malformed inputs covered by `ObservatorySpec` tests.
+- Code commits: `12f2545`, `6775993`, `292813f`. These are branch-only, not merged/published. CI and Roblox runtime still unverified; in-flight server crashes and other concurrent profile mutations still need testing. No launch checklist box checked.
+- Next: check PR CI, test save/rejoin/concurrent mutation against real DataStore, reconcile other open PRs, and resume substantive world/story progression.
