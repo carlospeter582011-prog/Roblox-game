@@ -105,19 +105,22 @@ function Profile.DiscoverCrystal(player, index)
     end
     data.crystals = data.crystals or {}
     if data.crystals[index] then return false end
+    local before = CrystalRules.count(data.crystals)
     local coins, xp = CrystalRules.reward(index, false)
     data.crystals[index] = true
-    data.coins += coins
-    data.xp += xp
+    local total = CrystalRules.count(data.crystals)
+    local bonusCoins, bonusXp, milestone = CrystalRules.constellationReward(before, total)
+    data.coins += coins + bonusCoins
+    data.xp += xp + bonusXp
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
-    local total = 0
-    for _, found in pairs(data.crystals) do
-        if found then total += 1 end
-    end
     player:SetAttribute("SkyCrystalsDiscovered", total)
     player:SetAttribute("LastSkyCrystal", "sky-crystal-" .. index)
+    if milestone then
+        player:SetAttribute("CrystalConstellation", milestone)
+        player:SetAttribute("CrystalDiscoveryFeedback", "Constellation " .. milestone .. "/18! +" .. bonusCoins .. " Coins +" .. bonusXp .. " XP")
+    end
     return true
 end
 
