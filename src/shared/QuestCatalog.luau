@@ -52,6 +52,14 @@ for speciesId, species in pairs(Species) do
         Legendary = 100, Mythic = 125, Secret = 150,
     }
     local reward = rarityRewards[species.rarity] or 30
+    local hasFirstQuest = false
+    for _, authored in pairs(Quests) do
+        if authored.objective == "catch_species" and authored.speciesId == speciesId and authored.required == 1 then
+            hasFirstQuest = true
+            break
+        end
+    end
+    if not hasFirstQuest then
     Quests[id] = {
         id = id,
         title = "Discover: " .. species.name,
@@ -63,5 +71,6 @@ for speciesId, species in pairs(Species) do
         rewardXP = math.floor(reward / 2),
         chapter = 1,
     }
+    end
 end
 return table.freeze(Quests)
