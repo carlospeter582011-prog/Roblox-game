@@ -139,6 +139,27 @@ test("boss victories survive save and rejoin with strict per-boss validation", f
     eq(sanitized.bossVictories.bogus, nil, "unknown boss rejected")
 end)
 
+test("companion selection requires caught owned species and persists", function()
+    local Rules = require("../src/shared/CompanionRules")
+    local catalog = { breeze = { name = "Breeze" }, drizzle = { name = "Drizzle" }, storm = {} }
+    local species = { breeze = 2, drizzle = 1, storm = 0, fake = 20 }
+    eq(Rules.owned("fake", species, catalog), false, "unknown catalog id")
+    eq(Rules.owned("storm", species, catalog), false, "not caught")
+    eq(Rules.next(nil, species, catalog), "breeze", "first unlocked")
+    eq(Rules.next("breeze", species, catalog), "drizzle", "cycle forward")
+    eq(Rules.next("drizzle", species, catalog), "breeze", "cycle wraps")
+    eq(Rules.next(nil, {}, catalog), nil, "no species")
+    local store = FakeStore.new()
+    local a = repoFor(store, "companionA")
+    local loaded = a:Load("companion")
+    loaded.data.species.breeze = 1
+    loaded.data.companionSpecies = "breeze"
+    eq(a:Save("companion", loaded.data, true).ok, true, "save")
+    local b = repoFor(store, "companionB"):Load("companion")
+    eq(b.data.companionSpecies, "breeze", "saved selection")
+    eq(Core.sanitize({ companionSpecies = "bad:id" }, validQuests, 1).companionSpecies, "", "invalid id")
+end)
+
 test("a live lock held by another server blocks load and leaves the record alone", function()
     clock.t = 1000
     local store = FakeStore.new()
