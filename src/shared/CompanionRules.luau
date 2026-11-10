@@ -61,4 +61,14 @@ function Rules.airReachBonus(companionId, species, catalog, bond)
     if entry.element ~= "Air" then return 0 end
     return math.min(3, Rules.bondLevel(bond and bond[companionId]))
 end
+-- Earth companions help with one-time sky crystal discoveries, not repeat farming.
+-- Reward is based on server-owned collection and earned Bond; maximum 12%.
+function Rules.earthCrystalBonus(baseCoins, companionId, species, catalog, bond)
+    if type(baseCoins) ~= "number" or baseCoins ~= baseCoins or baseCoins < 0
+        or baseCoins == math.huge or baseCoins > 100000 then return 0 end
+    if not Rules.owned(companionId, species, catalog) then return 0 end
+    if catalog[companionId].element ~= "Earth" then return 0 end
+    local level = Rules.bondLevel(bond and bond[companionId])
+    return math.floor(baseCoins * math.min(level, 3) * 0.04)
+end
 return Rules
