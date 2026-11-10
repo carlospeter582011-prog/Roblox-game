@@ -14,6 +14,19 @@ function Boss.progress(startCatches, currentCatches, goal)
         or type(goal) ~= "number" or goal < 1 then return 0 end
     return math.min(goal, math.max(0, currentCatches - startCatches))
 end
+-- Three escalating stages, derived only from server-observed catch progress.
+-- Stage 1 is opening, stage 2 is pressure, stage 3 is final push.
+function Boss.phase(progress, goal)
+    if type(progress) ~= "number" or type(goal) ~= "number" or goal < 1 then return 1 end
+    if progress >= math.ceil(goal * 2 / 3) then return 3 end
+    if progress >= math.ceil(goal / 3) then return 2 end
+    return 1
+end
+function Boss.phaseMessage(phase, name)
+    if phase == 2 then return name .. " is gathering storm energy! Keep catching!" end
+    if phase == 3 then return name .. " final phase! Finish the trial!" end
+    return name .. " challenge started!"
+end
 function Boss.status(startCatches, currentCatches, goal, deadline, now)
     if type(deadline) ~= "number" or type(now) ~= "number" then return "invalid" end
     if now > deadline then return "expired" end
