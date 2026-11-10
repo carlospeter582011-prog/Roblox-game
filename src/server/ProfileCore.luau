@@ -3,7 +3,7 @@
 -- ProfileStore.luau wires this to the real DataStore, Players events and the shutdown flow.
 local Core = {}
 
-Core.SCHEMA_VERSION = 3
+Core.SCHEMA_VERSION = 4
 -- A lock not refreshed for this many seconds is treated as dead (crashed server).
 -- Autosave refreshes it every 90s, so this tolerates several missed saves.
 Core.LOCK_TIMEOUT = 300
@@ -20,6 +20,8 @@ function Core.defaultData(now)
         captures = 0,
         species = {},
         quests = {},
+        speciesMastery = {},
+        evolvedSpecies = {},
         ownedTools = { starter_net = true },
         crystals = {},
         rangeTraining = 0,
@@ -50,6 +52,20 @@ function Core.sanitize(raw, validQuests, now)
         for id, count in pairs(raw.species) do
             if type(id) == "string" and #id <= MAX_ID_LENGTH and isCount(count, MAX_SPECIES_COUNT + 1) then
                 clean.species[id] = math.floor(count)
+            end
+        end
+    end
+    if type(raw.speciesMastery) == "table" then
+        for id, points in pairs(raw.speciesMastery) do
+            if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$") and isCount(points, 1000001) then
+                clean.speciesMastery[id] = math.floor(points)
+            end
+        end
+    end
+    if type(raw.evolvedSpecies) == "table" then
+        for id, done in pairs(raw.evolvedSpecies) do
+            if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$") and done == true then
+                clean.evolvedSpecies[id] = true
             end
         end
     end
