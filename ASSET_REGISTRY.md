@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## Sky Current launchpad provenance — 2026-11-11
+- Three optional launchpad assemblies in `src/server/SkyCurrent.server.luau`: original procedural anchored Roblox `Part`/`Model` geometry with neon cylinder ring and ProximityPrompt; no external assets, Model IDs or Mesh IDs. Source integrated on isolated feature branch only. **Provisional positions and trajectory; Studio/Android landing, collision and visual verification pending.** No Canvas world art.
