@@ -27,7 +27,7 @@ return function(test, eq)
     end)
 
     test("discovery quest rewards exactly once across subsequent catches", function()
-        local id = "breeze"
+        local id = "cirrus"
         local data = { species = {}, quests = {}, captures = 0, coins = 0, xp = 0 }
         local q = { ["discover_" .. id] = Quests["discover_" .. id] }
         local first = Catch.applyCatch(data, id, 10, q)
@@ -40,9 +40,9 @@ return function(test, eq)
 
     test("discovery progress survives sanitized profile rejoin", function()
         local Core = require("../src/server/ProfileCore")
-        local data = { species = { breeze = 1 }, quests = { discover_breeze = true } }
-        local clean = Core.sanitize(data, { discover_breeze = true }, 100)
-        eq(clean.quests.discover_breeze, true, "discovery persisted")
-        eq(clean.species.breeze, 1, "species persisted")
+        local data = { species = { cirrus = 1 }, quests = { discover_cirrus = true } }
+        local clean = Core.sanitize(data, { discover_cirrus = true }, 100)
+        eq(clean.quests.discover_cirrus, true, "discovery persisted")
+        eq(clean.species.cirrus, 1, "species persisted")
     end)
 end
