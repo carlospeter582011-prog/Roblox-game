@@ -359,3 +359,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-11 — Habitat purchase transaction proposal (PR #63)
 - Added `IslandProductionRules.build` for server-authoritative, nonmutating habitat purchase proposals: elemental cloud ownership, wallet cost, capacity, clock initialization, malformed/sparse job rejection. Two regression tests added. Commits `1555151e6dbfdec1165a0bf078cd7cdf4d147d01` and `b7f52cca68550c3ed258c918081f5bbb20989461`.
 - This is still pure logic only. No live profile transaction, persisted habitat schema, 3D placement or player-facing UI. Keep draft, do not publish or check off launch criteria. CI and Roblox runtime verification pending.
+
+## 2026-11-11 — multi-habitat settlement (PR #63)
+- Added pure `IslandProductionRules.claimAll` to calculate and validate an entire habitat batch in one immutable wallet/jobs proposal. Rejects sparse/malformed jobs, invalid clocks, wallet overflow, and partial credit; repeated same-time claims return zero. Added two focused regression cases in `tests/IslandProductionSpec.luau`.
+- Commits: `9914f2cc9ad91a8e50dd474b1f6e7bbe7be13e80`, `a32e8a1fdaaeab841b508c9f31ca925ac8bdf43b`. CI and Studio runtime **not yet verified**; PR remains draft, not merged or published. This is still pure rules, **not connected to ProfileStore**. Next: reconcile conflicting production economy designs and integrate authoritative atomic profile mutation and 3D build/claim prompts before release.
