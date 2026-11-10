@@ -61,4 +61,14 @@ function Rules.airReachBonus(companionId, species, catalog, bond)
     if entry.element ~= "Air" then return 0 end
     return math.min(3, Rules.bondLevel(bond and bond[companionId]))
 end
+-- Nature companion discovery instinct: first-ever species catch grants earned XP.
+-- Use the pre-catch species collection; duplicates never qualify. This is server-only.
+function Rules.natureDiscoveryXp(baseXp, companionId, targetId, species, catalog, bond)
+    if type(baseXp) ~= "number" or baseXp ~= baseXp or baseXp < 0 or baseXp == math.huge or baseXp > 100000 then return 0 end
+    if not Rules.owned(companionId, species, catalog) or not catalog[targetId] then return 0 end
+    if catalog[companionId].element ~= "Nature" then return 0 end
+    if type(species[targetId]) == "number" and species[targetId] > 0 then return 0 end
+    local level = Rules.bondLevel(bond and bond[companionId])
+    return math.floor(baseXp * level * 0.1)
+end
 return Rules
