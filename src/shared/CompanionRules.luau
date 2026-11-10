@@ -51,4 +51,14 @@ function Rules.resonanceXp(baseXp, companionId, targetId, species, catalog, bond
     if level == 0 then return 0 end
     return math.floor(baseXp * math.min(level, 3) * 0.05)
 end
+
+-- Elemental field ability: Air companions grant a small, earned catch reach bonus.
+-- Calculated only from server-owned collection and saved Bond points. This stacks
+-- with purchased training but is capped at 3 studs and never changes tool ownership.
+function Rules.airReachBonus(companionId, species, catalog, bond)
+    if not Rules.owned(companionId, species, catalog) then return 0 end
+    local entry = catalog[companionId]
+    if entry.element ~= "Air" then return 0 end
+    return math.min(3, Rules.bondLevel(bond and bond[companionId]))
+end
 return Rules
