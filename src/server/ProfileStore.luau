@@ -161,9 +161,11 @@ function Profile.AwardObservatory(player, stationId)
     observatoryPending[player] = true
     -- Update reward and cooldown together in the same profile record. Do not tell
     -- the client the award succeeded until the locked DataStore write completes.
-    data.observatoryCooldowns[stationId] = now + Rules.COOLDOWN
-    data.coins += coins
-    data.xp += xp
+    local applied = Rules.applyReward(data, stationId, now)
+    if not applied then
+        observatoryPending[player] = nil
+        return false, "Invalid reward state"
+    end
     local saved = persist(player, false)
     observatoryPending[player] = nil
     if not saved then
