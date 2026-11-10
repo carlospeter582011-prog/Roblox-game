@@ -55,6 +55,23 @@ local function test(name, fn)
     table.insert(tests, { name = name, fn = fn })
 end
 
+test("sky sprint enforces route order, realistic speed and valid server time", function()
+    local Rules = require("../src/shared/SkySprintRules")
+    local start, status = Rules.advance(nil, 1, 100)
+    eq(status, "started", "start")
+    eq(Rules.advance(start, 3, 110), nil, "skip rejected")
+    eq(Rules.advance(start, 2, 101), nil, "teleport-speed rejected")
+    local middle, progress = Rules.advance(start, 2, 104)
+    eq(progress, "progress", "middle")
+    local finish, result = Rules.advance(middle, 3, 108)
+    eq(result, "finished", "finish")
+    eq(finish.duration, 8, "duration")
+    eq(Rules.advance(start, 2, 100), nil, "zero elapsed rejected")
+    eq(Rules.advance(start, 2, 500), nil, "expired rejected")
+    eq(Rules.advance(start, 2, 0/0), nil, "nan rejected")
+    eq(Rules.advance(start, 2, math.huge), nil, "infinity rejected")
+end)
+
 test("new player gets default data and the lock", function()
     clock.t = 1000
     local store = FakeStore.new()
