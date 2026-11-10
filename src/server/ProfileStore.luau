@@ -142,6 +142,18 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Repeatable exploration reward, gated by the 3D puzzle's server-only state machine.
+function Profile.AwardRunePuzzle(player, coins, xp)
+    local data = sessions[player]
+    if not data or coins ~= 60 or xp ~= 35 then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
