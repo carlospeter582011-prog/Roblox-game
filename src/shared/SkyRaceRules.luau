@@ -15,6 +15,9 @@ function Rules.advance(state, checkpoint, distance, now)
     if type(now) ~= "number" or now ~= now or now == math.huge then return nil, "Invalid time" end
     state = state or { next = 1, started = nil, cooldownUntil = -math.huge }
     if now < (state.cooldownUntil or 0) then return nil, "Race cooling down" end
+    if checkpoint == 1 and state.next ~= 1 and type(state.started) == "number" and now - state.started > Rules.TIME_LIMIT then
+        state = { next = 1, started = nil, cooldownUntil = state.cooldownUntil }
+    end
     if checkpoint ~= state.next then return nil, "Wrong checkpoint order" end
     if checkpoint == 1 then
         return { next = 2, started = now, cooldownUntil = state.cooldownUntil }, "Started"
