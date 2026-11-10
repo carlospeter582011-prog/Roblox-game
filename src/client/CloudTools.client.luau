@@ -6,6 +6,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Progress = require(ReplicatedStorage:WaitForChild("ProgressRules"))
 local equip = ReplicatedStorage:WaitForChild("EquipCatchTool")
 local purchase = ReplicatedStorage:WaitForChild("PurchaseCatchTool")
+local trainingPurchase = ReplicatedStorage:WaitForChild("PurchaseRangeTraining")
 local gui = Instance.new("ScreenGui")
 gui.Name = "CloudToolPicker"
 gui.ResetOnSpawn = false
@@ -13,7 +14,7 @@ gui.Parent = player:WaitForChild("PlayerGui")
 local button = Instance.new("TextButton")
 button.Size = UDim2.fromOffset(80, 32)
 button.Position = UDim2.new(0, 16, 0, 144)
-button.Text = "Tools"
+button.Text = "Shop"
 button.TextSize = 14
 button.Font = Enum.Font.GothamBold
 button.BackgroundColor3 = Color3.fromRGB(33, 85, 125)
@@ -21,7 +22,7 @@ button.TextColor3 = Color3.new(1, 1, 1)
 button.Parent = gui
 -- Scrolls so all tools fit on a small touch screen.
 local panel = Instance.new("ScrollingFrame")
-panel.Size = UDim2.new(0, 210, 0, 170)
+panel.Size = UDim2.new(0, 230, 0, 215)
 panel.Position = UDim2.new(0, 16, 0, 184)
 panel.Visible = false
 panel.BackgroundColor3 = Color3.fromRGB(24, 48, 81)
@@ -34,10 +35,24 @@ layout.Padding = UDim.new(0, 3)
 layout.Parent = panel
 local order = Progress.sortedByUnlock(catalog) -- every tool, in unlock order
 local rows = {}
+local trainingButton = Instance.new("TextButton")
+trainingButton.Name = "RangeTraining"
+trainingButton.LayoutOrder = -1
+trainingButton.Size = UDim2.new(1, -6, 0, 42)
+trainingButton.TextSize = 12
+trainingButton.TextWrapped = true
+trainingButton.Font = Enum.Font.GothamBold
+trainingButton.TextColor3 = Color3.new(1, 1, 1)
+trainingButton.BackgroundColor3 = Color3.fromRGB(42, 119, 88)
+trainingButton.Parent = panel
+trainingButton.Activated:Connect(function()
+    trainingPurchase:FireServer()
+end)
 for _, id in ipairs(order) do
     local tool = catalog[id]
     local row = Instance.new("TextButton")
     row.Name = id
+    row.LayoutOrder = tool.unlockCatches + 1
     row.Size = UDim2.new(1, -6, 0, 32)
     row.TextSize = 13
     row.Font = Enum.Font.Gotham
@@ -58,6 +73,10 @@ for _, id in ipairs(order) do
 end
 local function refresh()
     local count = player:GetAttribute("CloudCount") or 0
+    local training = math.clamp(player:GetAttribute("RangeTraining") or 0, 0, 3)
+    local costs = { 100, 250, 500 }
+    local levels = { 2, 4, 6 }
+    trainingButton.Text = training == 3 and "Range Training MAX (+6 studs)" or ("Train Range +" .. ((training + 1) * 2) .. " | " .. costs[training + 1] .. " coins | Lv " .. levels[training + 1])
     for id, row in pairs(rows) do
         local tool = catalog[id]
         local locked = count < tool.unlockCatches
@@ -70,13 +89,20 @@ end
 player:GetAttributeChangedSignal("CloudCount"):Connect(refresh)
 player:GetAttributeChangedSignal("EquippedCatchTool"):Connect(refresh)
 player:GetAttributeChangedSignal("CloudCoins"):Connect(refresh)
+player:GetAttributeChangedSignal("RangeTraining"):Connect(refresh)
+player:GetAttributeChangedSignal("CloudLevel"):Connect(refresh)
 for _, id in ipairs(order) do
     player:GetAttributeChangedSignal("OwnsTool_" .. id):Connect(refresh)
 end
+trainingPurchase.OnClientEvent:Connect(function(ok, result)
+    button.Text = tostring(result)
+    refresh()
+    task.delay(2, function() button.Text = "Shop" end)
+end)
 purchase.OnClientEvent:Connect(function(ok, result)
     button.Text = ok and "Purchased!" or tostring(result)
     refresh()
-    task.delay(2, function() button.Text = "Tools" end)
+    task.delay(2, function() button.Text = "Shop" end)
 end)
 button.Activated:Connect(function()
     refresh()
