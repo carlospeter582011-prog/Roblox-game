@@ -17,6 +17,21 @@ function Rules.canObserve(id, catches, distance, now, nextAllowed, ready)
     if type(nextAllowed) ~= "number" or nextAllowed ~= nextAllowed then return false end
     return now >= nextAllowed
 end
+-- Apply a bounded reward and its cooldown in one non-yielding profile mutation.
+-- The caller must durably save the whole profile before acknowledging success.
+function Rules.applyReward(data, id, now)
+    if type(data) ~= "table" or type(data.observatoryCooldowns) ~= "table" then return false end
+    local station = type(id) == "string" and Rules.stations[id] or nil
+    if not station or type(data.coins) ~= "number" or type(data.xp) ~= "number" then return false end
+    if data.coins ~= data.coins or data.xp ~= data.xp or data.coins < 0 or data.xp < 0 then return false end
+    if data.coins == math.huge or data.xp == math.huge or data.coins + station.coins > 1000000000 or data.xp + station.xp > 1000000000 then return false end
+    if not Rules.canObserve(id, data.captures, 0, now, data.observatoryCooldowns[id] or 0, true) then return false end
+    data.coins += station.coins
+    data.xp += station.xp
+    data.observatoryCooldowns[id] = now + Rules.COOLDOWN
+    return true, station.coins, station.xp
+end
+
 function Rules.reward(id)
     local station = type(id) == "string" and Rules.stations[id] or nil
     if not station then return nil end
