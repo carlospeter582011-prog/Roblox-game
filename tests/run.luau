@@ -377,6 +377,7 @@ require("./ProgressSpec")(test, eq)
 require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
+require("./BossElementObjectivesSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
 local failures = 0
