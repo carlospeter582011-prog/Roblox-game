@@ -39,5 +39,17 @@ local Quests = {
     five_nebula = { id = "five_nebula", title = "Nebula Hunt", description = "Catch five Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 5, rewardCoins = 2000, rewardXP = 1000, chapter = 5 },
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
+    survey_5 = { id = "survey_5", title = "Sky Survey 1", description = "Discover 5 distinct cloud species.", objective = "unique_species", required = 5, rewardCoins = 175, rewardXP = 90, chapter = 1 },
+    survey_10 = { id = "survey_10", title = "Sky Survey 2", description = "Discover 10 distinct cloud species.", objective = "unique_species", required = 10, rewardCoins = 350, rewardXP = 180, chapter = 1 },
+    survey_15 = { id = "survey_15", title = "Sky Survey 3", description = "Discover 15 distinct cloud species.", objective = "unique_species", required = 15, rewardCoins = 525, rewardXP = 270, chapter = 1 },
+    survey_20 = { id = "survey_20", title = "Sky Survey 4", description = "Discover 20 distinct cloud species.", objective = "unique_species", required = 20, rewardCoins = 700, rewardXP = 360, chapter = 2 },
+    survey_25 = { id = "survey_25", title = "Sky Survey 5", description = "Discover 25 distinct cloud species.", objective = "unique_species", required = 25, rewardCoins = 875, rewardXP = 450, chapter = 2 },
+    survey_30 = { id = "survey_30", title = "Sky Survey 6", description = "Discover 30 distinct cloud species.", objective = "unique_species", required = 30, rewardCoins = 1050, rewardXP = 540, chapter = 2 },
+    survey_35 = { id = "survey_35", title = "Sky Survey 7", description = "Discover 35 distinct cloud species.", objective = "unique_species", required = 35, rewardCoins = 1225, rewardXP = 630, chapter = 3 },
+    survey_40 = { id = "survey_40", title = "Sky Survey 8", description = "Discover 40 distinct cloud species.", objective = "unique_species", required = 40, rewardCoins = 1400, rewardXP = 720, chapter = 3 },
+    survey_45 = { id = "survey_45", title = "Sky Survey 9", description = "Discover 45 distinct cloud species.", objective = "unique_species", required = 45, rewardCoins = 1575, rewardXP = 810, chapter = 3 },
+    survey_50 = { id = "survey_50", title = "Sky Survey 10", description = "Discover 50 distinct cloud species.", objective = "unique_species", required = 50, rewardCoins = 1750, rewardXP = 900, chapter = 4 },
+    survey_55 = { id = "survey_55", title = "Sky Survey 11", description = "Discover 55 distinct cloud species.", objective = "unique_species", required = 55, rewardCoins = 1925, rewardXP = 990, chapter = 4 },
+    survey_60 = { id = "survey_60", title = "Sky Survey 12", description = "Discover 60 distinct cloud species.", objective = "unique_species", required = 60, rewardCoins = 2100, rewardXP = 1080, chapter = 4 },
 }
 return table.freeze(Quests)

@@ -77,7 +77,21 @@ function Rules.questProgress(quest, data)
     if quest.objective == "catch_species" then
         return data.species[quest.speciesId] or 0
     end
-    return data.captures
+    if quest.objective == "unique_species" then
+        local count = 0
+        for speciesId, amount in pairs(data.species or {}) do
+            -- Mutated variants use colon-separated keys and must not count as new species.
+            if type(speciesId) == "string" and not string.find(speciesId, ":", 1, true)
+                and type(amount) == "number" and amount >= 1 and amount < math.huge then
+                count += 1
+            end
+        end
+        return count
+    end
+    if quest.objective == "total_catches" then
+        return data.captures
+    end
+    return 0
 end
 
 -- Roblox attribute names may only contain letters, digits, underscores and hyphens (per the
