@@ -15,6 +15,19 @@ local function joined(list)
 end
 
 return function(test, eq)
+    test("range validation rejects NaN, infinity and negative distances", function()
+        local Rules = require("../src/shared/CatchRules")
+        local species = { baseCatchRadius = 5 }
+        local tool = { rangeBonus = 2 }
+        eq(Rules.isInRange(7, species, tool), true, "boundary")
+        eq(Rules.isInRange(7.01, species, tool), false, "out of range")
+        eq(Rules.isInRange(-1, species, tool), false, "negative")
+        eq(Rules.isInRange(0/0, species, tool), false, "NaN")
+        eq(Rules.isInRange(math.huge, species, tool), false, "infinity")
+        eq(Rules.isInRange(nil, species, tool), false, "missing")
+        eq(Rules.canMagnetPull(0/0, species, "cloud_magnet", tool), false, "magnet NaN")
+    end)
+
     test("cloud regions rotate across three walkable 3D islands", function()
         local expected = { "StarterMeadow", "EastwindOutlook", "StarterMeadow", "StarterMeadow", "ThunderheadRidge" }
         for i, name in ipairs(expected) do
