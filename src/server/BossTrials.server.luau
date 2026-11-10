@@ -5,6 +5,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local Rules = require(ReplicatedStorage:WaitForChild("BossChallengeRules"))
+local Objectives = require(ReplicatedStorage:WaitForChild("BossElementObjectives"))
+local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local folder = Instance.new("Folder")
 folder.Name = "CloudBossArenas3D"
 folder.Parent = Workspace
@@ -69,9 +71,9 @@ local function createBoss(id, x, z, tint)
             player:SetAttribute("BossChallengeFeedback", "Boss resting. Try again shortly.")
             return
         end
-        active[player] = { id = id, startCatches = profile.captures, deadline = now + config.seconds, phase = 1 }
+        active[player] = { id = id, startSpecies = Objectives.snapshot(profile.species, CloudCatalog), deadline = now + config.seconds, phase = 1 }
         player:SetAttribute("BossChallengePhase", 1)
-        player:SetAttribute("BossChallengeFeedback", config.name .. ": catch " .. config.goal .. " clouds in " .. config.seconds .. "s!")
+        player:SetAttribute("BossChallengeFeedback", config.name .. ": catch " .. config.goal .. " " .. Objectives.label(id) .. " clouds in " .. config.seconds .. "s!")
         player:SetAttribute("BossChallengeProgress", "0/" .. config.goal)
     end)
 end
@@ -89,8 +91,8 @@ task.spawn(function()
             else
                 local config = Rules.challenges[trial.id]
                 local now = os.clock()
-                local state = Rules.status(trial.startCatches, profile.captures, config.goal, trial.deadline, now)
-                local count = Rules.progress(trial.startCatches, profile.captures, config.goal)
+                local count = Objectives.progress(trial.id, trial.startSpecies, profile.species, CloudCatalog, config.goal)
+                local state = Rules.status(0, count, config.goal, trial.deadline, now)
                 player:SetAttribute("BossChallengeProgress", count .. "/" .. config.goal)
                 if state == "active" then
                     local phase = Rules.phase(count, config.goal)
