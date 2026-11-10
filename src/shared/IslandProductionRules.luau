@@ -112,4 +112,33 @@ function Rules.build(recipeId, wallet, jobs, ownedSpecies, catalog, now)
     return { coins = wallet - recipe.costCoins, jobs = updated, spent = recipe.costCoins }
 end
 
+
+-- Settle all habitats as one immutable wallet/jobs proposal. No partial credits on error.
+-- The profile owner must commit the entire result in one server-authoritative mutation.
+function Rules.claimAll(jobs, now, wallet)
+    if type(jobs) ~= "table" or not whole(now) or now > 9007199254740991
+        or not whole(wallet) or wallet > 9007199254740991 then
+        return nil, "invalid_state"
+    end
+    local count = 0
+    for key in pairs(jobs) do
+        if type(key) ~= "number" or key < 1 or key ~= math.floor(key)
+            or key > Rules.MAX_JOBS then return nil, "invalid_jobs" end
+        count += 1
+    end
+    if count ~= #jobs then return nil, "invalid_jobs" end
+    local nextJobs = {}
+    local total = 0
+    for i, job in ipairs(jobs) do
+        if type(job) ~= "table" or type(job.recipeId) ~= "string"
+            or not Rules.RECIPES[job.recipeId] then return nil, "invalid_jobs" end
+        local result, reason = Rules.claim(job.recipeId, job, now, wallet + total)
+        if not result then return nil, reason end
+        total += result.credited
+        nextJobs[i] = { recipeId = job.recipeId, lastAccrued = result.job.lastAccrued,
+            stored = result.job.stored, carry = result.job.carry }
+    end
+    return { coins = wallet + total, credited = total, jobs = nextJobs }
+end
+
 return table.freeze(Rules)
