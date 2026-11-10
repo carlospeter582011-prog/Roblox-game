@@ -106,8 +106,11 @@ function Profile.DiscoverCrystal(player, index)
     data.crystals = data.crystals or {}
     if data.crystals[index] then return false end
     local coins, xp = CrystalRules.reward(index, false)
+    -- First discovery only; the existing duplicate guard above prevents farming.
+    local earthBonus = CompanionRules.earthCrystalBonus(coins, data.companionSpecies,
+        data.species, CloudCatalog, data.companionBond)
     data.crystals[index] = true
-    data.coins += coins
+    data.coins += coins + earthBonus
     data.xp += xp
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
