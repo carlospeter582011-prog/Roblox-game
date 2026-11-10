@@ -86,3 +86,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ### 2026-11-10 10:08 — Boss Journal HUD audit
 - Boss victory persistence and the new `Boss Journal` UI do not introduce or modify any in-world objects. Journal uses `ScreenGui`, `TextButton`, `Frame`, `TextLabel`, `UICorner`, all permitted HUD primitives. Existing boss arenas remain original native 3D `Model`/`Part` geometry. No imported GLB, MeshPart ID, Model asset ID or external license added. Runtime screenshot and world-wide 3D audit remain outstanding.
+
+### 2026-11-10 — Personal cloud companions (original native 3D)
+- `src/server/CloudCompanions.server.luau` creates one lightweight `Model` per equipped player, with three anchored, non-colliding, non-querying, non-touching smooth `Part` spheres tinted using catalog RGB. Server animates follow position; model is removed when player leaves. Original geometry, generated in Luau, no external asset, license or Roblox MeshId required. These are actual in-world 3D Parts, not Canvas/ScreenGui world stand-ins. Existing ScreenGui Shop companion picker is allowed HUD only. Visual/LOD/mobile performance and collision verification pending actual Roblox runtime.
