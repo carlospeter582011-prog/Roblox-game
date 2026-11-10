@@ -234,26 +234,54 @@ for _, quest in ipairs(orderedQuests) do
 end
 refreshQuest()
 
--- Compact level/coins
-local levelLabel = Instance.new("TextLabel")
-levelLabel.Name = "LevelLabel"
-levelLabel.Size = UDim2.fromOffset(290, 40)
-levelLabel.Position = UDim2.new(0, 16, 0, 102)
-levelLabel.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
-levelLabel.BackgroundTransparency = 0.2
-levelLabel.TextColor3 = Color3.fromRGB(245, 250, 255)
-levelLabel.TextSize = 16
-levelLabel.Font = Enum.Font.Gotham
-levelLabel.Parent = gui
-local function refreshLevel()
+-- Compact, vertical left-side wallet; no long horizontal stat line.
+local wallet = Instance.new("Frame")
+wallet.Name = "CompactWallet"
+wallet.Size = UDim2.fromOffset(150, 90)
+wallet.Position = UDim2.new(0, 12, 0, 46)
+wallet.BackgroundColor3 = Color3.fromRGB(24, 53, 91)
+wallet.BackgroundTransparency = 0.12
+wallet.BorderSizePixel = 0
+wallet.Parent = gui
+local walletCorner = Instance.new("UICorner")
+walletCorner.CornerRadius = UDim.new(0, 10)
+walletCorner.Parent = wallet
+local walletPadding = Instance.new("UIPadding")
+walletPadding.PaddingLeft = UDim.new(0, 10)
+walletPadding.PaddingRight = UDim.new(0, 8)
+walletPadding.Parent = wallet
+local walletLayout = Instance.new("UIListLayout")
+walletLayout.SortOrder = Enum.SortOrder.LayoutOrder
+walletLayout.VerticalAlignment = Enum.VerticalAlignment.Center
+walletLayout.Padding = UDim.new(0, 2)
+walletLayout.Parent = wallet
+local function statRow(name, order)
+    local label = Instance.new("TextLabel")
+    label.Name = name
+    label.LayoutOrder = order
+    label.Size = UDim2.new(1, 0, 0, 26)
+    label.BackgroundTransparency = 1
+    label.TextXAlignment = Enum.TextXAlignment.Left
+    label.TextTruncate = Enum.TextTruncate.AtEnd
+    label.TextColor3 = Color3.fromRGB(245, 250, 255)
+    label.Font = Enum.Font.GothamBold
+    label.TextSize = 13
+    label.Parent = wallet
+    return label
+end
+local coinsRow = statRow("Coins", 1)
+local xpRow = statRow("XP", 2)
+local caughtRow = statRow("Caught", 3)
+local function refreshWallet()
     local level, into, needed = Leveling.progress(player:GetAttribute("CloudXP"))
-    local xpText = needed == 0 and "MAX" or (tostring(math.floor(into)) .. "/" .. tostring(needed))
-    levelLabel.Text = "Lv " .. tostring(level) .. "  " .. xpText .. " XP  " .. tostring(player:GetAttribute("CloudCoins") or 0) .. " coins"
+    coinsRow.Text = "Coins: " .. tostring(player:GetAttribute("CloudCoins") or 0)
+    xpRow.Text = "XP: " .. tostring(math.floor(into)) .. "/" .. (needed == 0 and "MAX" or tostring(needed)) .. " (Lv " .. tostring(level) .. ")"
+    caughtRow.Text = "Caught: " .. tostring(player:GetAttribute("CloudCount") or 0)
 end
-for _, attribute in ipairs({ "CloudLevel", "CloudCoins", "CloudXP" }) do
-    player:GetAttributeChangedSignal(attribute):Connect(refreshLevel)
+for _, attribute in ipairs({ "CloudLevel", "CloudCoins", "CloudXP", "CloudCount" }) do
+    player:GetAttributeChangedSignal(attribute):Connect(refreshWallet)
 end
-refreshLevel()
+refreshWallet()
 
 -- Hide tutorial after 20s or first successful catch
 task.delay(7, hideTutorial)
