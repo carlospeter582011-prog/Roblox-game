@@ -7,7 +7,6 @@ local Rules = require(ReplicatedStorage:WaitForChild("ObservatoryRules"))
 local folder = Instance.new("Folder")
 folder.Name = "SkyObservatories3D"
 folder.Parent = Workspace
-local nextAllowed = {}
 local function makePart(model, name, size, position, color, material)
     local p = Instance.new("Part")
     p.Name = name
@@ -45,21 +44,16 @@ for id, config in pairs(Rules.stations) do
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
         local data = Profile.Get(player)
         if not data or not root or not humanoid or humanoid.Health <= 0 then return end
-        local now = os.clock()
-        local nextByPlayer = nextAllowed[player] or {}
+        local now = os.time()
+        local cooldowns = data.observatoryCooldowns or {}
         if not Rules.canObserve(id, data.captures, (root.Position - scope.Position).Magnitude,
-            now, nextByPlayer[id] or 0, player:GetAttribute("ProfileReady")) then
+            now, cooldowns[id] or 0, player:GetAttribute("ProfileReady")) then
             player:SetAttribute("ObservatoryFeedback", "Observatory locked, too far, or recharging.")
             return
         end
         -- Commit the cooldown only if the profile reward succeeds.
         local ok, coins, xp = Profile.AwardObservatory(player, id)
         if not ok then return end
-        nextByPlayer[id] = now + Rules.COOLDOWN
-        nextAllowed[player] = nextByPlayer
         player:SetAttribute("ObservatoryFeedback", config.name .. ": +" .. coins .. " Coins, +" .. xp .. " XP!")
     end)
 end
-Players.PlayerRemoving:Connect(function(player)
-    nextAllowed[player] = nil
-end)
