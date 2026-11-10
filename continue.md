@@ -320,3 +320,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - This is a partial companion gameplay system, NOT completed cloud raising/evolution/fusion. Roblox Studio/mobile appearance and live DataStore behavior remain unverified. Next: validate CI and publish; build visual Bond UI and meaningful companion abilities; continue distinct worlds/story and runtime QA.
 
 - CI follow-up: [run 42797257063](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42797257063) completed SUCCESS for 76b88bb; `build-and-publish` steps for static analysis/unit tests, Rojo build and `Publish to existing Roblox Place` all reported success. This is CI/publish-step evidence only, not proof of Roblox runtime appearance or DataStore persistence.
+
+
+## 2026-11-10 — Companion follow smoothing and teleport recovery
+- Commit `3016d4863a5190fbdc10ef3eaf489e53764d3216` updates `CloudCompanions.server.luau`: interpolates the real 3D Model companion pivot for smoother following, snaps immediately when the destination is 30+ studs away (fast travel/teleport), and resets smoothing on missing character, despawn, selection change and player leave. No Canvas world assets introduced.
+- Verified by rereading source through GitHub connector. **No Roblox runtime, visual/mobile test, CI result or publish outcome verified in this run.** The change still requires CI and an Android fast-travel/respawn play-test; it is not a finished companion gameplay milestone.
+- Next: inspect Actions status for this commit, test companion movement/teleports in Roblox, then implement distinct companion abilities and extend progression toward the complete design.
