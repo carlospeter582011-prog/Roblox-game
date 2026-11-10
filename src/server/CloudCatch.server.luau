@@ -2,6 +2,8 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local TweenService = game:GetService("TweenService")
+local Debris = game:GetService("Debris")
 local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
@@ -36,6 +38,30 @@ local active = {}
 local lastAttempt = {}
 local nextId = 0
 local visuals = {}
+-- Brief original 3D catch feedback, visible to nearby players without a 2D world stand-in.
+-- No external asset IDs, textures or unbounded permanent parts.
+local function showCatchPulse(position, color, isMagnet)
+    local pulse = Instance.new("Part")
+    pulse.Name = isMagnet and "MagnetCatchPulse3D" or "CloudCatchPulse3D"
+    pulse.Shape = Enum.PartType.Ball
+    pulse.Anchored = true
+    pulse.CanCollide = false
+    pulse.CanTouch = false
+    pulse.CanQuery = false
+    pulse.Material = Enum.Material.ForceField
+    pulse.Color = isMagnet and Color3.fromRGB(115, 220, 235) or color
+    pulse.Transparency = 0.35
+    pulse.Size = Vector3.new(1, 1, 1)
+    pulse.Position = position
+    pulse.Parent = cloudFolder
+    local tween = TweenService:Create(pulse, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+        Size = Vector3.new(7, 7, 7),
+        Transparency = 1,
+    })
+    tween:Play()
+    Debris:AddItem(pulse, 0.45)
+end
+
 local function spawnCloud()
     nextId += 1
     local id = tostring(nextId)
@@ -140,6 +166,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
                 active[targetId] = nil
+                showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
                 if visuals[targetId] then
                     visuals[targetId].model:Destroy()
