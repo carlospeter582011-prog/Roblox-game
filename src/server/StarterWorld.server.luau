@@ -78,8 +78,8 @@ for i=1,18 do
             if not CrystalRules.canDiscover(i, distance, discovered[i], player:GetAttribute("ProfileReady")) then
                 return
             end
-            local awarded = Profile.DiscoverCrystal(player, i)
-            if awarded then
+            local awarded, milestone = Profile.DiscoverCrystal(player, i)
+            if awarded and not milestone then
                 player:SetAttribute("CrystalDiscoveryFeedback", "Crystal " .. i .. " discovered! +10 Coins +5 XP")
             end
         end)
