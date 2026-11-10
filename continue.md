@@ -347,3 +347,6 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Code commits: d524bd3 (pure rules), f0cc8ee (server integration), e018fdb (regression tests). PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/25 (draft, not merged). Tests cover thresholds, unowned/mismatched companion, invalid Bond and invalid Coins. No new 3D or third-party assets; ASSET_REGISTRY.md unchanged after review.
 - Verification pending: inspect PR CI build/Luau tests, Roblox Published deployment only after safe merge and gated workflow, and real Android/mobile gameplay. No launch checklist item accepted. Coordinate with other open PRs (#18–23 and evolution branch) before merge.
 - Next: check PR #25 CI, fix failures, test economy balance and runtime behavior, then extend distinct elemental passives and full GDD milestones rather than only companion polish.
+
+### PR #25 CI verification — 2026-11-10
+- [GitHub Actions run 42831129432](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42831129432) completed success for handoff commit 6f6296a3. Job details confirm build (Rojo 7.4.4, output verification) and luau-tests (static analysis, unit tests) succeeded. This is branch-only CI; PR remains draft, not merged or published, and Roblox runtime/economy behavior remains unverified.
