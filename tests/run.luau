@@ -55,6 +55,26 @@ local function test(name, fn)
     table.insert(tests, { name = name, fn = fn })
 end
 
+test("observatory cooldown survives rejoin and rejects corrupt timestamps", function()
+    clock.t = 1000
+    local store = FakeStore.new()
+    local first = repoFor(store, "observatory-A")
+    local loaded = first:Load("observer")
+    eq(loaded.ok, true, "initial load")
+    loaded.data.observatoryCooldowns.meadow = 1180
+    eq(first:Save("observer", loaded.data, true).ok, true, "save")
+    local second = repoFor(store, "observatory-B"):Load("observer")
+    eq(second.data.observatoryCooldowns.meadow, 1180, "cooldown persists")
+    eq(clock.t < second.data.observatoryCooldowns.meadow, true, "rejoin cannot reset cooldown")
+    local clean = Core.sanitize({ observatoryCooldowns = {
+        meadow = 1800.9, eastwind = -1, ridge = math.huge, unknown = 900
+    } }, validQuests, 1000)
+    eq(clean.observatoryCooldowns.meadow, 1800, "timestamp integer")
+    eq(clean.observatoryCooldowns.eastwind, nil, "negative rejected")
+    eq(clean.observatoryCooldowns.ridge, nil, "infinite rejected")
+    eq(clean.observatoryCooldowns.unknown, nil, "unknown station rejected")
+end)
+
 test("new player gets default data and the lock", function()
     clock.t = 1000
     local store = FakeStore.new()
