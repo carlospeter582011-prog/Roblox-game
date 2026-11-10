@@ -23,3 +23,5 @@ check(expired, nil)
 check(Rules.advance(nil, 1, 0/0, 100), nil)
 check(Rules.advance(nil, 1, math.huge, 100), nil)
 print("SkyRaceRules: 12 assertions passed")
+
+return true
