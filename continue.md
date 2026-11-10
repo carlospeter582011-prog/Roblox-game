@@ -341,3 +341,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+## 2026-11-10 — catch streak milestone rewards (PR #57, draft)
+- Branch `feature/catch-streak-mastery-20261110`, PR https://github.com/carlospeter582011-prog/Roblox-game/pull/57.
+- `CatchStreakRules.luau` and ProfileStore now track a server-clock 75-second catch chain (session-only); milestones at 5/10/15/20 award 10/20/30/40 Coins through existing persisted profile. Streak count is capped at 20; repeated catches at cap do not repeat rewards. Client receives CatchStreak/CatchStreakBonus attributes, not authority to set them.
+- Four focused Luau regression tests registered. CI and Roblox runtime unverified at documentation time. No merge/publish. Avoid overlapping edits with other automation branches.
+- Next: inspect PR CI, verify server attributes/UI in Studio/mobile, rebalance rewards, then safe review/merge via gated pipeline.

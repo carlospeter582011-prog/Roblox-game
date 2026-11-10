@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local CatchStreakRules = require(ReplicatedStorage:WaitForChild("CatchStreakRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -34,6 +35,7 @@ local repo = ProfileCore.new(DataStoreService:GetDataStore(STORE_NAME), {
 })
 
 local Profile = {}
+local catchStreaks = {} -- [player] = { count, at }; session-only, never trusted from client
 local sessions = {} -- [player] = data table (nil until loaded, nil again once released/lost)
 local saving = {} -- [player] = true while a save is in flight (serialises saves per player)
 local pendingRelease = {} -- [userId] = true while a leaving player's final save runs
@@ -87,6 +89,13 @@ function Profile.AddCatch(player, speciesId, coins, options)
         player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
         player:SetAttribute("CompanionBondPoints", points)
     end
+    local previous = catchStreaks[player]
+    local now = os.clock()
+    local streak, bonus = CatchStreakRules.advance(previous and previous.count, previous and previous.at, now)
+    catchStreaks[player] = { count = streak, at = now }
+    data.coins += bonus
+    player:SetAttribute("CatchStreak", streak)
+    player:SetAttribute("CatchStreakBonus", bonus)
     player:SetAttribute("CloudCount", data.captures)
     -- Only attribute-safe ids are replicated; mutation keys contain ":" and stay server-side.
     if CatchRules.isAttributeSafe("SpeciesCount_" .. speciesId) then
@@ -241,6 +250,7 @@ local function onPlayerAdded(player)
     end
     started[player] = true
     player:SetAttribute("ProfileReady", false)
+    catchStreaks[player] = nil
     while pendingRelease[player.UserId] do
         task.wait(0.2) -- same player rejoining this server: let their final save finish first
     end
@@ -306,6 +316,7 @@ end
 
 Players.PlayerRemoving:Connect(function(player)
     leaving[player] = true
+    catchStreaks[player] = nil
     if sessions[player] then
         local userId = player.UserId
         pendingRelease[userId] = true
