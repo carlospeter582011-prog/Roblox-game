@@ -61,7 +61,14 @@ function Profile.AddCatch(player, speciesId, coins, options)
     if not data then
         return false
     end
-    for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, options)) do
+    -- Server-authoritative elemental companion resonance; reward only the catch XP.
+    -- Copy options so caller-owned mutation data is never changed in place.
+    local catchOptions = options and table.clone(options) or {}
+    local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
+    local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
+        data.species, CloudCatalog, data.companionBond)
+    catchOptions.xp = baseXp + resonance
+    for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
     if data.companionSpecies == "" then
