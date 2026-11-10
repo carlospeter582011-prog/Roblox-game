@@ -34,4 +34,23 @@ return function(test, eq)
     test("crystal count ignores corrupt and out-of-range entries", function()
         eq(Rules.count({ [1]=true, [2]=true, [19]=true, [3]=false, bogus=true }), 2, "count")
     end)
+    test("constellation milestones award only at 6, 12 and 18 unique crystals", function()
+        for _, milestone in ipairs({ {6,150,75}, {12,400,200}, {18,900,450} }) do
+            local coins, xp, reached = Rules.constellationReward(milestone[1]-1, milestone[1])
+            eq(coins, milestone[2], "coins")
+            eq(xp, milestone[3], "xp")
+            eq(reached, milestone[1], "milestone")
+        end
+        local coins, xp = Rules.constellationReward(6, 7)
+        eq(coins, 0, "non-milestone coins")
+        eq(xp, 0, "non-milestone xp")
+    end)
+    test("constellation cannot pay twice or accept invalid counts", function()
+        for _, pair in ipairs({ {6,6}, {5,7}, {-1,6}, {17,19}, {0/0,6}, {math.huge,6}, {5,5.5} }) do
+            local coins, xp, milestone = Rules.constellationReward(pair[1], pair[2])
+            eq(coins, 0, "invalid coins")
+            eq(xp, 0, "invalid xp")
+            eq(milestone, nil, "invalid milestone")
+        end
+    end)
 end

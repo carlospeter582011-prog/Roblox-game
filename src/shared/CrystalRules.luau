@@ -38,4 +38,25 @@ function Rules.count(discovered)
     return total
 end
 
+-- One-time constellation discoveries. The persistent crystal set is the receipt:
+-- crossing a threshold is only possible once because each crystal index is immutable.
+-- No separate claim flag, daily reset or client-provided count is trusted.
+Rules.MILESTONES = {
+    [6] = { coins = 150, xp = 75 },
+    [12] = { coins = 400, xp = 200 },
+    [18] = { coins = 900, xp = 450 },
+}
+
+function Rules.constellationReward(before, after)
+    if type(before) ~= "number" or type(after) ~= "number"
+        or before ~= before or after ~= after
+        or before ~= math.floor(before) or after ~= math.floor(after)
+        or before < 0 or after > Rules.MAX_CRYSTALS or after ~= before + 1 then
+        return 0, 0, nil
+    end
+    local milestone = Rules.MILESTONES[after]
+    if not milestone then return 0, 0, nil end
+    return milestone.coins, milestone.xp, after
+end
+
 return Rules
