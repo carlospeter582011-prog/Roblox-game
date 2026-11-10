@@ -1,0 +1,11 @@
+local R = require("../src/shared/SkyCurrentRules")
+assert(R.canLaunch(10, 100, 20, 0))
+assert(not R.canLaunch(17, 100, 20, 0))
+assert(not R.canLaunch(10, 0, 20, 0))
+assert(not R.canLaunch(10, 100, 10, 21))
+assert(not R.canLaunch(0/0, 100, 20, 0))
+local x,y,z = R.velocity(100,0)
+assert(x == 65 and y == 76 and z == 0)
+assert(R.velocity(0,0) == nil)
+assert(R.velocity(math.huge,0) == nil)
+return true
