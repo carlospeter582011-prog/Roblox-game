@@ -349,3 +349,10 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added pure `ObservatoryRules`, registered `ObservatorySpec` in Luau test runner, and `SkyObservatories.server.luau`; changed `ProfileStore.luau` to award rewards.
 - **Verification:** GitHub connector confirmed branch files and PR creation; CI results, Roblox runtime, mobile usability, geometry/collision, actual DataStore persistence, and Published upload are NOT verified. PR remains DRAFT and is NOT on main. The cooldown is intentionally session-only, so rejoining resets it; address rejoin farming before production by persisting a server-validated cooldown or making the rewards first-discovery only.
 - Other agents have numerous open overlapping PRs (#33–39); review conflicts and base updates before merge. Never claim release until gated CI and Open Cloud evidence.
+
+## 2026-11-10 — PR #40 reconnect-safe observatory rewards
+- Fixed exploitable session-only 180s observatory cooldown: station-specific Unix timestamps now live in the existing server-owned profile and survive DataStore save/rejoin; no client time accepted.
+- ProfileCore defaults and sanitizes only meadow/eastwind/ridge timestamps; invalid, negative, infinite and unknown entries are rejected. Server prompt checks persistent cooldown; ProfileStore awards and advances cooldown together before currency/XP replication.
+- Added registered fake-DataStore regression test for save/rejoin and malformed cooldowns in tests/run.luau.
+- Branch: feature/sky-observatories-20261110, PR #40. **CI, runtime, real DataStore persistence, Android and publish remain unverified**. No main merge authorized before checks. Note: autosave delay still means crash before next successful save can lose the last reward/cooldown; a fully transactional durable claim requires an atomic DataStore receipt flow.
+- Next: inspect CI and branch conflicts; verify in-game, consider immediate save/atomic receipt for crash resistance, then merge only after gates.
