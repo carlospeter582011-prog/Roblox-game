@@ -341,3 +341,10 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+## 2026-11-10 19:20 Cairo — Cloud Evolution Altar
+- Added pure `EvolutionRules.luau` (stages 0-3, coin costs 50/150/400, catch thresholds 3/8/20, XP bonuses 0/5/10/15%). Duplicates are never consumed.
+- ProfileCore now sanitizes and persists `evolutions` map. ProfileStore.EvolveSpecies and catch XP path apply the equipped companion's stage bonus.
+- New `EvolutionAltar.server.luau` places a native Roblox 3D altar (Parts + ProximityPrompt) on the starter meadow. Server validates distance, health, ownership, coins and thresholds before awarding.
+- Tests: `tests/EvolutionSpec.luau` registered in `tests/run.luau`.
+- Branch: feature/cloud-evolution-altar-20261110. **Not merged, not published, no runtime verification.** No new external assets.
