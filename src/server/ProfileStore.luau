@@ -155,6 +155,20 @@ function Profile.CycleCompanion(player)
     return true, "Companion: " .. CloudCatalog[nextId].name
 end
 
+-- Sky Forge spends saved duplicates and Coins to craft functional catalog tools.
+function Profile.CraftTool(player, toolId)
+    local data = sessions[player]
+    local Rules = require(ReplicatedStorage:WaitForChild("SkyForgeRules"))
+    local ok, recipe = Rules.craft(data, toolId, toolCatalog)
+    if not ok then return false, recipe end
+    player:SetAttribute("CloudCoins", data.coins)
+    for species in pairs(recipe.ingredients) do
+        player:SetAttribute("SpeciesCount_" .. species, data.species[species])
+    end
+    player:SetAttribute("OwnsTool_" .. toolId, true)
+    return true, "Forged " .. toolCatalog[toolId].name
+end
+
 function Profile.BuyTool(player, toolId)
     local data = sessions[player]
     local tool = type(toolId) == "string" and toolCatalog[toolId] or nil
