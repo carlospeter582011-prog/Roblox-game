@@ -55,9 +55,10 @@ button.Text = "Catch"
 button.Parent = gui
 local function updateCatchButton()
     local tool = tools[player:GetAttribute("EquippedCatchTool")] or tools.starter_net
-    button.Text = "Catch +" .. tostring(tool.rangeBonus)
+    button.Text = "Catch +" .. tostring(tool.rangeBonus + (player:GetAttribute("RangeTraining") or 0) * 2)
 end
 player:GetAttributeChangedSignal("EquippedCatchTool"):Connect(updateCatchButton)
+player:GetAttributeChangedSignal("RangeTraining"):Connect(updateCatchButton)
 updateCatchButton()
 
 -- Compact status message
@@ -88,7 +89,7 @@ button.Activated:Connect(function()
             local species = speciesCatalog[cloud:GetAttribute("SpeciesId")]
             if species then
                 local d = (root.Position - cloud.Position).Magnitude
-                local maxRange = species.baseCatchRadius + tool.rangeBonus
+                local maxRange = species.baseCatchRadius + tool.rangeBonus + (player:GetAttribute("RangeTraining") or 0) * 2
                 if toolId == "cloud_magnet" then maxRange += 12 end
                 if d <= maxRange and d < distance then
                     nearest, distance = cloud, d
