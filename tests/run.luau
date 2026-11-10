@@ -378,6 +378,7 @@ require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
+test("sky harvest eligibility and rewards", require("./SkyHarvestSpec"))
 
 local failures = 0
 for _, t in ipairs(tests) do
