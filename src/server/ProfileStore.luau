@@ -121,7 +121,7 @@ function Profile.DiscoverCrystal(player, index)
         player:SetAttribute("CrystalConstellation", milestone)
         player:SetAttribute("CrystalDiscoveryFeedback", "Constellation " .. milestone .. "/18! +" .. bonusCoins .. " Coins +" .. bonusXp .. " XP")
     end
-    return true
+    return true, milestone, bonusCoins, bonusXp
 end
 
 -- Reward a completed server-validated boss trial. Only the server passes a catalog id.
