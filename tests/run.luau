@@ -117,6 +117,28 @@ test("range training survives save and reload and invalid values are rejected", 
     eq(Core.sanitize({ rangeTraining = 1.8 }, validQuests, 1).rangeTraining, 1, "floor")
 end)
 
+test("boss victories survive save and rejoin with strict per-boss validation", function()
+    clock.t = 1000
+    local store = FakeStore.new()
+    local first = repoFor(store, "boss-A")
+    local result = first:Load("boss-player")
+    eq(result.ok, true, "load")
+    result.data.bossVictories.meadow = 2
+    result.data.bossVictories.eastwind = 1
+    eq(first:Save("boss-player", result.data, true).ok, true, "save")
+    local rejoined = repoFor(store, "boss-B"):Load("boss-player")
+    eq(rejoined.ok, true, "rejoin")
+    eq(rejoined.data.bossVictories.meadow, 2, "meadow wins")
+    eq(rejoined.data.bossVictories.eastwind, 1, "eastwind wins")
+    local sanitized = Core.sanitize({ bossVictories = {
+        meadow = 2.9, eastwind = -3, ridge = math.huge, bogus = 100
+    } }, validQuests, 1)
+    eq(sanitized.bossVictories.meadow, 2, "integer count")
+    eq(sanitized.bossVictories.eastwind, nil, "negative rejected")
+    eq(sanitized.bossVictories.ridge, nil, "infinite rejected")
+    eq(sanitized.bossVictories.bogus, nil, "unknown boss rejected")
+end)
+
 test("a live lock held by another server blocks load and leaves the record alone", function()
     clock.t = 1000
     local store = FakeStore.new()
