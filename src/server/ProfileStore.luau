@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local CatchStreakRules = require(ReplicatedStorage:WaitForChild("CatchStreakRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -35,6 +36,7 @@ local repo = ProfileCore.new(DataStoreService:GetDataStore(STORE_NAME), {
 
 local Profile = {}
 local sessions = {} -- [player] = data table (nil until loaded, nil again once released/lost)
+local streaks = {} -- session-only; no persistent combo exploits or schema changes
 local saving = {} -- [player] = true while a save is in flight (serialises saves per player)
 local pendingRelease = {} -- [userId] = true while a leaving player's final save runs
 local weak = { __mode = "k" }
@@ -86,6 +88,17 @@ function Profile.AddCatch(player, speciesId, coins, options)
         data.coins += bonus
         player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
         player:SetAttribute("CompanionBondPoints", points)
+    end
+    -- Count only successful server-validated catches; milestone rewards are paid once
+    -- per continuous streak. This session state is discarded on leave/rejoin.
+    local nextStreak, bonusCoins, bonusXp = CatchStreakRules.advance(streaks[player], os.clock())
+    streaks[player] = nextStreak
+    data.coins += bonusCoins
+    data.xp += bonusXp
+    player:SetAttribute("CatchStreak", nextStreak.count)
+    if bonusCoins > 0 then
+        player:SetAttribute("CatchStreakFeedback",
+            string.format("%d-catch combo! +%d Coins +%d XP", nextStreak.count, bonusCoins, bonusXp))
     end
     player:SetAttribute("CloudCount", data.captures)
     -- Only attribute-safe ids are replicated; mutation keys contain ":" and stay server-side.
@@ -241,6 +254,7 @@ local function onPlayerAdded(player)
     end
     started[player] = true
     player:SetAttribute("ProfileReady", false)
+    player:SetAttribute("CatchStreak", 0)
     while pendingRelease[player.UserId] do
         task.wait(0.2) -- same player rejoining this server: let their final save finish first
     end
@@ -313,6 +327,7 @@ Players.PlayerRemoving:Connect(function(player)
         pendingRelease[userId] = nil
     end
     sessions[player] = nil
+    streaks[player] = nil
 end)
 
 game:BindToClose(function()
