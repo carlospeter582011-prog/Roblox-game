@@ -100,6 +100,41 @@ end
 for _, x in ipairs({ -24, -12, 12, 24 }) do
     WorldAssetModels.skyLantern(world, Vector3.new(x, 1, -43), 0.75)
 end
+-- Eastwind Outlook: a second fully walkable 3D island connected to the starter meadow.
+-- Original Roblox Parts and Models only; no in-world Canvas or unverified mesh IDs.
+local outlook = Instance.new("Model")
+outlook.Name = "EastwindOutlook3D"
+outlook.Parent = world
+local outlookFloor = part("OutlookWalkableGround", Vector3.new(100, 2, 100),
+    Vector3.new(170, 0, 0), Color3.fromRGB(123, 180, 154), Enum.Material.Grass, outlook)
+local outlookRock = part("OutlookFloatingRock", Vector3.new(105, 14, 105),
+    Vector3.new(170, -9, 0), Color3.fromRGB(92, 112, 133), Enum.Material.Slate, outlook)
+outlookRock.Shape = Enum.PartType.Ball
+outlookRock.CanCollide = false
+-- Bridge overlaps both island edges, so players can cross without jumping.
+local bridge = part("EastwindBridgeWalkway", Vector3.new(42, 2, 14),
+    Vector3.new(111, 0, 0), Color3.fromRGB(161, 123, 89), Enum.Material.WoodPlanks, outlook)
+for _, z in ipairs({ -8, 8 }) do
+    local rail = part("EastwindBridgeRail", Vector3.new(42, 3, 1),
+        Vector3.new(111, 3, z), Color3.fromRGB(111, 82, 64), Enum.Material.Wood, outlook)
+    rail.CanCollide = true
+end
+for i = 1, 8 do
+    local angle = i * math.pi / 4
+    local position = Vector3.new(170 + math.cos(angle) * 34, 1, math.sin(angle) * 34)
+    WorldAssetModels.tree(outlook, position, 0.7 + (i % 3) * 0.12)
+end
+for i = 1, 4 do
+    local angle = i * math.pi / 2
+    WorldAssetModels.floatingRock(outlook,
+        Vector3.new(170 + math.cos(angle) * 46, -13, math.sin(angle) * 46))
+end
+WorldAssetModels.skyArch(outlook, Vector3.new(170, 1, 0), 0.95, math.pi / 2)
+for _, z in ipairs({ -20, 20 }) do
+    WorldAssetModels.skyLantern(outlook, Vector3.new(145, 1, z), 0.75)
+end
+outlook.PrimaryPart = outlookFloor
+
 local spawn=Instance.new("SpawnLocation")
 spawn.Name="SkyArrival"
 spawn.Size=Vector3.new(12,1,12)
