@@ -100,6 +100,23 @@ test("sanitize rejects NaN, inf, huge and non-table input", function()
     eq(Core.sanitize(nil, validQuests, 5).lastSeen, 5, "nil input")
 end)
 
+test("range training survives save and reload and invalid values are rejected", function()
+    clock.t = 1000
+    local store = FakeStore.new()
+    local first = repoFor(store, "A")
+    local loaded = first:Load("range_player")
+    eq(loaded.ok, true, "initial load")
+    eq(loaded.data.rangeTraining, 0, "default range")
+    loaded.data.rangeTraining = 2
+    eq(first:Save("range_player", loaded.data, true).ok, true, "save range")
+    local second = repoFor(store, "B"):Load("range_player")
+    eq(second.ok, true, "reload")
+    eq(second.data.rangeTraining, 2, "persistent upgrade")
+    eq(Core.sanitize({ rangeTraining = 9 }, validQuests, 1).rangeTraining, 0, "reject over max")
+    eq(Core.sanitize({ rangeTraining = -1 }, validQuests, 1).rangeTraining, 0, "reject negative")
+    eq(Core.sanitize({ rangeTraining = 1.8 }, validQuests, 1).rangeTraining, 1, "floor")
+end)
+
 test("a live lock held by another server blocks load and leaves the record alone", function()
     clock.t = 1000
     local store = FakeStore.new()
