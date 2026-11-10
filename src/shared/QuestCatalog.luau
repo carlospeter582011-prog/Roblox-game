@@ -39,5 +39,13 @@ local Quests = {
     five_nebula = { id = "five_nebula", title = "Nebula Hunt", description = "Catch five Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 5, rewardCoins = 2000, rewardXP = 1000, chapter = 5 },
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
+    first_nimbus = { id = "first_nimbus", title = "Soft Nimbus", description = "Catch a Nimbus Cloud.", objective = "catch_species", speciesId = "nimbus", required = 1, rewardCoins = 60, rewardXP = 30, chapter = 1 },
+    five_squall = { id = "five_squall", title = "Gathering Winds", description = "Catch five Squall Clouds.", objective = "catch_species", speciesId = "squall", required = 5, rewardCoins = 160, rewardXP = 80, chapter = 2 },
+    first_emberstorm = { id = "first_emberstorm", title = "Burning Gale", description = "Catch an Emberstorm Cloud.", objective = "catch_species", speciesId = "emberstorm", required = 1, rewardCoins = 450, rewardXP = 225, chapter = 3 },
+    ten_frostveil = { id = "ten_frostveil", title = "Icy Veil", description = "Catch ten Frostveil Clouds.", objective = "catch_species", speciesId = "frostveil", required = 10, rewardCoins = 280, rewardXP = 140, chapter = 3 },
+    first_cosmicwisp = { id = "first_cosmicwisp", title = "Stellar Whisper", description = "Catch a Cosmicwisp Cloud.", objective = "catch_species", speciesId = "cosmicwisp", required = 1, rewardCoins = 750, rewardXP = 375, chapter = 4 },
+    four_hundred_total = { id = "four_hundred_total", title = "Sky Legend", description = "Catch four hundred clouds.", objective = "total_catches", required = 400, rewardCoins = 12000, rewardXP = 6000, chapter = 5 },
+    three_stormcore = { id = "three_stormcore", title = "Heart of the Storm", description = "Catch three Stormcore Clouds.", objective = "catch_species", speciesId = "stormcore", required = 3, rewardCoins = 900, rewardXP = 450, chapter = 4 },
+    first_auroraflare = { id = "first_auroraflare", title = "Radiant Flare", description = "Catch an Auroraflare Cloud.", objective = "catch_species", speciesId = "auroraflare", required = 1, rewardCoins = 1500, rewardXP = 750, chapter = 5 },
 }
 return table.freeze(Quests)
