@@ -1,0 +1,13 @@
+return function(test, eq)
+    local Rules = require("../src/shared/CaptureEligibility")
+    test("living character with root may catch", function()
+        eq(Rules.canCatch(100, false, true), true, "alive")
+    end)
+    test("dead, missing-root and invalid health never catch", function()
+        eq(Rules.canCatch(0, false, true), false, "zero health")
+        eq(Rules.canCatch(100, true, true), false, "dead state")
+        eq(Rules.canCatch(100, false, false), false, "missing root")
+        eq(Rules.canCatch(0/0, false, true), false, "nan")
+        eq(Rules.canCatch(nil, false, true), false, "missing health")
+    end)
+end

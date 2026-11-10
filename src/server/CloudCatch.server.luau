@@ -8,6 +8,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local CaptureEligibility = require(ReplicatedStorage:WaitForChild("CaptureEligibility"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
@@ -141,8 +142,11 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     end
     local cloud = active[cloudId]
     if not cloud or not cloud.Parent then return end
-    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if not root then return end
+    local character = player.Character
+    local root = character and character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    -- A dead, seated-in-reset, or otherwise invalid character must never collect rewards.
+    if not humanoid or not CaptureEligibility.canCatch(humanoid.Health, humanoid:GetState() == Enum.HumanoidStateType.Dead, root ~= nil) then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
     local targetDistance = (root.Position - cloud.Position).Magnitude
@@ -174,7 +178,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud then
+        if targetSpecies and active[targetId] == targetCloud and CaptureEligibility.canCatch(humanoid.Health, humanoid:GetState() == Enum.HumanoidStateType.Dead, root.Parent ~= nil) then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
