@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Elemental cloud flight audit (draft)
+- Existing project-owned Roblox 3D cloud Models/Parts now move in bounded element-specific patterns driven by server-authoritative `CloudFlightRules`. No Canvas world object, external mesh, asset upload, or new license. Existing imported cloud asset `104852877755332` remains a **Model ID**, not a MeshPart MeshId.
+- Native cloud hitbox follows the same server-owned movement as the visible Parts. Visual reachability, performance and runtime loading on mobile remain **unverified**.
