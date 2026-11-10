@@ -341,3 +341,14 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+## 2026-11-10 — fusion domain groundwork (draft branch)
+- Added `src/shared/FusionRules.luau`: deterministic server-only duplicate-species fusion transaction proposal, consuming two spare copies and 75 Coins while preserving the last specimen, granting up to 15 companion bond points. Pure function returns a new state without mutating the input. Four registered Luau regression cases cover costs, invalid inputs and bond cap.
+- **Not integrated into gameplay or persistence yet**: no remote, 3D station or UI. Do not count fusion complete. PR pending CI and Roblox runtime verification; no merge or publish. Next: safely integrate with existing ProfileStore session lock and world station after reviewing concurrent economy PRs.
+
+## 2026-11-10 20:54 Cairo — Fusion integration on PR #46
+- Continued existing draft PR #46 instead of opening a competing feature branch. Integrated FusionRules into ProfileStore.FuseCloud with non-yielding server-owned inventory/Coins/bond update, and replicated player attributes.
+- Added original 3D Part-based SkyFusionAltar with server-side character/alive/distance/profile checks; prompt fuses equipped owned companion only. Added compact mobile/desktop feedback ScreenGui (HUD only).
+- Added fake-DataStore save/rejoin regression for consumed copies, Coins, and bond; existing FusionRulesSpec covers malformed state and last-copy preservation.
+- Commits: 7a4c01a3, dd60c030, ab56c7d7, 35c7d750. Draft only; CI and Roblox runtime/publish evidence pending. Check station reachability and DataStore save failure recovery in Studio before merging.
+- Important: no new external assets or Mesh IDs. No launch acceptance criteria checked without runtime evidence.

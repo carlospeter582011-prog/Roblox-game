@@ -92,3 +92,9 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — fusion rules provenance
+- Pure `FusionRules.luau` adds **no** world geometry, Model/MeshPart IDs, external assets or Canvas stand-ins. A future usable 3D fusion station must use native Roblox Parts/Models and be documented separately. Asset integration and runtime verification are pending.
+
+## 2026-11-10 — Fusion altar integration asset audit (PR #46)
+- Original SkyFusionAltar is a Roblox Model composed of anchored native Parts (Slate/SmoothPlastic/Neon); no external meshes, model IDs, textures, audio, or third-party licenses. FusionFeedback is ScreenGui HUD only. 3D placement and mobile performance have NOT been visually/runtime verified.
