@@ -24,6 +24,7 @@ function Core.defaultData(now)
         crystals = {},
         rangeTraining = 0,
         bossVictories = {},
+        companionSpecies = "",
         lastSeen = now or 0,
     }
 end
@@ -50,6 +51,9 @@ function Core.sanitize(raw, validQuests, now)
                 clean.species[id] = math.floor(count)
             end
         end
+    end
+    if type(raw.companionSpecies) == "string" and #raw.companionSpecies <= MAX_ID_LENGTH and string.match(raw.companionSpecies, "^[%w_]*$") then
+        clean.companionSpecies = raw.companionSpecies
     end
     if type(raw.quests) == "table" then
         for id, done in pairs(raw.quests) do
