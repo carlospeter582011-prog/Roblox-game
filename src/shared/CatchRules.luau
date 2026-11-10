@@ -5,6 +5,7 @@ local Rules = {}
 Rules.XP_PER_CATCH = 10
 Rules.DEFAULT_TOOL_ID = "starter_net"
 Rules.MAX_TOOL_ID_LENGTH = 40
+Rules.MASTERY_PER_CATCH = 5
 
 -- Returns (tool, toolId) the player may actually use: the equipped one if it exists and is
 -- unlocked, otherwise the starter net.
@@ -92,6 +93,7 @@ end
 -- options (optional): variantId = extra collection key for a mutated catch (e.g. "breeze:golden");
 -- the base species is ALWAYS counted too so species quests and the encyclopedia stay correct.
 -- xp = XP for this catch (default XP_PER_CATCH), used for mutation XP multipliers.
+-- mastery = species mastery points (default MASTERY_PER_CATCH).
 function Rules.applyCatch(data, speciesId, coins, quests, options)
     data.species[speciesId] = (data.species[speciesId] or 0) + 1
     local variantId = options and options.variantId
@@ -101,6 +103,8 @@ function Rules.applyCatch(data, speciesId, coins, quests, options)
     data.captures += 1
     data.coins += coins
     data.xp += (options and options.xp) or Rules.XP_PER_CATCH
+    data.speciesMastery = data.speciesMastery or {}
+    data.speciesMastery[speciesId] = (data.speciesMastery[speciesId] or 0) + ((options and options.mastery) or Rules.MASTERY_PER_CATCH)
     local completed = {}
     for id, quest in pairs(quests) do
         if not data.quests[id] and Rules.questProgress(quest, data) >= quest.required then
