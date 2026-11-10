@@ -68,6 +68,10 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
     catchOptions.xp = baseXp + resonance
+    -- Calculate from pre-catch ownership/Bond: the first capture cannot grant
+    -- a companion synergy retroactively. Only the server supplies Coins.
+    local waterBonus = CompanionRules.waterCoinBonus(coins, data.companionSpecies, speciesId,
+        data.species, CloudCatalog, data.companionBond)
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
@@ -83,7 +87,7 @@ function Profile.AddCatch(player, speciesId, coins, options)
         local points = CompanionRules.advanceBond(data.companionBond[companion])
         data.companionBond[companion] = points
         local bonus = CompanionRules.bonusCoins(coins, points)
-        data.coins += bonus
+        data.coins += bonus + waterBonus
         player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
         player:SetAttribute("CompanionBondPoints", points)
     end
