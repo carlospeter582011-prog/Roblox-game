@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local EvolutionRules = require(ReplicatedStorage:WaitForChild("EvolutionRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -67,7 +68,9 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
-    catchOptions.xp = baseXp + resonance
+    local evoStage = EvolutionRules.stage(data.evolutions, data.companionSpecies)
+    local evoBonus = EvolutionRules.xpBonus(baseXp, evoStage)
+    catchOptions.xp = baseXp + resonance + evoBonus
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
@@ -152,7 +155,26 @@ function Profile.CycleCompanion(player)
     local points = (data.companionBond or {})[nextId] or 0
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
+    local evo = EvolutionRules.stage(data.evolutions, nextId)
+    player:SetAttribute("CompanionEvolutionStage", evo)
     return true, "Companion: " .. CloudCatalog[nextId].name
+end
+
+-- Evolve the currently equipped companion species. Server validates ownership, thresholds and coins.
+-- Duplicates are never consumed. Returns true, message or false, reason.
+function Profile.EvolveSpecies(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local speciesId = data.companionSpecies
+    local ok, stageOrReason, cost = EvolutionRules.canEvolve(speciesId, data.species, data.evolutions, data.coins, CloudCatalog)
+    if not ok then return false, stageOrReason end
+    data.coins -= cost
+    data.evolutions = data.evolutions or {}
+    data.evolutions[speciesId] = stageOrReason
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CompanionEvolutionStage", stageOrReason)
+    player:SetAttribute("EvolutionFeedback", CloudCatalog[speciesId].name .. " evolved to stage " .. stageOrReason .. "!")
+    return true, "Evolved to stage " .. stageOrReason
 end
 
 function Profile.BuyTool(player, toolId)
@@ -279,6 +301,7 @@ local function onPlayerAdded(player)
     local bondPoints = (data.companionBond or {})[data.companionSpecies] or 0
     player:SetAttribute("CompanionBondPoints", bondPoints)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(bondPoints))
+    player:SetAttribute("CompanionEvolutionStage", EvolutionRules.stage(data.evolutions, data.companionSpecies))
     local wins = data.bossVictories or {}
     for _, bossId in ipairs({ "meadow", "eastwind", "ridge" }) do
         player:SetAttribute("BossWins_" .. bossId, wins[bossId] or 0)
