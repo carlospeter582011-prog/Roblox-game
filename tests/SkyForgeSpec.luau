@@ -1,0 +1,25 @@
+local Rules=require("../src/shared/SkyForgeRules")
+local Tools=require("../src/shared/CatchToolCatalog")
+return function(test,eq)
+ local function profile()
+  return {coins=1000,captures=100,species={breeze=9,drizzle=9,mist=9,cirrus=9,sunbeam=9,rainbow=9,thunder=9,gale=9},ownedTools={starter_net=true}}
+ end
+ test("forge consumes fixed server recipe and grants a real tool",function()
+  local d=profile(); local ok=Rules.craft(d,"wind_lasso",Tools)
+  eq(ok,true,"crafted");eq(d.coins,965,"coins");eq(d.species.breeze,6,"breeze");eq(d.species.drizzle,7,"drizzle");eq(d.ownedTools.wind_lasso,true,"owned")
+ end)
+ test("forge cannot craft twice or consume ingredients on failure",function()
+  local d=profile();Rules.craft(d,"wind_lasso",Tools)
+  local ok=Rules.craft(d,"wind_lasso",Tools);eq(ok,false,"duplicate");eq(d.coins,965,"unchanged")
+ end)
+ test("forge preserves last specimen and rejects unknown recipe",function()
+  local d=profile();d.species.breeze=3
+  eq(Rules.craft(d,"wind_lasso",Tools),false,"spare required")
+  eq(d.coins,1000,"atomic failure")
+  eq(Rules.craft(d,"archon_net",Tools),false,"unknown")
+ end)
+ test("forge enforces captures and coin costs",function()
+  local d=profile();d.captures=0;eq(Rules.craft(d,"mist_gloves",Tools),false,"captures")
+  d.captures=100;d.coins=0;eq(Rules.craft(d,"mist_gloves",Tools),false,"coins")
+ end)
+end
