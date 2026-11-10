@@ -23,6 +23,7 @@ function Core.defaultData(now)
         ownedTools = { starter_net = true },
         crystals = {},
         rangeTraining = 0,
+        bossVictories = {},
         lastSeen = now or 0,
     }
 end
@@ -68,6 +69,13 @@ function Core.sanitize(raw, validQuests, now)
         for index, found in pairs(raw.crystals) do
             if type(index) == "number" and index == math.floor(index) and index >= 1 and index <= 18 and found == true then
                 clean.crystals[index] = true
+            end
+        end
+    end
+    if type(raw.bossVictories) == "table" then
+        for _, id in ipairs({ "meadow", "eastwind", "ridge" }) do
+            if isCount(raw.bossVictories[id], 1000001) then
+                clean.bossVictories[id] = math.floor(raw.bossVictories[id])
             end
         end
     end
