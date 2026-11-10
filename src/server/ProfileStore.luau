@@ -13,6 +13,8 @@ local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
+local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
+local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -61,6 +63,10 @@ function Profile.AddCatch(player, speciesId, coins, options)
     end
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, options)) do
         player:SetAttribute("Quest_" .. id, true)
+    end
+    if data.companionSpecies == "" then
+        data.companionSpecies = speciesId
+        player:SetAttribute("CompanionSpecies", speciesId)
     end
     player:SetAttribute("CloudCount", data.captures)
     -- Only attribute-safe ids are replicated; mutation keys contain ":" and stay server-side.
@@ -115,6 +121,16 @@ function Profile.AwardBossTrial(player, bossId)
     player:SetAttribute("BossWins_" .. bossId, data.bossVictories[bossId])
     player:SetAttribute("BossTrialsWon", (data.bossVictories.meadow or 0) + (data.bossVictories.eastwind or 0) + (data.bossVictories.ridge or 0))
     return true, coins, xp
+end
+
+function Profile.CycleCompanion(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local nextId = CompanionRules.next(data.companionSpecies, data.species, CloudCatalog)
+    if not nextId then return false, "Catch a cloud to unlock a companion!" end
+    data.companionSpecies = nextId
+    player:SetAttribute("CompanionSpecies", nextId)
+    return true, "Companion: " .. CloudCatalog[nextId].name
 end
 
 function Profile.BuyTool(player, toolId)
@@ -234,6 +250,10 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     player:SetAttribute("RangeTraining", math.clamp(math.floor(tonumber(data.rangeTraining) or 0), 0, 3))
+    if not CompanionRules.owned(data.companionSpecies, data.species, CloudCatalog) then
+        data.companionSpecies = CompanionRules.next(nil, data.species, CloudCatalog) or ""
+    end
+    player:SetAttribute("CompanionSpecies", data.companionSpecies)
     local wins = data.bossVictories or {}
     for _, bossId in ipairs({ "meadow", "eastwind", "ridge" }) do
         player:SetAttribute("BossWins_" .. bossId, wins[bossId] or 0)
