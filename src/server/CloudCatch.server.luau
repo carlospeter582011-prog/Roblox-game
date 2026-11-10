@@ -180,9 +180,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local liveRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
         local liveHumanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
         local liveDistance = liveRoot and (liveRoot.Position - targetCloud.Position).Magnitude
-        local allowed = targetId == cloudId and
+        local allowed = targetSpecies and (targetId == cloudId and
             (CatchRules.isInRange(liveDistance, targetSpecies, tool) or CatchRules.canMagnetPull(liveDistance, targetSpecies, toolId, tool))
-            or targetId ~= cloudId and CatchRules.isInRange(liveDistance, targetSpecies, tool)
+            or targetId ~= cloudId and CatchRules.isInRange(liveDistance, targetSpecies, tool))
         if targetSpecies and active[targetId] == targetCloud and liveRoot and liveHumanoid
             and liveHumanoid.Health > 0 and allowed then
             local mut = targetCloud:GetAttribute("MutationId")
