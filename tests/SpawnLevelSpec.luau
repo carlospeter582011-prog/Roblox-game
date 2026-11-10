@@ -11,6 +11,17 @@ local function fixed(value)
 end
 
 return function(test, eq)
+    test("world fast travel requires persisted catch milestones", function()
+        eq(Spawn.canFastTravel("starter", 0), true, "starter open")
+        eq(Spawn.canFastTravel("eastwind", 24), false, "eastwind locked")
+        eq(Spawn.canFastTravel("eastwind", 25), true, "eastwind unlocked")
+        eq(Spawn.canFastTravel("ridge", 74), false, "ridge locked")
+        eq(Spawn.canFastTravel("ridge", 75), true, "ridge unlocked")
+        eq(Spawn.canFastTravel("ridge", 500), true, "late game")
+        eq(Spawn.canFastTravel("invalid", 999), false, "unknown destination")
+        eq(Spawn.canFastTravel("starter", nil), false, "missing profile")
+    end)
+
     test("expanded species catalog has many unique spawnable entries and every rarity tier", function()
         local count, tiers = 0, {}
         for id, species in pairs(Species) do
