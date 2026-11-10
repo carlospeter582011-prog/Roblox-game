@@ -341,3 +341,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+
+## 2026-11-10 — Sky Orchard 3D harvesting (draft PR pending)
+- Added `SkyOrchardRules`, `SkyOrchard.server` and `SkyOrchardSpec`: three original Roblox 3D orchard trees with server-validated ProximityPrompt harvesting, catch gates (0/20/60), per-player per-tree 120s session growth, persistent wallet/XP via existing ProfileStore session and autosave. Rewards 18/42/85 Coins and 8/18/35 XP.
+- Tests cover unlocks, distances, alive/profile guards, timing and malformed values; test runner now loads spec. No new external meshes or client-controlled rewards. Growth timers are session-only (rejoin resets), not offline production or complete crafting.
+- Not Studio/mobile tested; no CI success, merge or publish evidence at writing. Review run and potential economy abuse from rejoin cooldown reset before promotion. All launch acceptance unchecked.
