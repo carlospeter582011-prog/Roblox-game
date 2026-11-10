@@ -69,7 +69,8 @@ local function createBoss(id, x, z, tint)
             player:SetAttribute("BossChallengeFeedback", "Boss resting. Try again shortly.")
             return
         end
-        active[player] = { id = id, startCatches = profile.captures, deadline = now + config.seconds }
+        active[player] = { id = id, startCatches = profile.captures, deadline = now + config.seconds, phase = 1 }
+        player:SetAttribute("BossChallengePhase", 1)
         player:SetAttribute("BossChallengeFeedback", config.name .. ": catch " .. config.goal .. " clouds in " .. config.seconds .. "s!")
         player:SetAttribute("BossChallengeProgress", "0/" .. config.goal)
     end)
@@ -91,11 +92,20 @@ task.spawn(function()
                 local state = Rules.status(trial.startCatches, profile.captures, config.goal, trial.deadline, now)
                 local count = Rules.progress(trial.startCatches, profile.captures, config.goal)
                 player:SetAttribute("BossChallengeProgress", count .. "/" .. config.goal)
+                if state == "active" then
+                    local phase = Rules.phase(count, config.goal)
+                    if phase > trial.phase then
+                        trial.phase = phase
+                        player:SetAttribute("BossChallengePhase", phase)
+                        player:SetAttribute("BossChallengeFeedback", Rules.phaseMessage(phase, config.name))
+                    end
+                end
                 if state == "complete" then
                     active[player] = nil
                     cooldown[player] = now + 45
                     player:SetAttribute("BossChallengeFeedback", config.name .. " defeated! Trial complete!")
                     player:SetAttribute("BossChallengeProgress", "")
+                    player:SetAttribute("BossChallengePhase", 0)
                     player:SetAttribute("BossTrialsWon", (player:GetAttribute("BossTrialsWon") or 0) + 1)
                 elseif state == "expired" then
                     active[player] = nil
