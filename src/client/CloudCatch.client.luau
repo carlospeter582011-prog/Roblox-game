@@ -130,6 +130,36 @@ player:GetAttributeChangedSignal("TravelFeedback"):Connect(function()
     end)
 end)
 
+-- Server-owned boss trial updates share the existing compact catch feedback surface.
+player:GetAttributeChangedSignal("BossChallengeFeedback"):Connect(function()
+    local feedback = player:GetAttribute("BossChallengeFeedback")
+    if type(feedback) ~= "string" or feedback == "" then return end
+    message.Text = feedback
+    message.Visible = true
+    task.delay(5, function()
+        if message.Text == feedback then message.Visible = false end
+    end)
+end)
+local bossProgress = Instance.new("TextLabel")
+bossProgress.Name = "BossTrialProgress"
+bossProgress.Size = UDim2.fromOffset(175, 28)
+bossProgress.AnchorPoint = Vector2.new(1, 0.5)
+bossProgress.Position = UDim2.new(1, -16, 0.52, 0)
+bossProgress.BackgroundColor3 = Color3.fromRGB(63, 44, 94)
+bossProgress.BackgroundTransparency = 0.15
+bossProgress.TextColor3 = Color3.new(1, 1, 1)
+bossProgress.TextSize = 13
+bossProgress.Font = Enum.Font.GothamBold
+bossProgress.Visible = false
+bossProgress.Parent = gui
+local function updateBossProgress()
+    local value = player:GetAttribute("BossChallengeProgress")
+    bossProgress.Visible = type(value) == "string" and value ~= ""
+    bossProgress.Text = "Boss Trial  " .. tostring(value or "")
+end
+player:GetAttributeChangedSignal("BossChallengeProgress"):Connect(updateBossProgress)
+updateBossProgress()
+
 -- Native crystal discoveries use a ProximityPrompt, while this ScreenGui provides
 -- immediate touch-friendly confirmation of rewards and total progress.
 local crystalToast = Instance.new("TextLabel")
