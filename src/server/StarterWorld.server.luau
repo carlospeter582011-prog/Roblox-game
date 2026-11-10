@@ -135,6 +135,45 @@ for _, z in ipairs({ -20, 20 }) do
 end
 outlook.PrimaryPart = outlookFloor
 
+-- Thunderhead Ridge: third connected, walkable 3D region with distinct storm landmarks.
+-- The bridge overlaps Eastwind Outlook (edge x=220) and Ridge (edge x=260).
+local ridge = Instance.new("Model")
+ridge.Name = "ThunderheadRidge3D"
+ridge.Parent = world
+local ridgeFloor = part("RidgeWalkableGround", Vector3.new(110, 2, 100),
+    Vector3.new(315, 0, 0), Color3.fromRGB(99, 138, 154), Enum.Material.Slate, ridge)
+local ridgeUnder = part("RidgeFloatingBedrock", Vector3.new(112, 16, 104),
+    Vector3.new(315, -11, 0), Color3.fromRGB(72, 85, 116), Enum.Material.Slate, ridge)
+ridgeUnder.Shape = Enum.PartType.Ball
+ridgeUnder.CanCollide = false
+part("StormBridgeWalkway", Vector3.new(54, 2, 14),
+    Vector3.new(240, 0, 0), Color3.fromRGB(126, 130, 150), Enum.Material.Slate, ridge)
+for _, z in ipairs({ -8, 8 }) do
+    part("StormBridgeRail", Vector3.new(54, 3, 1),
+        Vector3.new(240, 3, z), Color3.fromRGB(76, 90, 119), Enum.Material.Slate, ridge)
+end
+for i = 1, 9 do
+    local angle = i * math.pi * 2 / 9
+    local radius = 34
+    local x = 315 + math.cos(angle) * radius
+    local z = math.sin(angle) * radius
+    local pillar = part("StormSpire" .. i,
+        Vector3.new(3.5, 10 + (i % 4) * 3, 3.5),
+        Vector3.new(x, 6 + (i % 4) * 1.5, z),
+        Color3.fromRGB(112, 151, 189), Enum.Material.Slate, ridge)
+    pillar.CanCollide = false
+    local crown = part("SpireCrown" .. i, Vector3.new(5, 5, 5),
+        pillar.Position + Vector3.new(0, pillar.Size.Y / 2 + 2, 0),
+        Color3.fromRGB(132, 189, 218), Enum.Material.Glass, ridge)
+    crown.Shape = Enum.PartType.Ball
+    crown.CanCollide = false
+end
+WorldAssetModels.skyArch(ridge, Vector3.new(315, 1, 0), 0.85, math.pi / 2)
+for _, z in ipairs({ -22, 22 }) do
+    WorldAssetModels.skyLantern(ridge, Vector3.new(285, 1, z), 0.7)
+end
+ridge.PrimaryPart = ridgeFloor
+
 local spawn=Instance.new("SpawnLocation")
 spawn.Name="SkyArrival"
 spawn.Size=Vector3.new(12,1,12)
