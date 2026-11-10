@@ -83,3 +83,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ### 2026-11-10 — Economy and HUD change audit
 - No in-world geometry or imported assets changed in this update. Range Training is profile/server logic; the compact wallet and scrollable shop use `ScreenGui`, `Frame`, `TextLabel`, `TextButton` and `ScrollingFrame` for player HUD only (allowed exception to 3D-only world rule). Existing in-world Models/Parts unchanged; full Roblox runtime visual audit remains pending.
+
+### 2026-11-10 10:08 — Boss Journal HUD audit
+- Boss victory persistence and the new `Boss Journal` UI do not introduce or modify any in-world objects. Journal uses `ScreenGui`, `TextButton`, `Frame`, `TextLabel`, `UICorner`, all permitted HUD primitives. Existing boss arenas remain original native 3D `Model`/`Part` geometry. No imported GLB, MeshPart ID, Model asset ID or external license added. Runtime screenshot and world-wide 3D audit remain outstanding.
