@@ -78,4 +78,38 @@ function Rules.claim(recipeId, job, now, wallet)
         cappedOffline = result.cappedOffline,
     }
 end
+-- Propose purchasing a habitat and initializing its production clock in one immutable
+-- transaction. Call only on the server using authoritative profile state.
+-- The caller must persist both the new wallet and appended job together.
+function Rules.build(recipeId, wallet, jobs, ownedSpecies, catalog, now)
+    if type(jobs) ~= "table" or not whole(now) or now > 9007199254740991 then
+        return nil, "invalid_state"
+    end
+    local count = 0
+    for key, job in pairs(jobs) do
+        if type(key) ~= "number" or key ~= math.floor(key) or key < 1
+            or key > Rules.MAX_JOBS or type(job) ~= "table" then
+            return nil, "invalid_jobs"
+        end
+        count += 1
+    end
+    local allowed, reason = Rules.canBuild(recipeId, wallet, count, ownedSpecies, catalog)
+    if not allowed then return nil, reason end
+    local recipe = Rules.RECIPES[recipeId]
+    local updated = {}
+    for i, job in ipairs(jobs) do
+        if type(job.recipeId) ~= "string" or not Rules.RECIPES[job.recipeId]
+            or not whole(job.lastAccrued) or not whole(job.stored or 0)
+            or not whole(job.carry or 0) then
+            return nil, "invalid_jobs"
+        end
+        updated[i] = table.clone(job)
+    end
+    if #updated ~= count then return nil, "invalid_jobs" end
+    table.insert(updated, {
+        recipeId = recipeId, lastAccrued = now, stored = 0, carry = 0,
+    })
+    return { coins = wallet - recipe.costCoins, jobs = updated, spent = recipe.costCoins }
+end
+
 return table.freeze(Rules)
