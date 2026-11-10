@@ -22,6 +22,21 @@ return function(test, eq)
         eq(Spawn.canFastTravel("starter", nil), false, "missing profile")
     end)
 
+    test("travel landing positions are inside their actual 3D walkable floors", function()
+        local floors = {
+            starter = { x = 0, halfX = 102.5, halfZ = 102.5 },
+            eastwind = { x = 170, halfX = 50, halfZ = 50 },
+            ridge = { x = 315, halfX = 55, halfZ = 50 },
+        }
+        for id, floor in pairs(floors) do
+            local target = Spawn.travelDestinations[id]
+            eq(target ~= nil, true, id .. " exists")
+            eq(math.abs(target.x - floor.x) < floor.halfX - 5, true, id .. " x safe")
+            eq(math.abs(target.z) < floor.halfZ - 5, true, id .. " z safe")
+            eq(target.y >= 4 and target.y <= 8, true, id .. " landing height")
+        end
+    end)
+
     test("expanded species catalog has many unique spawnable entries and every rarity tier", function()
         local count, tiers = 0, {}
         for id, species in pairs(Species) do
