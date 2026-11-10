@@ -347,3 +347,6 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Implementation commit e007f5dffc329ed44034ec4ae42b7750a8ebc4a1. New regression suite tests catalog integrity, 100+ count, existing species IDs and one-time payout; registered in tests/run.luau. CI and Roblox runtime verification pending.
 - No new assets or 3D geometry; ASSET_REGISTRY.md remains authoritative. This reaches the numeric quest-data target in branch code only, NOT launch acceptance: contracts are catch-count variants, and story diversity, UI readability, integrated QA and publishing remain open.
 - Coordinate with all draft PRs and evolution branch; do not merge while main changes or tests are unresolved. Next: inspect CI jobs, review reward balance, then add genuinely diverse quest objective types and world-specific story missions.
+
+### CI regression correction
+- [Run 42839466063](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42839466063): Rojo build passed, Luau tests failed (2 failures) due duplicate `three_rainbow` objective and original third-catch reward expectation. Changed Scout threshold from 3 to 4 for all expedition species, preserving original three-catch quest semantics; adjusted tests in commits a6dfba35 and 49ea1f24. Latest corrected head CI not yet verified. PR remains draft and unmerged.
