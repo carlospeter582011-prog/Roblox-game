@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Trail 3D start and three checkpoint beacons | n/a (`src/server/SkyTrail.server.luau`) | Project (original procedural Parts) | Original | none | Project-owned | Feature branch `feature/sky-trial-checkpoint-race-20261110`, anchored neon/glass Roblox Parts and ProximityPrompts | Source only; CI, Android walkability, prompt usability and Roblox runtime unverified |
