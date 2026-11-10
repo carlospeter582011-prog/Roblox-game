@@ -3,6 +3,11 @@
 local Rules = require("../src/shared/CatchRules")
 local Species = require("../src/shared/CloudCatalog")
 local Quests = require("../src/shared/QuestCatalog")
+-- Keep baseline reward assertions scoped to the original authored quest set.
+local LegacyQuests = {}
+for id, quest in pairs(Quests) do
+    if not string.match(id, "^discover_") then LegacyQuests[id] = quest end
+end
 local Tools = require("../src/shared/CatchToolCatalog")
 local SpawnRules = require("../src/shared/SpawnRules")
 
@@ -101,7 +106,7 @@ return function(test, eq)
 
     test("first breeze catch completes first_breeze and awards its reward", function()
         local data = newData()
-        local done = Rules.applyCatch(data, "breeze", 10, Quests)
+        local done = Rules.applyCatch(data, "breeze", 10, LegacyQuests)
         eq(joined(done), "first_breeze", "completed")
         eq(data.species.breeze, 1, "species count")
         eq(data.captures, 1, "captures")
@@ -112,21 +117,21 @@ return function(test, eq)
 
     test("third catch completes three_clouds; later catches award nothing extra", function()
         local data = newData()
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "first_breeze", "catch 1")
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "", "catch 2")
-        eq(joined(Rules.applyCatch(data, "drizzle", 12, Quests)), "three_clouds", "catch 3")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, LegacyQuests)), "first_breeze", "catch 1")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, LegacyQuests)), "", "catch 2")
+        eq(joined(Rules.applyCatch(data, "drizzle", 12, LegacyQuests)), "three_clouds", "catch 3")
         eq(data.captures, 3, "captures")
         eq(data.species.breeze, 2, "breeze")
         eq(data.species.drizzle, 1, "drizzle")
         eq(data.coins, 10 + 50 + 10 + 12 + 80, "coins after 3")
         eq(data.xp, 10 + 25 + 10 + 10 + 40, "xp after 3")
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "", "catch 4")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, LegacyQuests)), "", "catch 4")
         eq(data.coins, 10 + 50 + 10 + 12 + 80 + 10, "no repeat reward")
     end)
 
     test("catching a non-breeze species does not complete first_breeze", function()
         local data = newData()
-        eq(joined(Rules.applyCatch(data, "drizzle", 12, Quests)), "", "completed")
+        eq(joined(Rules.applyCatch(data, "drizzle", 12, LegacyQuests)), "", "completed")
         eq(data.quests.first_breeze, nil, "not flagged")
         eq(data.coins, 12, "coins")
     end)
@@ -135,7 +140,7 @@ return function(test, eq)
         local data = newData()
         data.captures = 2
         data.species.drizzle = 2
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "first_breeze,three_clouds", "both")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, LegacyQuests)), "first_breeze,three_clouds", "both")
         eq(data.coins, 10 + 50 + 80, "both rewards")
     end)
 

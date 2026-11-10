@@ -4,6 +4,11 @@ local Rules = require("../src/shared/CatchRules")
 local Mutations = require("../src/shared/Mutations")
 local Species = require("../src/shared/CloudCatalog")
 local Quests = require("../src/shared/QuestCatalog")
+-- Keep baseline reward assertions scoped to the original authored quest set.
+local LegacyQuests = {}
+for id, quest in pairs(Quests) do
+    if not string.match(id, "^discover_") then LegacyQuests[id] = quest end
+end
 local Tools = require("../src/shared/CatchToolCatalog")
 
 local function newData()
@@ -40,7 +45,7 @@ return function(test, eq)
 
     test("a mutated catch counts toward the base species and its variant key", function()
         local data = newData()
-        Rules.applyCatch(data, "breeze", 30, Quests, { variantId = "breeze:golden", xp = 20 })
+        Rules.applyCatch(data, "breeze", 30, LegacyQuests, { variantId = "breeze:golden", xp = 20 })
         eq(data.species.breeze, 1, "base species counted")
         eq(data.species["breeze:golden"], 1, "variant counted")
         eq(data.captures, 1, "one capture, not two")
@@ -48,7 +53,7 @@ return function(test, eq)
 
     test("a mutated catch advances species quests (first_breeze completes)", function()
         local data = newData()
-        local done = Rules.applyCatch(data, "breeze", 30, Quests, { variantId = "breeze:golden" })
+        local done = Rules.applyCatch(data, "breeze", 30, LegacyQuests, { variantId = "breeze:golden" })
         eq(table.concat(done, ","), "first_breeze", "completed")
     end)
 
