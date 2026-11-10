@@ -243,3 +243,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Doubled simultaneous real 3D cloud population from 6 to 12 and reduced random spawn bounds from ±72 to ±55 studs around origin to improve early-game activity; commit `6f51b26`. Models remain real 3D Roblox Parts/Models; no GLB/asset IDs changed.
 - Mobile Catch label shortened to `Catch +N`, and client avoids requests to clouds beyond 48 studs with clear move-closer feedback; commit `d02cd0c`. Server remains authoritative for catch reach, ownership and rewards.
 - TODO: CI and Published upload evidence, Roblox Android catch and UI playtest, verify cloud spawn is reachable from islands, balance population and implement quests/bosses. ASSET_REGISTRY unchanged (no new assets).
+
+## 2026-11-10 02:13 Cairo — reachable-target mobile catch fix
+- `d031e77`: mobile Catch button now picks the nearest cloud **within actual species catch radius + server-catalog tool range**, including Cloud Magnet's +12 field. Previous nearest-only + arbitrary 48-stud guard could choose an unreachable species despite another catchable cloud being available. Server still enforces all ranges/ownership/cooldown; client is only UX targeting.
+- `afc8bb9`: ASSET_REGISTRY.md documents a partial 3D source audit of invisible Part hitboxes plus real 3D cloud Model assemblies, HUD exemption and Model-vs-Mesh ID distinction. No external assets added; full 3D runtime audit remains open.
+- Workflow evidence: GitHub Actions run 42718188577 returned completed/failure (historical, not this commit). Connector's commit-workflow lookup only returns PR-triggered runs; current push auto-publish success **not verified**. Do not mark published. CI and Roblox Android playtest remain open.
+- Next: inspect current push Actions in browser/with capable API; verify 3D cloud spawn accessibility and touch HUD; build more substantive world content and quest/boss systems.
