@@ -379,7 +379,7 @@ require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
-require("./SkyUpdraftSpec")
+require("./SkyUpdraftSpec")(test, eq)
 
 local failures = 0
 for _, t in ipairs(tests) do
