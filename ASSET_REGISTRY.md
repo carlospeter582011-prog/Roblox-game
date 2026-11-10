@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Fall Rescue (no new geometry) | n/a (`src/server/SkyFallRescue.server.luau`) | Project (original logic) | Original | none | Project-owned | Native Roblox character PivotTo recovery at three existing island safe points | Code only; CI and runtime landing/walkability unverified |
