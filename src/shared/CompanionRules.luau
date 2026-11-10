@@ -38,4 +38,17 @@ function Rules.bonusCoins(baseCoins, bondPoints)
     if type(baseCoins) ~= "number" or baseCoins ~= baseCoins or baseCoins < 0 or baseCoins == math.huge then return 0 end
     return math.floor(baseCoins * Rules.bondLevel(bondPoints) * 0.02)
 end
+
+-- Elemental resonance: an owned equipped companion of the same element grants
+-- a modest XP bonus after Bond level 1. No client-provided element or multiplier.
+-- The bonus applies to catch XP only, not quest or boss rewards.
+function Rules.resonanceXp(baseXp, companionId, targetId, species, catalog, bond)
+    if type(baseXp) ~= "number" or baseXp ~= baseXp or baseXp < 0 or baseXp == math.huge or baseXp > 100000 then return 0 end
+    if not Rules.owned(companionId, species, catalog) then return 0 end
+    local companion, target = catalog[companionId], catalog[targetId]
+    if not target or type(companion.element) ~= "string" or companion.element ~= target.element then return 0 end
+    local level = Rules.bondLevel(bond and bond[companionId])
+    if level == 0 then return 0 end
+    return math.floor(baseXp * math.min(level, 3) * 0.05)
+end
 return Rules
