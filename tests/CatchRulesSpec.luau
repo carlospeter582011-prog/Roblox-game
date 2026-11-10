@@ -4,6 +4,7 @@ local Rules = require("../src/shared/CatchRules")
 local Species = require("../src/shared/CloudCatalog")
 local Quests = require("../src/shared/QuestCatalog")
 local Tools = require("../src/shared/CatchToolCatalog")
+local SpawnRules = require("../src/shared/SpawnRules")
 
 local function newData()
     return { version = 2, coins = 0, xp = 0, captures = 0, species = {}, quests = {}, lastSeen = 0 }
@@ -14,6 +15,22 @@ local function joined(list)
 end
 
 return function(test, eq)
+    test("cloud regions rotate across three walkable 3D islands", function()
+        local expected = { "StarterMeadow", "EastwindOutlook", "StarterMeadow", "StarterMeadow", "ThunderheadRidge" }
+        for i, name in ipairs(expected) do
+            local region = SpawnRules.regionBounds(i)
+            eq(region.name, name, "region " .. i)
+            eq(region.minX < region.maxX and region.minZ < region.maxZ, true, "bounds " .. i)
+        end
+        eq(SpawnRules.regionBounds(0), nil, "invalid zero")
+        eq(SpawnRules.regionBounds(-1), nil, "invalid negative")
+        eq(SpawnRules.regionBounds(1.5), nil, "invalid fraction")
+        local ridge = SpawnRules.regionBounds(5)
+        eq(ridge.minX >= 260 and ridge.maxX <= 370, true, "ridge within floor")
+        local east = SpawnRules.regionBounds(2)
+        eq(east.minX >= 120 and east.maxX <= 220, true, "outlook within floor")
+    end)
+
     test("resolveTool keeps an unlocked equipped tool", function()
         local tool, id = Rules.resolveTool("wind_lasso", 3, Tools)
         eq(id, "wind_lasso", "id")
