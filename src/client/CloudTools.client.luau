@@ -7,6 +7,7 @@ local Progress = require(ReplicatedStorage:WaitForChild("ProgressRules"))
 local equip = ReplicatedStorage:WaitForChild("EquipCatchTool")
 local purchase = ReplicatedStorage:WaitForChild("PurchaseCatchTool")
 local trainingPurchase = ReplicatedStorage:WaitForChild("PurchaseRangeTraining")
+local companionRemote = ReplicatedStorage:WaitForChild("CycleCloudCompanion")
 local gui = Instance.new("ScreenGui")
 gui.Name = "CloudToolPicker"
 gui.ResetOnSpawn = false
@@ -48,6 +49,29 @@ trainingButton.Parent = panel
 trainingButton.Activated:Connect(function()
     trainingPurchase:FireServer()
 end)
+local companionButton = Instance.new("TextButton")
+companionButton.Name = "CompanionPicker"
+companionButton.LayoutOrder = 0
+companionButton.Size = UDim2.new(1, -6, 0, 42)
+companionButton.TextSize = 12
+companionButton.TextWrapped = true
+companionButton.Font = Enum.Font.GothamBold
+companionButton.TextColor3 = Color3.new(1, 1, 1)
+companionButton.BackgroundColor3 = Color3.fromRGB(92, 72, 145)
+companionButton.Parent = panel
+companionButton.Activated:Connect(function()
+    companionRemote:FireServer()
+end)
+local function refreshCompanion()
+    local id = player:GetAttribute("CompanionSpecies")
+    companionButton.Text = id and id ~= "" and ("Companion: " .. id .. " | Tap to switch") or "Catch a cloud to unlock companion"
+end
+player:GetAttributeChangedSignal("CompanionSpecies"):Connect(refreshCompanion)
+companionRemote.OnClientEvent:Connect(function(ok, message)
+    companionButton.Text = tostring(message)
+    task.delay(2, refreshCompanion)
+end)
+refreshCompanion()
 for _, id in ipairs(order) do
     local tool = catalog[id]
     local row = Instance.new("TextButton")
