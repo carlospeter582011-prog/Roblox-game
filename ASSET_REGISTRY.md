@@ -80,3 +80,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 ## 2026-11-10 09:15 Cairo — Boss reward source audit
 - Boss trial reward implementation modifies existing server-side persistent coins/XP only (`ProfileStore.AwardBossTrial`); it creates no in-world geometry or HUD Canvas stand-ins. Existing three boss statues/arenas remain original native Roblox `Model`/`Part` geometry with `ProximityPrompt`. No GLB, external model, Model asset ID or MeshPart MeshId introduced in this change.
 - Asset type rule unchanged: original cloud asset `104852877755332` is a **Model**, never a `MeshPart.MeshId`. No new asset provenance or permissions to verify; full Roblox visual/runtime audit still pending.
+
+### 2026-11-10 — Economy and HUD change audit
+- No in-world geometry or imported assets changed in this update. Range Training is profile/server logic; the compact wallet and scrollable shop use `ScreenGui`, `Frame`, `TextLabel`, `TextButton` and `ScrollingFrame` for player HUD only (allowed exception to 3D-only world rule). Existing in-world Models/Parts unchanged; full Roblox runtime visual audit remains pending.
