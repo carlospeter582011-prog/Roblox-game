@@ -95,8 +95,6 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     if equipped~=nil and equipped~=toolId then
         player:SetAttribute("EquippedCatchTool",toolId)
     end
-    if now - (lastAttempt[player] or -100) < tool.cooldown then return end
-    lastAttempt[player] = now
     local cloud = active[cloudId]
     if not cloud or not cloud.Parent then return end
     local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
@@ -109,6 +107,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         remote:FireClient(player, false, "Move closer to the cloud!")
         return
     end
+    -- Invalid, stale or out-of-range targets must not consume the catch cooldown.
+    if now - (lastAttempt[player] or -100) < tool.cooldown then return end
+    lastAttempt[player] = now
     -- Vacuum tools can collect nearby clouds in a single server-authoritative burst.
     -- Only the explicitly targeted cloud needs to be in range to start a burst.
     local candidates = {}
