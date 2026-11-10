@@ -96,3 +96,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## Sky Orchard procedural 3D models — 2026-11-10
 - Three original project-authored trees with 3D Roblox Parts (wood trunk, grass canopy, neon fruit) in `src/server/SkyOrchard.server.luau`. No external models, MeshPart IDs, licenses or imports. Server-generated at Meadow (-45,1,45), Eastwind (177,1,30), Ridge (328,1,29). Integrated in feature branch only; Studio visuals, reachability, collision and Android prompts unverified. Do not mark art integration complete.
+
+## 2026-11-10 — Orchard cooldown security follow-up
+- PR #38 now uses MemoryStore SortedMap cooldown reservations for native 3D Skyfruit trees, no additional asset or mesh IDs. Existing original procedural Roblox Parts unchanged. Commit ebb16b5. Runtime and CI unverified.
