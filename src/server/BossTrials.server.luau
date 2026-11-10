@@ -101,17 +101,24 @@ task.spawn(function()
                     end
                 end
                 if state == "complete" then
+                    -- Clear active state before crediting, so this trial cannot pay twice.
                     active[player] = nil
                     cooldown[player] = now + 45
-                    player:SetAttribute("BossChallengeFeedback", config.name .. " defeated! Trial complete!")
+                    local rewarded, coins, xp = ProfileStore.AwardBossTrial(player, trial.id)
+                    if rewarded then
+                        player:SetAttribute("BossChallengeFeedback", config.name .. " defeated! +" .. coins .. " coins, +" .. xp .. " XP!")
+                        player:SetAttribute("BossTrialsWon", (player:GetAttribute("BossTrialsWon") or 0) + 1)
+                    else
+                        player:SetAttribute("BossChallengeFeedback", "Trial complete, but reward unavailable. Rejoin if your profile disconnected.")
+                    end
                     player:SetAttribute("BossChallengeProgress", "")
                     player:SetAttribute("BossChallengePhase", 0)
-                    player:SetAttribute("BossTrialsWon", (player:GetAttribute("BossTrialsWon") or 0) + 1)
                 elseif state == "expired" then
                     active[player] = nil
                     cooldown[player] = now + 15
                     player:SetAttribute("BossChallengeFeedback", config.name .. " escaped! Try again.")
                     player:SetAttribute("BossChallengeProgress", "")
+                    player:SetAttribute("BossChallengePhase", 0)
                 end
             end
         end
