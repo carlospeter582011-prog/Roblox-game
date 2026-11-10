@@ -379,6 +379,10 @@ require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
+test("sky currents validate launch conditions and bounded velocities", function()
+    require("./SkyCurrentSpec")
+end)
+
 local failures = 0
 for _, t in ipairs(tests) do
     local ok, err = pcall(t.fn)
