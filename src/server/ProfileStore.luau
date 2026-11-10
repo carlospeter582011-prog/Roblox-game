@@ -104,11 +104,16 @@ function Profile.AwardBossTrial(player, bossId)
     local BossRules = require(ReplicatedStorage:WaitForChild("BossChallengeRules"))
     local coins, xp = BossRules.reward(bossId)
     if not coins then return false end
+    data.bossVictories = data.bossVictories or {}
+    local previous = data.bossVictories[bossId] or 0
+    data.bossVictories[bossId] = math.min(previous + 1, 1000000)
     data.coins += coins
     data.xp += xp
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    player:SetAttribute("BossWins_" .. bossId, data.bossVictories[bossId])
+    player:SetAttribute("BossTrialsWon", (data.bossVictories.meadow or 0) + (data.bossVictories.eastwind or 0) + (data.bossVictories.ridge or 0))
     return true, coins, xp
 end
 
@@ -229,6 +234,11 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     player:SetAttribute("RangeTraining", math.clamp(math.floor(tonumber(data.rangeTraining) or 0), 0, 3))
+    local wins = data.bossVictories or {}
+    for _, bossId in ipairs({ "meadow", "eastwind", "ridge" }) do
+        player:SetAttribute("BossWins_" .. bossId, wins[bossId] or 0)
+    end
+    player:SetAttribute("BossTrialsWon", (wins.meadow or 0) + (wins.eastwind or 0) + (wins.ridge or 0))
     for toolId, owned in pairs(data.ownedTools or {}) do
         if owned and toolCatalog[toolId] then player:SetAttribute("OwnsTool_" .. toolId, true) end
     end
