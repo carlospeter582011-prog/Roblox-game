@@ -370,6 +370,7 @@ test("crystal migration drops invalid keys and values", function()
 end)
 
 require("./CatchRulesSpec")(test, eq)
+require("./CatchSafetySpec")(test, eq)
 require("./SpawnLevelSpec")(test, eq)
 require("./MutationsSpec")(test, eq)
 require("./MutationAccountingSpec")(test, eq)
