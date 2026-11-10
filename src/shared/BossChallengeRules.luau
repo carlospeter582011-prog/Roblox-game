@@ -1,9 +1,9 @@
 -- Pure rules for repeatable, timed boss catch challenges.
 local Boss = {}
 Boss.challenges = {
-    meadow = { name = "Meadow Warden", requiredCatches = 0, goal = 3, seconds = 90 },
-    eastwind = { name = "Wind Guardian", requiredCatches = 25, goal = 5, seconds = 120 },
-    ridge = { name = "Stormheart Titan", requiredCatches = 75, goal = 7, seconds = 150 },
+    meadow = { name = "Meadow Warden", requiredCatches = 0, goal = 3, seconds = 90, rewardCoins = 75, rewardXP = 40 },
+    eastwind = { name = "Wind Guardian", requiredCatches = 25, goal = 5, seconds = 120, rewardCoins = 175, rewardXP = 85 },
+    ridge = { name = "Stormheart Titan", requiredCatches = 75, goal = 7, seconds = 150, rewardCoins = 350, rewardXP = 150 },
 }
 function Boss.canStart(id, catches)
     local challenge = type(id) == "string" and Boss.challenges[id] or nil
@@ -26,6 +26,11 @@ function Boss.phaseMessage(phase, name)
     if phase == 2 then return name .. " is gathering storm energy! Keep catching!" end
     if phase == 3 then return name .. " final phase! Finish the trial!" end
     return name .. " challenge started!"
+end
+function Boss.reward(id)
+    local challenge = type(id) == "string" and Boss.challenges[id] or nil
+    if not challenge then return nil, nil end
+    return challenge.rewardCoins, challenge.rewardXP
 end
 function Boss.status(startCatches, currentCatches, goal, deadline, now)
     if type(deadline) ~= "number" or type(now) ~= "number" then return "invalid" end
