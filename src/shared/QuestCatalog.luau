@@ -43,7 +43,7 @@ local Quests = {
 -- Every catalog species now has a permanent, server-validated discovery contract.
 -- Generated IDs are deterministic and preserved across servers/rejoins. Existing authored
 -- quests remain intact; completion still flows through CatchRules and profile quest flags.
-local Species = require("./CloudCatalog")
+local Species = if script then require(script.Parent.CloudCatalog) else require("./CloudCatalog")
 for speciesId, species in pairs(Species) do
     local id = "discover_" .. speciesId
     assert(Quests[id] == nil, "Duplicate discovery quest: " .. id)
