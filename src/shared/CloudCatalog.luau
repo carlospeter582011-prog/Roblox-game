@@ -89,5 +89,15 @@ local Catalog = {
     torrent = { id = "torrent", name = "Torrent Cloud", rarity = "Rare", baseCatchRadius = 8, baseRewardCoins = 65, element = "Water", spawnWeight = 4.5, colorRGB = { 70, 150, 190 } },
     cinder = { id = "cinder", name = "Cinder Cloud", rarity = "Uncommon", baseCatchRadius = 9, baseRewardCoins = 32, element = "Fire", spawnWeight = 8, colorRGB = { 255, 150, 90 } },
     vine = { id = "vine", name = "Vine Cloud", rarity = "Uncommon", baseCatchRadius = 10, baseRewardCoins = 26, element = "Nature", spawnWeight = 10.5, colorRGB = { 150, 200, 150 } },
+
+    -- Additional species added 2026-11-11 toward 150 target (distinct elements/rarities)
+    horizon = { id = "horizon", name = "Horizon Cloud", rarity = "Uncommon", baseCatchRadius = 9, baseRewardCoins = 28, element = "Light", spawnWeight = 11, colorRGB = { 255, 230, 150 } },
+    tempest = { id = "tempest", name = "Tempest Cloud", rarity = "Epic", baseCatchRadius = 7, baseRewardCoins = 140, element = "Storm", spawnWeight = 1.6, colorRGB = { 80, 90, 160 } },
+    blossompetal = { id = "blossompetal", name = "Blossompetal Cloud", rarity = "Rare", baseCatchRadius = 8, baseRewardCoins = 52, element = "Nature", spawnWeight = 5.8, colorRGB = { 255, 160, 190 } },
+    frostwhisper = { id = "frostwhisper", name = "Frostwhisper Cloud", rarity = "Uncommon", baseCatchRadius = 9, baseRewardCoins = 26, element = "Ice", spawnWeight = 12.5, colorRGB = { 180, 225, 250 } },
+    voidecho = { id = "voidecho", name = "Voidecho Cloud", rarity = "Mythic", baseCatchRadius = 5, baseRewardCoins = 440, element = "Shadow", spawnWeight = 0.2, colorRGB = { 35, 15, 55 } },
+    solarwisp = { id = "solarwisp", name = "Solarwisp Cloud", rarity = "Rare", baseCatchRadius = 8, baseRewardCoins = 68, element = "Fire", spawnWeight = 4.3, colorRGB = { 255, 190, 70 } },
+    tidalwave = { id = "tidalwave", name = "Tidalwave Cloud", rarity = "Epic", baseCatchRadius = 7, baseRewardCoins = 120, element = "Water", spawnWeight = 1.9, colorRGB = { 60, 140, 180 } },
+    stardust = { id = "stardust", name = "Stardust Cloud", rarity = "Legendary", baseCatchRadius = 5, baseRewardCoins = 320, element = "Cosmic", spawnWeight = 0.5, colorRGB = { 230, 210, 255 } },
 }
 return table.freeze(Catalog)
