@@ -1,0 +1,20 @@
+local Flight = require("../src/shared/CloudFlightRules")
+return function(test, eq)
+    test("elemental flight returns bounded deterministic offsets", function()
+        for _, element in ipairs({"Air","Water","Storm","Fire","Ice","Nature","Earth","Light","Shadow","Cosmic","Unknown"}) do
+            local x,y,z = Flight.offset(element, 3.2, 12)
+            local a,b,c = Flight.offset(element, 3.2, 12)
+            eq(x,a,"repeat x"); eq(y,b,"repeat y"); eq(z,c,"repeat z")
+            assert(math.abs(x) <= 3 and math.abs(z) <= 3 and math.abs(y) <= 1)
+        end
+    end)
+    test("invalid flight inputs never produce NaN or infinity", function()
+        local x,y,z = Flight.offset("Storm", 0/0, math.huge)
+        eq(x,0,"x"); eq(y,0,"y"); eq(z,0,"z")
+    end)
+    test("elemental flight patterns are meaningfully distinct", function()
+        local ax,ay,az = Flight.offset("Air", 4, 1)
+        local ex,ey,ez = Flight.offset("Earth", 4, 1)
+        assert(ax ~= ex or ay ~= ey or az ~= ez)
+    end)
+end
