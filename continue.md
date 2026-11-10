@@ -347,3 +347,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Original native 3D start and three sequential beacons across the existing connected meadow, Eastwind and Ridge islands. Server verifies loaded profile, alive character, actual proximity, checkpoint order and 180s limit. Personal best is session-only; finishing grants a capped 20s speed blessing, no Coins/XP or persistent reward.
 - Four deterministic regression tests added. **Not yet CI, Studio, Android, walkability, or publish verified** at time of writing. No external meshes/assets, no new DataStore fields. Do not merge until CI passes and concurrency reviewed.
 - Next: inspect PR CI, verify bridges and prompt positions on-device, consider durable best-time records with schema migration after runtime validation.
+
+- CI evidence (2026-11-10): [run 42882246936](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42882246936) SUCCESS on e9af5bc: `luau-tests` (static analysis + unit tests) and `build` (Rojo + artifact) both passed. This is not Studio/Android or publication verification. Documentation-only commit after the run needs no gameplay claim.
