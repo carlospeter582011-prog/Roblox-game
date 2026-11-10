@@ -22,6 +22,13 @@ purchaseRemote.OnServerEvent:Connect(function(player, toolId)
     local ok, message = ProfileStore.BuyTool(player, toolId)
     purchaseRemote:FireClient(player, ok, message)
 end)
+local trainingRemote = Instance.new("RemoteEvent")
+trainingRemote.Name = "PurchaseRangeTraining"
+trainingRemote.Parent = ReplicatedStorage
+trainingRemote.OnServerEvent:Connect(function(player)
+    local ok, message = ProfileStore.BuyRangeTraining(player)
+    trainingRemote:FireClient(player, ok, message)
+end)
 local equipRemote = Instance.new("RemoteEvent")
 equipRemote.Name = "EquipCatchTool"
 equipRemote.Parent = ReplicatedStorage
@@ -122,6 +129,11 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     if toolId ~= "starter_net" and not (profile.ownedTools and profile.ownedTools[toolId]) then
         tool,toolId=CatchRules.resolveTool(nil,profile.captures,toolCatalog)
     end
+    -- Server-owned permanent training bonus; never accept a range value from client.
+    local training = math.clamp(math.floor(tonumber(profile.rangeTraining) or 0), 0, 3)
+    local baseTool = tool
+    tool = table.clone(baseTool)
+    tool.rangeBonus = baseTool.rangeBonus + training * 2
     if equipped~=nil and equipped~=toolId then
         player:SetAttribute("EquippedCatchTool",toolId)
     end
