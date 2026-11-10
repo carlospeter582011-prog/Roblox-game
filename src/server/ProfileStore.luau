@@ -142,6 +142,22 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Expedition rewards: only trusted server scripts supply observatory ids.
+-- Uses the existing profile lock/save pipeline; no new persistent fields.
+function Profile.AwardObservatory(player, stationId)
+    local data = sessions[player]
+    if not data then return false end
+    local Rules = require(ReplicatedStorage:WaitForChild("ObservatoryRules"))
+    local coins, xp = Rules.reward(stationId)
+    if not coins then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true, coins, xp
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
