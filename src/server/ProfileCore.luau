@@ -22,6 +22,7 @@ function Core.defaultData(now)
         quests = {},
         ownedTools = { starter_net = true },
         crystals = {},
+        rangeTraining = 0,
         lastSeen = now or 0,
     }
 end
@@ -69,6 +70,9 @@ function Core.sanitize(raw, validQuests, now)
                 clean.crystals[index] = true
             end
         end
+    end
+    if isCount(raw.rangeTraining, 4) then
+        clean.rangeTraining = math.floor(raw.rangeTraining)
     end
     if isCount(raw.lastSeen, MAX_COUNTER) then
         clean.lastSeen = math.floor(raw.lastSeen)
