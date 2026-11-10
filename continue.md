@@ -341,3 +341,28 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+
+## 2026-11-10 — Sky Observatories expedition activity (draft PR #40)
+- Branch `feature/sky-observatories-20261110`, PR https://github.com/carlospeter582011-prog/Roblox-game/pull/40; implementation head `fca585edf0ff030a3e8f07c70da69f676067b05c` before handoff updates.
+- Three original native Roblox 3D observatories (Meadow, Eastwind, Thunderhead Ridge), with server-validated alive/proximity/profile readiness, catch-count gates (0/12/35), per-player per-station 180-second session cooldown, and persistent 20/35/60 Coins plus 15/25/45 XP using existing profile save pipeline. ProximityPrompt works with supported Roblox inputs. No new profile schema.
+- Added pure `ObservatoryRules`, registered `ObservatorySpec` in Luau test runner, and `SkyObservatories.server.luau`; changed `ProfileStore.luau` to award rewards.
+- **Verification:** GitHub connector confirmed branch files and PR creation; CI results, Roblox runtime, mobile usability, geometry/collision, actual DataStore persistence, and Published upload are NOT verified. PR remains DRAFT and is NOT on main. The cooldown is intentionally session-only, so rejoining resets it; address rejoin farming before production by persisting a server-validated cooldown or making the rewards first-discovery only.
+- Other agents have numerous open overlapping PRs (#33–39); review conflicts and base updates before merge. Never claim release until gated CI and Open Cloud evidence.
+
+## 2026-11-10 — PR #40 reconnect-safe observatory rewards
+- Fixed exploitable session-only 180s observatory cooldown: station-specific Unix timestamps now live in the existing server-owned profile and survive DataStore save/rejoin; no client time accepted.
+- ProfileCore defaults and sanitizes only meadow/eastwind/ridge timestamps; invalid, negative, infinite and unknown entries are rejected. Server prompt checks persistent cooldown; ProfileStore awards and advances cooldown together before currency/XP replication.
+- Added registered fake-DataStore regression test for save/rejoin and malformed cooldowns in tests/run.luau.
+- Branch: feature/sky-observatories-20261110, PR #40. **CI, runtime, real DataStore persistence, Android and publish remain unverified**. No main merge authorized before checks. Note: autosave delay still means crash before next successful save can lose the last reward/cooldown; a fully transactional durable claim requires an atomic DataStore receipt flow.
+- Next: inspect CI and branch conflicts; verify in-game, consider immediate save/atomic receipt for crash resistance, then merge only after gates.
+
+## 2026-11-10 21:11 Cairo — observatory durable receipt hardening
+- PR #40 branch: `Profile.AwardObservatory` now commits the Coins/XP and per-station cooldown in the same profile Save before success feedback. A pending guard prevents simultaneous observatory awards; an in-flight autosave is awaited. Failed/uncertain writes fail closed and disconnect the player rather than allowing repeated rewards. Code commits: 5d9f780 and 858344f.
+- This is NOT a fully transactional DataStore operation: unrelated in-flight profile mutations and shutdown races still need stress tests. No CI, real DataStore, Android runtime or Roblox publish verified for these commits. Draft PR must remain unmerged until tests and integration review.
+- Next: add focused fake-DataStore regression tests for concurrent autosave, ambiguous save failure, retry and rejoin; inspect PR CI and reconcile overlapping profile/economy PRs. Do not check launch acceptance boxes.
+
+## 2026-11-10 — Observatory reward state transition hardening
+- PR #40 branch: pure `ObservatoryRules.applyReward` now validates finite bounded Coins/XP and commits cooldown + both rewards in one non-yielding state mutation. `ProfileStore.AwardObservatory` uses it before the existing serialized DataStore save; duplicate/overflow/malformed inputs covered by `ObservatorySpec` tests.
+- Code commits: `12f2545`, `6775993`, `292813f`. These are branch-only, not merged/published. CI and Roblox runtime still unverified; in-flight server crashes and other concurrent profile mutations still need testing. No launch checklist box checked.
+- Next: check PR CI, test save/rejoin/concurrent mutation against real DataStore, reconcile other open PRs, and resume substantive world/story progression.

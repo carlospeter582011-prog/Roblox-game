@@ -24,6 +24,7 @@ function Core.defaultData(now)
         crystals = {},
         rangeTraining = 0,
         bossVictories = {},
+        observatoryCooldowns = {},
         companionSpecies = "",
         companionBond = {},
         lastSeen = now or 0,
@@ -89,6 +90,13 @@ function Core.sanitize(raw, validQuests, now)
         for _, id in ipairs({ "meadow", "eastwind", "ridge" }) do
             if isCount(raw.bossVictories[id], 1000001) then
                 clean.bossVictories[id] = math.floor(raw.bossVictories[id])
+            end
+        end
+    end
+    if type(raw.observatoryCooldowns) == "table" then
+        for _, id in ipairs({ "meadow", "eastwind", "ridge" }) do
+            if isCount(raw.observatoryCooldowns[id], MAX_COUNTER) then
+                clean.observatoryCooldowns[id] = math.floor(raw.observatoryCooldowns[id])
             end
         end
     end
