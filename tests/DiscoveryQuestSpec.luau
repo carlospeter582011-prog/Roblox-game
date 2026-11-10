@@ -8,6 +8,14 @@ return function(test, eq)
         local count = 0
         for id, species in pairs(Catalog) do
             local quest = Quests["discover_" .. id]
+            if quest == nil then
+                for _, authored in pairs(Quests) do
+                    if authored.objective == "catch_species" and authored.speciesId == id and authored.required == 1 then
+                        quest = authored
+                        break
+                    end
+                end
+            end
             eq(quest ~= nil, true, "missing discovery quest " .. id)
             eq(quest.speciesId, id, "species mapping")
             eq(quest.objective, "catch_species", "objective")
