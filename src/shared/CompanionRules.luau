@@ -21,4 +21,21 @@ function Rules.next(current, species, catalog)
     end
     return ids[1]
 end
+-- Bond grows when catching clouds while a companion is equipped.
+-- A small capped Coin bonus rewards continued play without paid boosts.
+function Rules.bondLevel(points)
+    if type(points) ~= "number" or points ~= points or points < 0 then return 0 end
+    if points >= 100 then return 3 end
+    if points >= 40 then return 2 end
+    if points >= 10 then return 1 end
+    return 0
+end
+function Rules.advanceBond(points)
+    local safe = type(points) == "number" and points == points and points >= 0 and points < 1000000 and math.floor(points) or 0
+    return math.min(safe + 1, 1000000)
+end
+function Rules.bonusCoins(baseCoins, bondPoints)
+    if type(baseCoins) ~= "number" or baseCoins ~= baseCoins or baseCoins < 0 or baseCoins == math.huge then return 0 end
+    return math.floor(baseCoins * Rules.bondLevel(bondPoints) * 0.02)
+end
 return Rules
