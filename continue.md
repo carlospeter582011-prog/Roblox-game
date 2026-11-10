@@ -345,3 +345,6 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-10 — Sky Crafting Workshop (draft)
 - Branch `feature/sky-crafting-workshop-20261110`: native 3D bench, 3 server-owned recipes to craft existing catching tools using duplicate cloud specimens plus Coins, preserves one of each species. No schema migration or external mesh. CraftRules checks unlocks, ownership, prices and inputs before atomic non-yield mutation; remote only reports results. Added regression tests in `tests/CraftRulesSpec.luau` and registered in `tests/run.luau`.
 - Source integrated on draft branch only. CI and Roblox runtime/mobile visual, collision and interaction tests **not verified**; do not count crafting as launch complete or merge/publish without checks. Coordinate with other branches touching economy and UI.
+
+### Sky Crafting CI verification
+- GitHub Actions [run 42866070312](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42866070312) completed **success** on implementation/documentation head `851653f2`: `build` (Rojo build and artifact verification) and `luau-tests` (static analysis and unit tests) both passed. This verifies CI execution, **not** Roblox Studio/mobile runtime, reachability, data persistence under real server conditions or publication. PR remains draft.
