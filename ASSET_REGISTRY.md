@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — elemental flight audit
+- Elemental flight uses existing original Roblox 3D Parts/Models and server-owned CFrame/Position updates; no Canvas world art, new MeshPart ID, Model ID, external asset or license. Visual smoothness and Android performance remain unverified. Branch `feature/elemental-cloud-flight-20261110`.
