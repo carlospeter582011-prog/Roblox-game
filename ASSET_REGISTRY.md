@@ -89,3 +89,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ### 2026-11-10 — Personal cloud companions (original native 3D)
 - `src/server/CloudCompanions.server.luau` creates one lightweight `Model` per equipped player, with three anchored, non-colliding, non-querying, non-touching smooth `Part` spheres tinted using catalog RGB. Server animates follow position; model is removed when player leaves. Original geometry, generated in Luau, no external asset, license or Roblox MeshId required. These are actual in-world 3D Parts, not Canvas/ScreenGui world stand-ins. Existing ScreenGui Shop companion picker is allowed HUD only. Visual/LOD/mobile performance and collision verification pending actual Roblox runtime.
+
+| Sky Sprint checkpoint rings (3) | n/a (`src/server/SkySprint.server.luau`) | Project (original procedural) | Original | none | Project-owned | Draft PR #21, Roblox 3D cylinder Parts and ProximityPrompts | Source integrated on feature branch; CI and Roblox runtime/mobile walkability/visual QA pending |
