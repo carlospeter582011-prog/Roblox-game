@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Original 3D Sky Updraft launchpads (draft PR #23)
+- Three original Roblox 3D Model/Part launchpads (Meadow, Eastwind, Ridge) created by `src/server/SkyUpdrafts.server.luau`, each with a native ProximityPrompt and server-validated directional lift. Project-authored geometry, original license, no third-party source or Roblox asset ID. ScreenGui/Canvas world art not used.
+- Code committed on feature branch only; CI, Roblox runtime, launch trajectory/walkability, mobile prompt interaction and visual quality **unverified**. No published upload claimed.
