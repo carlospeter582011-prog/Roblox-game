@@ -15,6 +15,19 @@ return function(test, eq)
         eq(string.find(Rules.phaseMessage(3, "Warden"), "final phase") ~= nil, true, "final text")
     end)
 
+    test("boss reward table is positive, bounded and only known ids pay", function()
+        local previousCoins = 0
+        for _, id in ipairs({"meadow", "eastwind", "ridge"}) do
+            local coins, xp = Rules.reward(id)
+            eq(type(coins) == "number" and coins > previousCoins and coins <= 500, true, id .. " coins")
+            eq(type(xp) == "number" and xp > 0 and xp <= 200, true, id .. " xp")
+            previousCoins = coins
+        end
+        local coins, xp = Rules.reward("unknown")
+        eq(coins, nil, "unknown coins")
+        eq(xp, nil, "unknown xp")
+    end)
+
     test("boss challenges enforce island progression", function()
         eq(Rules.canStart("meadow", 0), true, "starter")
         eq(Rules.canStart("eastwind", 24), false, "eastwind locked")
