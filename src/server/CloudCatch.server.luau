@@ -11,6 +11,7 @@ local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
+local CatchStreakRules = require(ReplicatedStorage:WaitForChild("CatchStreakRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -43,6 +44,7 @@ cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
 local active = {}
 local lastAttempt = {}
+local catchStreak = {}
 local nextId = 0
 local visuals = {}
 -- Brief original 3D catch feedback, visible to nearby players without a 2D world stand-in.
@@ -180,7 +182,12 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
+            local previous = catchStreak[player]
+            local nextStreak = CatchStreakRules.next(previous and previous.count, previous and previous.at, now)
+            options.xp += CatchStreakRules.bonusXp(nextStreak, options.xp)
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
+                catchStreak[player] = { count = nextStreak, at = now }
+                player:SetAttribute("CatchStreak", nextStreak)
                 active[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
@@ -201,6 +208,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
 end)
 Players.PlayerRemoving:Connect(function(player)
     lastAttempt[player] = nil
+    catchStreak[player] = nil
 end)
 
 task.spawn(function()
