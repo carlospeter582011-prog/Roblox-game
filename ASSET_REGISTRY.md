@@ -52,7 +52,7 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 - Spawn-aware recovery uses real Roblox SpawnLocation/CFrame, not Canvas; no new asset introduced. Model asset 104852877755332 remains a Model, not MeshPart MeshId. CI and runtime verification pending.
 
 ## 2026-11-09 — interactive crystal geometry audit
-- Existing project-owned SkyCrystal3D models now host native Roblox ProximityPrompt interactions on a BasePart. No new asset, canvas world stand-in, Mesh ID or external license introduced. Discoveries are session-only player attributes, not persisted currency or quest rewards. Runtime and mobile verification pending.
+- Existing SkyCrystal3D models now host native Roblox ProximityPrompt interactions on a BasePart. No new asset, canvas world stand-in, Mesh ID or external license introduced. Discoveries are session-only player attributes, not persisted currency or quest rewards. Runtime and mobile verification pending.
 
 ## Crystal interaction security audit — 2026-11-09
 - Existing SkyCrystal3D remains project-original native Roblox Model/Part geometry; no Canvas stand-ins, new external assets or MeshIds introduced.
@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Species evolution feature asset audit
+- Evolution and mastery are profile data and HUD button only. No in-world geometry, MeshPart, Model asset ID, GLB, texture or audio introduced. Existing procedural 3D clouds and companions unchanged. ScreenGui Evolve button is permitted HUD. Runtime verification pending.
