@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Updraft Shrines (Meadow, Eastwind, Ridge) | n/a (`src/server/SkyUpdraftShrines.server.luau`) | Project (original procedural Roblox Parts) | Original | none | Project-owned | Branch `feature/sky-updraft-traversal-20261110`: 3 interactive 3D wind shrines | Code only; CI, Roblox Studio, Android interaction and collision/placement unverified |
