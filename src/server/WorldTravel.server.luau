@@ -64,6 +64,9 @@ end
 
 -- Every island has a station; cross-island travel is a deliberate earned shortcut.
 makeStation("starter", "Starter Meadow", -12, -25, Color3.fromRGB(99, 205, 167))
-makeStation("eastwind", "Eastwind Outlook", 154, -18, Color3.fromRGB(122, 184, 230))
-makeStation("ridge", "Thunderhead Ridge", 295, -18, Color3.fromRGB(174, 151, 230))
+makeStation("eastwind", "Eastwind Outlook", 0, -25, Color3.fromRGB(122, 184, 230))
+makeStation("ridge", "Thunderhead Ridge", 12, -25, Color3.fromRGB(174, 151, 230))
+-- Return stations allow players who explored by bridge to return without retracing the route.
+makeStation("starter", "Eastwind Return", 154, -18, Color3.fromRGB(99, 205, 167))
+makeStation("starter", "Ridge Return", 295, -18, Color3.fromRGB(99, 205, 167))
 Players.PlayerRemoving:Connect(function(player) lastTravel[player] = nil end)
