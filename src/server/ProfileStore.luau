@@ -193,6 +193,18 @@ function Profile.BuyRangeTraining(player)
     return true, "Range upgraded! +" .. (nextLevel * 2) .. " studs"
 end
 
+-- Server-only replayable checkpoint race payout; caller validates course and cooldown.
+function Profile.AwardSkySprint(player, coins, xp)
+    local data = sessions[player]
+    if not data or coins ~= 130 or xp ~= 70 then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
 local function persist(player, release)
