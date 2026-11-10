@@ -235,7 +235,7 @@ end
 -- Returns true only if the data reached the DataStore.
 persist = function(player, release)
     if saving[player] then
-        if not release then
+        if not release and not observatoryPending[player] then
             return false -- an autosave is already running
         end
         while saving[player] do
