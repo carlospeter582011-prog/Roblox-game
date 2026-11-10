@@ -14,3 +14,5 @@ eq(select(1,Rules.advance({started=10,next=1},1,11,0/0)),false)
 eq(select(1,Rules.advance({started=10,next=1},1,11,-1)),false)
 eq(select(1,Rules.advance({started=10,next=1},1,11,14)),false)
 print("SkySprintRules: 11 assertions passed")
+
+return true
