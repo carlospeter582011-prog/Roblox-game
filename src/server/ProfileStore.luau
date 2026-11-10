@@ -127,6 +127,29 @@ function Profile.BuyTool(player, toolId)
     return true, "Purchased " .. tool.name
 end
 
+-- Permanent range training: a meaningful, bounded Coin sink unlocked by XP levels.
+-- Stored on the existing player profile and saved by the normal session-lock pipeline.
+local TRAINING_COSTS = { 100, 250, 500 }
+local TRAINING_LEVELS = { 2, 4, 6 }
+function Profile.BuyRangeTraining(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local current = math.clamp(math.floor(tonumber(data.rangeTraining) or 0), 0, #TRAINING_COSTS)
+    if current >= #TRAINING_COSTS then return false, "Range training maxed!" end
+    local nextLevel = current + 1
+    local level = Leveling.levelForXp(data.xp)
+    if level < TRAINING_LEVELS[nextLevel] then
+        return false, "Reach level " .. TRAINING_LEVELS[nextLevel] .. " first"
+    end
+    local cost = TRAINING_COSTS[nextLevel]
+    if data.coins < cost then return false, "Need " .. cost .. " coins" end
+    data.coins -= cost
+    data.rangeTraining = nextLevel
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("RangeTraining", nextLevel)
+    return true, "Range upgraded! +" .. (nextLevel * 2) .. " studs"
+end
+
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
 local function persist(player, release)
@@ -205,6 +228,7 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    player:SetAttribute("RangeTraining", math.clamp(math.floor(tonumber(data.rangeTraining) or 0), 0, 3))
     for toolId, owned in pairs(data.ownedTools or {}) do
         if owned and toolCatalog[toolId] then player:SetAttribute("OwnsTool_" .. toolId, true) end
     end
