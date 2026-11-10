@@ -81,11 +81,16 @@ local function spawnCloud()
     cloud.Anchored = true
     cloud.CanCollide = false
     cloud.Transparency = 1
-    -- Every fourth cloud populates Eastwind Outlook; all spawns remain over walkable 3D ground.
-    local onOutlook = nextId % 4 == 0
-    cloud.Position = onOutlook
-        and Vector3.new(math.random(140, 200), 9, math.random(-30, 30))
-        or Vector3.new(math.random(-55, 55), 9, math.random(-55, 55))
+    -- Populate all three connected walkable islands. Spawn positions stay inside each
+    -- floor's bounds, away from the narrow bridge edges and cliff perimeter.
+    local region = nextId % 5
+    if region == 0 then
+        cloud.Position = Vector3.new(math.random(285, 345), 9, math.random(-30, 30))
+    elseif region == 2 then
+        cloud.Position = Vector3.new(math.random(140, 200), 9, math.random(-30, 30))
+    else
+        cloud.Position = Vector3.new(math.random(-55, 55), 9, math.random(-55, 55))
+    end
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
     if mutationId then cloud:SetAttribute("MutationId", mutationId) end
