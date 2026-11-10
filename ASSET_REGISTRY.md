@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Forge 3D training station (3 recipe pedestals, anvil, base) | n/a (`src/server/SkyForge.server.luau`) | Project original procedural | Original | none | Project-owned | Branch `feature/sky-forge-training-20261110`, Roblox anchored Parts and ProximityPrompts | Source integrated only; CI, Studio/Android visuals, collisions and publishing unverified |
