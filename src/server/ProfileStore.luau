@@ -193,6 +193,22 @@ function Profile.BuyRangeTraining(player)
     return true, "Range upgraded! +" .. (nextLevel * 2) .. " studs"
 end
 
+-- Sky Forge is a server-authoritative repeatable Coin sink; no client-supplied price or XP.
+function Profile.CraftSkyForge(player, recipeId)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local Forge = require(ReplicatedStorage:WaitForChild("SkyForgeRules"))
+    local ok, recipe = Forge.validate(recipeId, data.coins, data.captures)
+    if not ok then return false, recipe end
+    -- No yields between validation and mutation, so two prompts cannot double-spend.
+    data.coins -= recipe.cost
+    data.xp += recipe.xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true, recipe.name .. ": +" .. recipe.xp .. " XP"
+end
+
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
 local function persist(player, release)
