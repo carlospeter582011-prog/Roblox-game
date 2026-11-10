@@ -8,6 +8,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local CatchSafetyRules = require(ReplicatedStorage:WaitForChild("CatchSafetyRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
@@ -142,17 +143,18 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     local cloud = active[cloudId]
     if not cloud or not cloud.Parent then return end
     local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if not root then return end
+    local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+    if not root or not humanoid or humanoid.Health <= 0 then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
     local targetDistance = (root.Position - cloud.Position).Magnitude
     local magnetPull = CatchRules.canMagnetPull(targetDistance, species, toolId, tool)
-    if not CatchRules.isInRange(targetDistance, species, tool) and not magnetPull then
+    if not CatchSafetyRules.validDistance(targetDistance) or (not CatchRules.isInRange(targetDistance, species, tool) and not magnetPull) then
         remote:FireClient(player, false, "Move closer to the cloud!")
         return
     end
     -- Invalid, stale or out-of-range targets must not consume the catch cooldown.
-    if now - (lastAttempt[player] or -100) < tool.cooldown then return end
+    if not CatchSafetyRules.canCatch(true, targetDistance, species.baseCatchRadius + tool.rangeBonus + (magnetPull and 12 or 0), now - (lastAttempt[player] or -100), tool.cooldown) then return end
     lastAttempt[player] = now
     -- Vacuum tools can collect nearby clouds in a single server-authoritative burst.
     -- Only the explicitly targeted cloud needs to be in range to start a burst.
@@ -162,7 +164,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             if otherId ~= cloudId and otherCloud.Parent then
                 local otherSpecies = catalog[otherCloud:GetAttribute("SpeciesId")]
                 local distance = (root.Position - otherCloud.Position).Magnitude
-                if otherSpecies and CatchRules.isInRange(distance, otherSpecies, tool) then
+                if otherSpecies and CatchSafetyRules.validDistance(distance) and CatchRules.isInRange(distance, otherSpecies, tool) then
                     table.insert(candidates, { id = otherId, distance = distance })
                 end
             end
@@ -174,7 +176,13 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud then
+        local liveRoot = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
+        local liveHumanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+        local liveDistance = liveRoot and (liveRoot.Position - targetCloud.Position).Magnitude
+        local inRange = liveDistance and CatchSafetyRules.validDistance(liveDistance)
+            and (CatchRules.isInRange(liveDistance, targetSpecies or species, tool)
+                or (targetId == cloudId and CatchRules.canMagnetPull(liveDistance, targetSpecies or species, toolId, tool)))
+        if targetSpecies and active[targetId] == targetCloud and liveHumanoid and liveHumanoid.Health > 0 and inRange then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
