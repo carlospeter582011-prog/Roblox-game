@@ -67,3 +67,7 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 - Catchable clouds remain original Roblox `Part` hitboxes (invisible) plus `CloudVisuals.createCloudVisual` 3D `Model` assemblies, not ScreenGui/Canvas stand-ins. The transparent hitbox is not a fake 2D cloud; it is a collision-free interaction target. No new asset ID was integrated.
 - HUD and mobile Catch controls are intentionally `ScreenGui` elements and exempt from the in-world 3D-only requirement.
 - This is a **source-level partial audit**, not a complete Workspace hierarchy or Android/Studio render audit. Existing procedural models still need live visual verification and licensed/owned mesh upgrade; a Roblox Model asset ID must not be used as a MeshPart MeshId.
+
+## 2026-11-10 — 3D world fast-travel station provenance
+- **Asset:** Five original travel stations (three starter hub destinations, Eastwind and Ridge return stations), each a real Roblox `Part` platform and `Part` Glass sphere beacon with native `ProximityPrompt`. Source: `src/server/WorldTravel.server.luau`; creator: project; license: original; external URL: none; Roblox asset ID: none; Model ID/MeshPart ID: not applicable. Runtime/visual verification **pending**.
+- ScreenGui status text is UI only and allowed by the 3D-only checklist. No Canvas/2D geometry used in Workspace. Source audit of these stations only; not a full scene inspection.
