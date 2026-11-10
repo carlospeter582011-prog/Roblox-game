@@ -11,7 +11,8 @@ function Rules.advance(previous, lastAt, now)
         and lastAt == lastAt and now >= lastAt and now - lastAt <= Rules.WINDOW
     local streak = valid and math.min(previous + 1, Rules.MAX_STREAK) or 1
     -- Every fifth successful catch pays a capped, deterministic bonus.
-    local bonus = streak % 5 == 0 and 10 * math.floor(streak / 5) or 0
+    local bonus = streak % 5 == 0 and (not valid or previous < Rules.MAX_STREAK)
+        and 10 * math.floor(streak / 5) or 0
     return streak, bonus
 end
 return Rules
