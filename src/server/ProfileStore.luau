@@ -68,6 +68,18 @@ function Profile.AddCatch(player, speciesId, coins, options)
         data.companionSpecies = speciesId
         player:SetAttribute("CompanionSpecies", speciesId)
     end
+    -- Bond only advances for the currently equipped, genuinely owned companion.
+    -- Rewards are calculated from the server-authoritative base catch amount.
+    local companion = data.companionSpecies
+    if CompanionRules.owned(companion, data.species, CloudCatalog) then
+        data.companionBond = data.companionBond or {}
+        local points = CompanionRules.advanceBond(data.companionBond[companion])
+        data.companionBond[companion] = points
+        local bonus = CompanionRules.bonusCoins(coins, points)
+        data.coins += bonus
+        player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
+        player:SetAttribute("CompanionBondPoints", points)
+    end
     player:SetAttribute("CloudCount", data.captures)
     -- Only attribute-safe ids are replicated; mutation keys contain ":" and stay server-side.
     if CatchRules.isAttributeSafe("SpeciesCount_" .. speciesId) then
@@ -130,6 +142,9 @@ function Profile.CycleCompanion(player)
     if not nextId then return false, "Catch a cloud to unlock a companion!" end
     data.companionSpecies = nextId
     player:SetAttribute("CompanionSpecies", nextId)
+    local points = (data.companionBond or {})[nextId] or 0
+    player:SetAttribute("CompanionBondPoints", points)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
     return true, "Companion: " .. CloudCatalog[nextId].name
 end
 
@@ -254,6 +269,9 @@ local function onPlayerAdded(player)
         data.companionSpecies = CompanionRules.next(nil, data.species, CloudCatalog) or ""
     end
     player:SetAttribute("CompanionSpecies", data.companionSpecies)
+    local bondPoints = (data.companionBond or {})[data.companionSpecies] or 0
+    player:SetAttribute("CompanionBondPoints", bondPoints)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(bondPoints))
     local wins = data.bossVictories or {}
     for _, bossId in ipairs({ "meadow", "eastwind", "ridge" }) do
         player:SetAttribute("BossWins_" .. bossId, wins[bossId] or 0)
