@@ -184,6 +184,24 @@ test("companion bonding progresses, persists and rejects malformed values", func
     eq(clean.companionBond.frost, nil, "negative rejected")
 end)
 
+test("elemental companion resonance rewards same-element catches only", function()
+    local Rules = require("../src/shared/CompanionRules")
+    local catalog = {
+        breeze = { element = "Air" }, cirrus = { element = "Air" },
+        drizzle = { element = "Water" },
+    }
+    local owned = { breeze = 1, cirrus = 0 }
+    eq(Rules.resonanceXp(100, "breeze", "cirrus", owned, catalog, { breeze = 0 }), 0, "unbonded")
+    eq(Rules.resonanceXp(100, "breeze", "cirrus", owned, catalog, { breeze = 10 }), 5, "level 1")
+    eq(Rules.resonanceXp(100, "breeze", "cirrus", owned, catalog, { breeze = 40 }), 10, "level 2")
+    eq(Rules.resonanceXp(100, "breeze", "cirrus", owned, catalog, { breeze = 100 }), 15, "level 3")
+    eq(Rules.resonanceXp(100, "breeze", "drizzle", owned, catalog, { breeze = 100 }), 0, "different element")
+    eq(Rules.resonanceXp(100, "cirrus", "breeze", owned, catalog, { cirrus = 100 }), 0, "unowned companion")
+    eq(Rules.resonanceXp(100, "breeze", "missing", owned, catalog, { breeze = 100 }), 0, "unknown target")
+    eq(Rules.resonanceXp(math.huge, "breeze", "cirrus", owned, catalog, { breeze = 100 }), 0, "invalid xp")
+    eq(Rules.resonanceXp(11, "breeze", "cirrus", owned, catalog, { breeze = 10 }), 0, "fractional reward floored")
+end)
+
 test("a live lock held by another server blocks load and leaves the record alone", function()
     clock.t = 1000
     local store = FakeStore.new()
