@@ -41,6 +41,28 @@ local function makeStation(id, label, x, z, color)
     prompt.RequiresLineOfSight = false
     prompt.Parent = beacon
 
+    -- Visible native 3D portal arch: no BillboardGui/Canvas world stand-in.
+    for _, side in ipairs({ -1, 1 }) do
+        local pillar = Instance.new("Part")
+        pillar.Name = label .. "PortalPillar3D"
+        pillar.Size = Vector3.new(1.2, 7, 1.2)
+        pillar.Position = Vector3.new(x + side * 4, 5.8, z)
+        pillar.Anchored = true
+        pillar.CanCollide = false
+        pillar.Material = Enum.Material.SmoothPlastic
+        pillar.Color = color
+        pillar.Parent = stations
+    end
+    local lintel = Instance.new("Part")
+    lintel.Name = label .. "PortalArch3D"
+    lintel.Size = Vector3.new(9.2, 1.2, 1.2)
+    lintel.Position = Vector3.new(x, 9.8, z)
+    lintel.Anchored = true
+    lintel.CanCollide = false
+    lintel.Material = Enum.Material.SmoothPlastic
+    lintel.Color = color
+    lintel.Parent = stations
+
     prompt.Triggered:Connect(function(player)
         local profile = ProfileStore.Get(player)
         local character = player.Character
@@ -50,13 +72,15 @@ local function makeStation(id, label, x, z, color)
         if (root.Position - beacon.Position).Magnitude > 15 then return end
         local now = os.clock()
         if now - (lastTravel[player] or -100) < 2 then return end
-        lastTravel[player] = now
         if not SpawnRules.canFastTravel(id, profile.captures) then
             player:SetAttribute("TravelFeedback", label .. " unlocks at " ..
                 tostring(SpawnRules.travelDestinations[id].requiredCatches) .. " catches")
             return
         end
+        lastTravel[player] = now
         local destination = SpawnRules.travelDestinations[id]
+        root.AssemblyLinearVelocity = Vector3.zero
+        root.AssemblyAngularVelocity = Vector3.zero
         character:PivotTo(CFrame.new(destination.x, destination.y, destination.z))
         player:SetAttribute("TravelFeedback", "Arrived at " .. label)
     end)
