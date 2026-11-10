@@ -9,6 +9,7 @@ local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
+local CloudFlightRules = require(ReplicatedStorage:WaitForChild("CloudFlightRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
@@ -112,7 +113,7 @@ local function spawnCloud()
     glow.Brightness = 1
     glow.Range = 12
     glow.Parent = cloud
-    visuals[id] = { model = model, offsets = offsets }
+    visuals[id] = { model = model, offsets = offsets, anchor = cloud.Position, element = species.element, seed = nextId }
     active[id] = cloud
 end
 -- Keep a dozen discoverable clouds near the starter activity zone.
@@ -213,6 +214,8 @@ task.spawn(function()
         for id, entry in pairs(visuals) do
             local cloud = active[id]
             if cloud and cloud.Parent and entry.model.Parent then
+                local dx, dz = CloudFlightRules.offset(entry.element, phase, entry.seed)
+                cloud.Position = entry.anchor + Vector3.new(dx, 0, dz)
                 local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.5, 0)
                 for part, offset in pairs(entry.offsets) do
                     if part.Parent then
