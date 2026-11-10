@@ -40,4 +40,28 @@ local Quests = {
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
 }
+-- Every catalog species now has a permanent, server-validated discovery contract.
+-- Generated IDs are deterministic and preserved across servers/rejoins. Existing authored
+-- quests remain intact; completion still flows through CatchRules and profile quest flags.
+local Species = require("./CloudCatalog")
+for speciesId, species in pairs(Species) do
+    local id = "discover_" .. speciesId
+    assert(Quests[id] == nil, "Duplicate discovery quest: " .. id)
+    local rarityRewards = {
+        Common = 20, Uncommon = 30, Rare = 45, Epic = 70,
+        Legendary = 100, Mythic = 125, Secret = 150,
+    }
+    local reward = rarityRewards[species.rarity] or 30
+    Quests[id] = {
+        id = id,
+        title = "Discover: " .. species.name,
+        description = "Catch your first " .. species.name .. " to record it in your Sky Journal.",
+        objective = "catch_species",
+        speciesId = speciesId,
+        required = 1,
+        rewardCoins = reward,
+        rewardXP = math.floor(reward / 2),
+        chapter = 1,
+    }
+end
 return table.freeze(Quests)
