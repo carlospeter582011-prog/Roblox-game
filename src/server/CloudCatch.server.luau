@@ -9,6 +9,7 @@ local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
+local CloudEcology = require(ReplicatedStorage:WaitForChild("CloudEcology"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
@@ -73,7 +74,8 @@ end
 local function spawnCloud()
     nextId += 1
     local id = tostring(nextId)
-    local speciesId = SpawnRules.rollSpecies(catalog, math.random) or "breeze"
+    local region = SpawnRules.regionBounds(nextId)
+    local speciesId = CloudEcology.roll(catalog, region.name, math.random) or "breeze"
     local species = catalog[speciesId]
     local mutationId = Mutations.roll(math.random)
     local tint = Color3.fromRGB(species.colorRGB[1], species.colorRGB[2], species.colorRGB[3])
@@ -89,7 +91,6 @@ local function spawnCloud()
     cloud.Anchored = true
     cloud.CanCollide = false
     cloud.Transparency = 1
-    local region = SpawnRules.regionBounds(nextId)
     cloud.Position = Vector3.new(
         math.random(region.minX, region.maxX), 9,
         math.random(region.minZ, region.maxZ))
