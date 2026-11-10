@@ -95,3 +95,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-11 — island production rules branch
 - `IslandProductionRules.luau` is pure logic only: no world geometry, new MeshPart, Model ID, external art or Canvas stand-in. Future habitats require original native Roblox 3D models or verified licensed assets; integration and runtime verification pending.
+
+## 2026-11-11 — Island production claim logic
+- `IslandProductionRules.claim` is a pure numerical calculation only; it creates no visual asset or Model/MeshPart. No asset IDs or external licenses added. Production habitats remain **not integrated or visually verified**.
