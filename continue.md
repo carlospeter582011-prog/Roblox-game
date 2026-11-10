@@ -351,3 +351,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Branch `feature/island-production-rules-20261111` adds pure `IslandProductionRules.luau` and 3 registered regression tests. Four elemental habitat recipes require owned matching cloud species and Coins, with a 12-job cap, bounded 8-hour offline accrual, per-habitat storage limits, partial-tick carry and corrupt-input rejection.
 - IMPORTANT: This is a deterministic production rules layer, **not yet an integrated playable island system**. No profile persistence, 3D habitat placement, client UI, or rewards have been connected. Do not check off island production acceptance. Integrate after coordinating concurrent ProfileStore PRs and defining persisted job state and server transaction semantics.
 - No external assets, Studio test or publication claimed. CI evidence must be checked on this PR.
+
+## 2026-11-11 — Island claim transaction proposal (PR #63)
+- Added pure `IslandProductionRules.claim` to propose a single server-side wallet/job state update, including already-stored resources, bounded elapsed production, replay-safe zero rewards at identical timestamps, clock rollback rejection and wallet overflow guard. Commits e9395232 and 7f58ee90; two regression tests added.
+- IMPORTANT: no ProfileStore integration or real atomic DataStore transaction yet. Caller must commit wallet and job together; never mark island production playable. CI and Studio verification pending.
