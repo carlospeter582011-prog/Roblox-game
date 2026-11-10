@@ -77,13 +77,13 @@ local function plant(id, label, center, tint)
         inFlight[key] = true
         local reserved = false
         local ok, err = pcall(function()
-            cooldowns:UpdateAsync(key, function(previous)
+            local result = cooldowns:UpdateAsync(key, function(previous)
                 if type(previous) == "number" and previous > now then
                     return nil
                 end
-                reserved = true
                 return now + Rules.GROW_SECONDS, now + Rules.GROW_SECONDS
             end, Rules.GROW_SECONDS + 30)
+            reserved = result == now + Rules.GROW_SECONDS
         end)
         inFlight[key] = nil
         if not ok or not reserved then
