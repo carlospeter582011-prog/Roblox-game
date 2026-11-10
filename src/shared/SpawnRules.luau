@@ -48,4 +48,15 @@ function Spawn.regionBounds(sequence)
     return { name = "StarterMeadow", minX = -55, maxX = 55, minZ = -55, maxZ = 55 }
 end
 
+-- Region fast-travel unlocks are derived from persisted catches; no extra save schema.
+Spawn.travelDestinations = {
+    starter = { requiredCatches = 0, x = 0, y = 5, z = -25 },
+    eastwind = { requiredCatches = 25, x = 170, y = 5, z = 0 },
+    ridge = { requiredCatches = 75, x = 315, y = 5, z = 0 },
+}
+function Spawn.canFastTravel(destination, captures)
+    local target = type(destination) == "string" and Spawn.travelDestinations[destination] or nil
+    return target ~= nil and type(captures) == "number" and captures >= target.requiredCatches
+end
+
 return Spawn
