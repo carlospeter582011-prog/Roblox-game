@@ -355,3 +355,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-11 — Island claim transaction proposal (PR #63)
 - Added pure `IslandProductionRules.claim` to propose a single server-side wallet/job state update, including already-stored resources, bounded elapsed production, replay-safe zero rewards at identical timestamps, clock rollback rejection and wallet overflow guard. Commits e9395232 and 7f58ee90; two regression tests added.
 - IMPORTANT: no ProfileStore integration or real atomic DataStore transaction yet. Caller must commit wallet and job together; never mark island production playable. CI and Studio verification pending.
+
+## 2026-11-11 — Habitat purchase transaction proposal (PR #63)
+- Added `IslandProductionRules.build` for server-authoritative, nonmutating habitat purchase proposals: elemental cloud ownership, wallet cost, capacity, clock initialization, malformed/sparse job rejection. Two regression tests added. Commits `1555151e6dbfdec1165a0bf078cd7cdf4d147d01` and `b7f52cca68550c3ed258c918081f5bbb20989461`.
+- This is still pure logic only. No live profile transaction, persisted habitat schema, 3D placement or player-facing UI. Keep draft, do not publish or check off launch criteria. CI and Roblox runtime verification pending.
