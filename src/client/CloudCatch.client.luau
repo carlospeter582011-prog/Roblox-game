@@ -5,8 +5,10 @@ local Workspace = game:GetService("Workspace")
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local tools = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local speciesCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local EvolutionRules = require(ReplicatedStorage:WaitForChild("EvolutionRules"))
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("RequestCloudCatch")
+local evolveRemote = ReplicatedStorage:WaitForChild("RequestCloudEvolution")
 local folder = Workspace:WaitForChild("CatchableClouds")
 local gui = Instance.new("ScreenGui")
 gui.Name = "CloudCatchHUD"
@@ -331,6 +333,33 @@ journalButton.Activated:Connect(function()
     journal.Visible = not journal.Visible
 end)
 refreshBossJournal()
+
+-- Compact Evolve button: requests the first ready species. Server validates.
+local evolveButton = Instance.new("TextButton")
+evolveButton.Name = "EvolveButton"
+evolveButton.Size = UDim2.fromOffset(100, 30)
+evolveButton.Position = UDim2.new(0, 12, 0, 146)
+evolveButton.Text = "Evolve"
+evolveButton.TextSize = 12
+evolveButton.Font = Enum.Font.GothamBold
+evolveButton.BackgroundColor3 = Color3.fromRGB(90, 60, 140)
+evolveButton.TextColor3 = Color3.new(1, 1, 1)
+evolveButton.Parent = gui
+evolveButton.Activated:Connect(function()
+    for id, species in pairs(speciesCatalog) do
+        local mastery = player:GetAttribute("Mastery_" .. id) or 0
+        local evolved = player:GetAttribute("Evolved_" .. id)
+        if not evolved and mastery >= EvolutionRules.needed(species.rarity) then
+            evolveRemote:FireServer(id)
+            return
+        end
+    end
+    message.Text = "No species ready to evolve yet"
+    message.Visible = true
+    task.delay(3, function()
+        if message.Text == "No species ready to evolve yet" then message.Visible = false end
+    end)
+end)
 
 -- Hide tutorial after 20s or first successful catch
 task.delay(7, hideTutorial)
