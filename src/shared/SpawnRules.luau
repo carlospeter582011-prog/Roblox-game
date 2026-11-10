@@ -33,4 +33,19 @@ function Spawn.rollSpecies(species, rng)
     return ids[#ids] -- float rounding edge: target reached the total
 end
 
+-- Region layout must match the actual walkable floors in StarterWorld.server.luau.
+-- A stable rotation keeps the starter island populated while sending players onward.
+function Spawn.regionBounds(sequence)
+    if type(sequence) ~= "number" or sequence < 1 or sequence ~= math.floor(sequence) then
+        return nil
+    end
+    local slot = sequence % 5
+    if slot == 0 then
+        return { name = "ThunderheadRidge", minX = 285, maxX = 345, minZ = -30, maxZ = 30 }
+    elseif slot == 2 then
+        return { name = "EastwindOutlook", minX = 140, maxX = 200, minZ = -30, maxZ = 30 }
+    end
+    return { name = "StarterMeadow", minX = -55, maxX = 55, minZ = -55, maxZ = 55 }
+end
+
 return Spawn
