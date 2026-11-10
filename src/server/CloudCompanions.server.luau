@@ -9,6 +9,7 @@ local remote = Instance.new("RemoteEvent")
 remote.Name = "CycleCloudCompanion"
 remote.Parent = ReplicatedStorage
 local models = {}
+local lastPositions = {} -- smooth follow state, reset on respawn or companion switch
 local folder = Instance.new("Folder")
 folder.Name = "CloudCompanions"
 folder.Parent = workspace
@@ -16,6 +17,7 @@ local function remove(player)
     local model = models[player]
     if model then model:Destroy() end
     models[player] = nil
+    lastPositions[player] = nil
 end
 local function makePart(model, size, offset, color)
     local part = Instance.new("Part")
@@ -77,10 +79,19 @@ task.spawn(function()
             local root = character and character:FindFirstChild("HumanoidRootPart")
             if root and model.Parent then
                 local target = root.CFrame * CFrame.new(-3.3, 2 + math.sin(phase * 2 + player.UserId % 7) * 0.3, 2.8)
-                model:PivotTo(target)
+                -- Smoothly follow moving players, but snap after teleport/respawn.
+                -- This avoids a companion visibly crossing the map after fast travel.
+                local previous = lastPositions[player]
+                local nextPivot = target
+                if previous and (previous.Position - target.Position).Magnitude < 30 then
+                    nextPivot = previous:Lerp(target, 0.38)
+                end
+                model:PivotTo(nextPivot)
+                lastPositions[player] = nextPivot
             elseif model.Parent then
                 -- Hide until the player's character respawns.
                 model:PivotTo(CFrame.new(0, -10000, 0))
+                lastPositions[player] = nil
             end
         end
     end
