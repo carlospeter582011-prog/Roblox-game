@@ -341,3 +341,12 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+## 2026-11-10 22:30 Cairo — Rainfall Reef playable region (draft)
+- Branch `feature/rainfall-reef-playable-region-20261110-2230` from main `c135990d`. Added a fourth physically connected original native-3D region at x=460, bridge overlapping Thunderhead Ridge and reef floor, pools/coral/columns as non-collidable 3D Parts.
+- Server-owned spawn region slot (sequence % 7 == 6), Rainfall Reef fast travel unlocked at 25 saved catches, and a return portal; no new data schema, external models, Mesh IDs or client-controlled teleports.
+- Three new pure Luau regression tests cover bridge continuity, unlock invalid values and spawn bounds; registered in tests/run.luau. CI and Roblox Studio/mobile/runtime/publish NOT verified. Do not count this as a separate Roblox Place or a complete world with quests/boss/story.
+- Next: check CI, inspect region travel/bridge/visuals in Roblox, confirm actual spawn population, then reconcile other active branches before any merge or gated publication.
+
+### Rainfall Reef CI verification
+- [GitHub Actions run 42896110596](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42896110596) completed SUCCESS on PR head 88b2f949: build job (source validation, Rojo, output and artifact) and luau-tests job (static analysis and registered unit tests) both passed. This is **not** Roblox runtime, mobile, real multiplayer or Published upload verification. Follow-up documentation commit requires separate CI verification.
