@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Nature discovery XP branch audit
+- Nature companion first-discovery XP is logic-only, adds no 3D objects, external assets, meshes or Canvas world objects. Original cloud Model 104852877755332 remains a Model asset, not a MeshPart MeshId. Runtime visuals remain unverified.
