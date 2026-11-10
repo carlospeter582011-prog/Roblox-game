@@ -284,5 +284,53 @@ for _, attribute in ipairs({ "CloudLevel", "CloudCoins", "CloudXP", "CloudCount"
 end
 refreshWallet()
 
+-- Boss Journal: compact progress UI; server attributes are derived from saved victories.
+local journalButton = Instance.new("TextButton")
+journalButton.Name = "BossJournalButton"
+journalButton.Size = UDim2.fromOffset(92, 30)
+journalButton.Position = UDim2.new(1, -108, 0, 64)
+journalButton.Text = "Boss Journal"
+journalButton.TextSize = 12
+journalButton.Font = Enum.Font.GothamBold
+journalButton.BackgroundColor3 = Color3.fromRGB(63, 44, 94)
+journalButton.TextColor3 = Color3.new(1, 1, 1)
+journalButton.Parent = gui
+local journal = Instance.new("Frame")
+journal.Name = "BossJournal"
+journal.AnchorPoint = Vector2.new(1, 0)
+journal.Position = UDim2.new(1, -12, 0, 156)
+journal.Size = UDim2.new(0, 210, 0, 118)
+journal.BackgroundColor3 = Color3.fromRGB(24, 48, 81)
+journal.Visible = false
+journal.Parent = gui
+local journalCorner = Instance.new("UICorner")
+journalCorner.CornerRadius = UDim.new(0, 9)
+journalCorner.Parent = journal
+local journalText = Instance.new("TextLabel")
+journalText.Size = UDim2.new(1, -16, 1, -12)
+journalText.Position = UDim2.fromOffset(8, 6)
+journalText.BackgroundTransparency = 1
+journalText.Font = Enum.Font.Gotham
+journalText.TextSize = 13
+journalText.TextColor3 = Color3.new(1, 1, 1)
+journalText.TextXAlignment = Enum.TextXAlignment.Left
+journalText.TextYAlignment = Enum.TextYAlignment.Center
+journalText.TextWrapped = true
+journalText.Parent = journal
+local function refreshBossJournal()
+    journalText.Text = "Boss victories (saved)\\nMeadow Warden: " ..
+        tostring(player:GetAttribute("BossWins_meadow") or 0) ..
+        "\\nWind Guardian: " .. tostring(player:GetAttribute("BossWins_eastwind") or 0) ..
+        "\\nStormheart Titan: " .. tostring(player:GetAttribute("BossWins_ridge") or 0)
+end
+for _, id in ipairs({ "meadow", "eastwind", "ridge" }) do
+    player:GetAttributeChangedSignal("BossWins_" .. id):Connect(refreshBossJournal)
+end
+journalButton.Activated:Connect(function()
+    refreshBossJournal()
+    journal.Visible = not journal.Visible
+end)
+refreshBossJournal()
+
 -- Hide tutorial after 20s or first successful catch
 task.delay(7, hideTutorial)
