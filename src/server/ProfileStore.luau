@@ -96,6 +96,22 @@ function Profile.DiscoverCrystal(player, index)
     return true
 end
 
+-- Reward a completed server-validated boss trial. Only the server passes a catalog id.
+-- Rewards use the existing persistent coin/XP fields; no save schema migration.
+function Profile.AwardBossTrial(player, bossId)
+    local data = sessions[player]
+    if not data then return false end
+    local BossRules = require(ReplicatedStorage:WaitForChild("BossChallengeRules"))
+    local coins, xp = BossRules.reward(bossId)
+    if not coins then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true, coins, xp
+end
+
 function Profile.BuyTool(player, toolId)
     local data = sessions[player]
     local tool = type(toolId) == "string" and toolCatalog[toolId] or nil
