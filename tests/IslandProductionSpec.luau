@@ -59,4 +59,25 @@ return function(test, eq)
         eq(Rules.build("breeze_nest", 100, { {} }, { breeze = 1 }, catalog, 0), nil, "invalid job")
         eq(Rules.build("breeze_nest", 100, {}, { breeze = 1 }, catalog, math.huge), nil, "bad clock")
     end)
+    test("multi-habitat claim settles once without mutating jobs", function()
+        local jobs = {
+            { recipeId = "breeze_nest", lastAccrued = 100, stored = 6, carry = 0 },
+            { recipeId = "rain_garden", lastAccrued = 100, stored = 5, carry = 0 },
+        }
+        local result = Rules.claimAll(jobs, 280, 100)
+        eq(result.credited, 19, "both habitats credited")
+        eq(result.coins, 119, "single wallet result")
+        eq(jobs[1].stored, 6, "source not mutated")
+        local again = Rules.claimAll(result.jobs, 280, result.coins)
+        eq(again.credited, 0, "same timestamp idempotent")
+        eq(again.coins, 119, "no duplicate credits")
+    end)
+    test("multi-habitat claim rejects invalid jobs and overflow atomically", function()
+        local good = { recipeId = "breeze_nest", lastAccrued = 100, stored = 0, carry = 0 }
+        eq(Rules.claimAll({good, {recipeId = "bogus", lastAccrued = 100}}, 220, 10), nil, "unknown recipe")
+        eq(Rules.claimAll({[2] = good}, 220, 10), nil, "sparse jobs")
+        eq(Rules.claimAll({good}, 99, 10), nil, "clock rollback")
+        eq(Rules.claimAll({good}, 220, 9007199254740991), nil, "overflow")
+        eq(Rules.claimAll({}, 220, 10).coins, 10, "empty jobs")
+    end)
 end
