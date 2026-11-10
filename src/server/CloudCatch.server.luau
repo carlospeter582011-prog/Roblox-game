@@ -81,7 +81,11 @@ local function spawnCloud()
     cloud.Anchored = true
     cloud.CanCollide = false
     cloud.Transparency = 1
-    cloud.Position = Vector3.new(math.random(-55, 55), 9, math.random(-55, 55))
+    -- Every fourth cloud populates Eastwind Outlook; all spawns remain over walkable 3D ground.
+    local onOutlook = nextId % 4 == 0
+    cloud.Position = onOutlook
+        and Vector3.new(math.random(140, 200), 9, math.random(-30, 30))
+        or Vector3.new(math.random(-55, 55), 9, math.random(-55, 55))
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
     if mutationId then cloud:SetAttribute("MutationId", mutationId) end
