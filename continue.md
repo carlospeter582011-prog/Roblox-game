@@ -345,3 +345,10 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-10 — fusion domain groundwork (draft branch)
 - Added `src/shared/FusionRules.luau`: deterministic server-only duplicate-species fusion transaction proposal, consuming two spare copies and 75 Coins while preserving the last specimen, granting up to 15 companion bond points. Pure function returns a new state without mutating the input. Four registered Luau regression cases cover costs, invalid inputs and bond cap.
 - **Not integrated into gameplay or persistence yet**: no remote, 3D station or UI. Do not count fusion complete. PR pending CI and Roblox runtime verification; no merge or publish. Next: safely integrate with existing ProfileStore session lock and world station after reviewing concurrent economy PRs.
+
+## 2026-11-10 20:54 Cairo — Fusion integration on PR #46
+- Continued existing draft PR #46 instead of opening a competing feature branch. Integrated FusionRules into ProfileStore.FuseCloud with non-yielding server-owned inventory/Coins/bond update, and replicated player attributes.
+- Added original 3D Part-based SkyFusionAltar with server-side character/alive/distance/profile checks; prompt fuses equipped owned companion only. Added compact mobile/desktop feedback ScreenGui (HUD only).
+- Added fake-DataStore save/rejoin regression for consumed copies, Coins, and bond; existing FusionRulesSpec covers malformed state and last-copy preservation.
+- Commits: 7a4c01a3, dd60c030, ab56c7d7, 35c7d750. Draft only; CI and Roblox runtime/publish evidence pending. Check station reachability and DataStore save failure recovery in Studio before merging.
+- Important: no new external assets or Mesh IDs. No launch acceptance criteria checked without runtime evidence.
