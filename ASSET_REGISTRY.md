@@ -59,3 +59,9 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 
 ## 2026-11-10 — CI-only profile migration fix
 - No art, 3D geometry, external assets, license status, Model IDs or MeshPart IDs changed in commit `12a9a858`. Existing asset appearance and runtime moderation remain unverified. 3D-only world audit is still open.
+
+## 2026-11-10 — Geometry and asset provenance checkpoint
+
+- Catchable clouds remain original Roblox `Part` hitboxes (invisible) plus `CloudVisuals.createCloudVisual` 3D `Model` assemblies, not ScreenGui/Canvas stand-ins. The transparent hitbox is not a fake 2D cloud; it is a collision-free interaction target. No new asset ID was integrated.
+- HUD and mobile Catch controls are intentionally `ScreenGui` elements and exempt from the in-world 3D-only requirement.
+- This is a **source-level partial audit**, not a complete Workspace hierarchy or Android/Studio render audit. Existing procedural models still need live visual verification and licensed/owned mesh upgrade; a Roblox Model asset ID must not be used as a MeshPart MeshId.
