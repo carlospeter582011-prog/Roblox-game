@@ -51,4 +51,31 @@ function Rules.harvest(recipeId, elapsedSeconds, storedCoins, carrySeconds)
         cappedOffline = elapsedSeconds > Rules.MAX_OFFLINE_SECONDS,
     }
 end
+
+-- Atomic, pure claim proposal. The caller must commit the returned new job and
+-- wallet together in its server-owned profile transaction, never separately.
+-- A repeated claim with the same timestamp generates nothing.
+function Rules.claim(recipeId, job, now, wallet)
+    if type(job) ~= "table" or not whole(now) or not whole(wallet)
+        or not whole(job.lastAccrued) or now < job.lastAccrued then
+        return nil, "invalid_state"
+    end
+    local result, reason = Rules.harvest(recipeId, now - job.lastAccrued,
+        job.stored or 0, job.carry or 0)
+    if not result then return nil, reason end
+    -- Refuse unsafe integers rather than silently overflow or lose money.
+    if wallet > 9007199254740991 - result.stored then
+        return nil, "wallet_overflow"
+    end
+    return {
+        coins = wallet + result.stored,
+        credited = result.stored,
+        job = {
+            lastAccrued = now,
+            stored = 0,
+            carry = result.carry,
+        },
+        cappedOffline = result.cappedOffline,
+    }
+end
 return table.freeze(Rules)
