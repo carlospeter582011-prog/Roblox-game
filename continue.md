@@ -334,3 +334,10 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Asset audit: no new 3D asset, Canvas world object, MeshPart ID, or third-party license. Existing procedural Part/Model companion is unchanged. Next: confirm latest Actions and Open Cloud step logs; playtest resonance in Roblox, show readable bond/element/XP feedback in mobile HUD, add species-specific companion abilities and continue quests/worlds/bosses.
 
 - CI follow-up: [run 42813189825](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42813189825) completed **success** for test commit `1491161`; job `build-and-publish` reports success for static/unit test gate, Rojo build, artifact upload, and `Publish to existing Roblox Place` step. This is GitHub workflow-step evidence, **not** live Roblox Studio/Android gameplay or persistence verification. Documentation-only commits after `1491161` are not part of that run.
+
+
+## 2026-11-10 — Catch momentum rewards (draft PR #20)
+- Draft PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/20 ; head a94cb2014d3bf6a57e484732b2db1ad7eec3eb29 at PR creation.
+- Added pure `CatchStreakRules.luau` with a 45-second server-timed chain, cap of 10, and bounded 10/20/30% XP bonus at streaks 3/6/9. Wired successful `ProfileStore.AddCatch` calls to update the server-owned session streak and replicated `CatchStreak` attribute; failed catches do not advance streak. Added `tests/CatchStreakSpec.luau` to the Luau test runner.
+- No new asset or world geometry; ASSET_REGISTRY.md unchanged intentionally. No save schema migration; streak resets on leave/rejoin.
+- Evidence: source commits 6009a43, 29f67a0, 50a9019, a94cb20. **CI, runtime, mobile layout, published build, and balance are not verified**. PR remains draft and unmerged. Next: inspect PR CI/jobs, fix issues, verify concurrent changes, then runtime test and promote only when safe.
