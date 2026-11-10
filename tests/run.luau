@@ -202,6 +202,22 @@ test("elemental companion resonance rewards same-element catches only", function
     eq(Rules.resonanceXp(11, "breeze", "cirrus", owned, catalog, { breeze = 10 }), 0, "fractional reward floored")
 end)
 
+test("Nature companion rewards only genuine first species discoveries", function()
+    local Rules = require("../src/shared/CompanionRules")
+    local catalog = { spring = { element = "Nature" }, breeze = { element = "Air" }, drizzle = { element = "Water" } }
+    local owned = { spring = 1, breeze = 0 }
+    eq(Rules.natureDiscoveryXp(100, "spring", "drizzle", owned, catalog, { spring = 0 }), 0, "unbonded")
+    eq(Rules.natureDiscoveryXp(100, "spring", "drizzle", owned, catalog, { spring = 10 }), 10, "level 1")
+    eq(Rules.natureDiscoveryXp(100, "spring", "drizzle", owned, catalog, { spring = 40 }), 20, "level 2")
+    eq(Rules.natureDiscoveryXp(100, "spring", "drizzle", owned, catalog, { spring = 100 }), 30, "level 3")
+    eq(Rules.natureDiscoveryXp(100, "spring", "spring", owned, catalog, { spring = 100 }), 0, "already collected")
+    eq(Rules.natureDiscoveryXp(100, "spring", "drizzle", { spring = 1, drizzle = 1 }, catalog, { spring = 100 }), 0, "repeat")
+    eq(Rules.natureDiscoveryXp(100, "breeze", "drizzle", { breeze = 1 }, catalog, { breeze = 100 }), 0, "wrong element")
+    eq(Rules.natureDiscoveryXp(100, "spring", "drizzle", {}, catalog, { spring = 100 }), 0, "not owned")
+    eq(Rules.natureDiscoveryXp(math.huge, "spring", "drizzle", owned, catalog, { spring = 100 }), 0, "invalid XP")
+    eq(Rules.natureDiscoveryXp(100, "spring", "missing", owned, catalog, { spring = 100 }), 0, "unknown species")
+end)
+
 test("a live lock held by another server blocks load and leaves the record alone", function()
     clock.t = 1000
     local store = FakeStore.new()
