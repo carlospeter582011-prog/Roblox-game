@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local RecyclingRules = require(ReplicatedStorage:WaitForChild("CloudRecyclingRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -96,6 +97,20 @@ function Profile.AddCatch(player, speciesId, coins, options)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     return true
+end
+
+-- Recycle one duplicate while preserving at least two copies. The server owns the catalog,
+-- profile and wallet; clients cannot choose rewards or submit a balance.
+function Profile.RecycleCloud(player, speciesId)
+    local data = sessions[player]
+    if not data then return false, "Profile not ready" end
+    local ok, reward = RecyclingRules.recycle(data, speciesId, CloudCatalog)
+    if not ok then return false, reward end
+    player:SetAttribute("SpeciesCount_" .. speciesId, data.species[speciesId])
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true, "+" .. reward.coins .. " Coins / +" .. reward.xp .. " XP"
 end
 
 function Profile.DiscoverCrystal(player, index)
