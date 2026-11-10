@@ -36,6 +36,8 @@ local repo = ProfileCore.new(DataStoreService:GetDataStore(STORE_NAME), {
 local Profile = {}
 local sessions = {} -- [player] = data table (nil until loaded, nil again once released/lost)
 local saving = {} -- [player] = true while a save is in flight (serialises saves per player)
+local observatoryPending = {} -- prevent overlapping reward requests during durable save
+local persist -- forward declaration: observatory awards require a durable receipt
 local pendingRelease = {} -- [userId] = true while a leaving player's final save runs
 local weak = { __mode = "k" }
 local leaving = setmetatable({}, weak)
@@ -146,18 +148,32 @@ end
 -- Uses the existing profile lock/save pipeline; no new persistent fields.
 function Profile.AwardObservatory(player, stationId)
     local data = sessions[player]
-    if not data then return false end
+    if not data or observatoryPending[player] then return false, "Profile unavailable or reward pending" end
     local Rules = require(ReplicatedStorage:WaitForChild("ObservatoryRules"))
     local coins, xp = Rules.reward(stationId)
-    if not coins then return false end
+    if not coins then return false, "Invalid observatory" end
     local now = os.time()
     data.observatoryCooldowns = data.observatoryCooldowns or {}
-    if now < (data.observatoryCooldowns[stationId] or 0) then
-        return false, "Observatory recharging"
+    local nextAllowed = data.observatoryCooldowns[stationId] or 0
+    if not Rules.canObserve(stationId, data.captures, 0, now, nextAllowed, true) then
+        return false, "Observatory recharging or locked"
     end
+    observatoryPending[player] = true
+    -- Update reward and cooldown together in the same profile record. Do not tell
+    -- the client the award succeeded until the locked DataStore write completes.
     data.observatoryCooldowns[stationId] = now + Rules.COOLDOWN
     data.coins += coins
     data.xp += xp
+    local saved = persist(player, false)
+    observatoryPending[player] = nil
+    if not saved then
+        -- An uncertain write must never be retried as a fresh reward in this session.
+        -- Kick rather than roll back a possibly committed transaction and duplicate it.
+        sessions[player] = nil
+        player:SetAttribute("ProfileReady", false)
+        if player.Parent then player:Kick("Your observatory reward could not be confirmed. Please rejoin.") end
+        return false, "Reward save not confirmed"
+    end
     player:SetAttribute("CloudCoins", data.coins)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
@@ -217,7 +233,7 @@ end
 
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
-local function persist(player, release)
+persist = function(player, release)
     if saving[player] then
         if not release then
             return false -- an autosave is already running
