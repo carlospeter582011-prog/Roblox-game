@@ -20,4 +20,17 @@ return function(test, eq)
         eq(Rules.airReachBonus("breeze", owned, catalog, { breeze = 0/0 }), 0, "invalid points")
         eq(Rules.airReachBonus(nil, owned, catalog, { breeze = 100 }), 0, "no selection")
     end)
+    test("Earth companions earn a bounded first-crystal Coin bonus", function()
+        local earthCatalog = { pebble = { element = "Earth" }, breeze = { element = "Air" } }
+        local earthOwned = { pebble = 1, breeze = 1 }
+        eq(Rules.earthCrystalBonus(100, "pebble", earthOwned, earthCatalog, { pebble = 0 }), 0, "unbonded")
+        eq(Rules.earthCrystalBonus(100, "pebble", earthOwned, earthCatalog, { pebble = 10 }), 4, "level 1")
+        eq(Rules.earthCrystalBonus(100, "pebble", earthOwned, earthCatalog, { pebble = 40 }), 8, "level 2")
+        eq(Rules.earthCrystalBonus(100, "pebble", earthOwned, earthCatalog, { pebble = 100 }), 12, "level 3")
+        eq(Rules.earthCrystalBonus(11, "pebble", earthOwned, earthCatalog, { pebble = 100 }), 1, "integer floor")
+        eq(Rules.earthCrystalBonus(100, "breeze", earthOwned, earthCatalog, { breeze = 100 }), 0, "wrong element")
+        eq(Rules.earthCrystalBonus(100, "pebble", {}, earthCatalog, { pebble = 100 }), 0, "unowned")
+        eq(Rules.earthCrystalBonus(math.huge, "pebble", earthOwned, earthCatalog, { pebble = 100 }), 0, "invalid reward")
+        eq(Rules.earthCrystalBonus(100, "pebble", earthOwned, earthCatalog, { pebble = 0/0 }), 0, "invalid bond")
+    end)
 end
