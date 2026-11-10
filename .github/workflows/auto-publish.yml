@@ -79,14 +79,50 @@ jobs:
           test -n "$ROBLOX_API_KEY"
           test "$UNIVERSE" = "6766580105"
           test "$PLACE" = "123021373220932"
-          status=$(curl --silent --show-error --output /tmp/roblox-publish-response.json --write-out '%{http_code}' \
+          # A failed publish must expose a safe, actionable reason, never the API key.
+          # Retry transient network errors, rate limits and Roblox 5xx responses.
+          status=$(curl --silent --show-error --retry 5 --retry-all-errors \
+            --retry-delay 3 --retry-max-time 120 --connect-timeout 15 --max-time 90 \
+            --output /tmp/roblox-publish-response.json --write-out '%{http_code}' \
             --request POST \
             --header "x-api-key: $ROBLOX_API_KEY" \
             --header "Content-Type: application/xml" \
             --data-binary @game.rbxlx \
-            "https://apis.roblox.com/universes/v1/$UNIVERSE/places/$PLACE/versions?versionType=Published")
+            "https://apis.roblox.com/universes/v1/$UNIVERSE/places/$PLACE/versions?versionType=Published") || {
+              echo "::error::Roblox publish transport failed (DNS, TLS, timeout, or connection)."
+              exit 1
+            }
           if [[ "$status" != "200" ]]; then
-            echo "Roblox publishing failed (HTTP $status). Response hidden."
+            echo "::error::Roblox publishing failed with HTTP $status."
+            python3 - <<'PY'
+          import json, pathlib, re
+          p = pathlib.Path("/tmp/roblox-publish-response.json")
+          try:
+              body = json.loads(p.read_text()[:12000])
+          except (OSError, ValueError):
+              print("Roblox returned a non-JSON error response; check HTTP status and API configuration.")
+          else:
+              # Whitelist fields: never print arbitrary API response or secret-like values.
+              if isinstance(body, dict):
+                  for key in ("code", "error", "errorCode", "message", "errorMessage"):
+                      value = body.get(key)
+                      if isinstance(value, (str, int)) and len(str(value)) < 500:
+                          safe = str(value)
+                          safe = re.sub(r"(?i)(api[_-]?key|token|authorization)\\s*[:=]\\s*\\S+", r"\\1=[REDACTED]", safe)
+                          print(f"Roblox {key}: {safe}")
+                  if isinstance(body.get("errors"), list):
+                      for item in body["errors"][:3]:
+                          if isinstance(item, dict):
+                              print("Roblox error code:", str(item.get("code", "unknown"))[:100])
+                              print("Roblox error message:", str(item.get("message", "unknown"))[:300])
+          PY
+            case "$status" in
+              400) echo "Check place file format and universe/place IDs." ;;
+              401|403) echo "Check ROBLOX_API_KEY validity, publishing permissions, API key owner, and universe access." ;;
+              404) echo "Check ROBLOX_UNIVERSE_ID / ROBLOX_PLACE_ID and key access to this experience." ;;
+              429) echo "Roblox rate limit; retries exhausted." ;;
+              5??) echo "Roblox service error; retries exhausted." ;;
+            esac
             exit 1
           fi
           echo "Roblox accepted Published place version."
