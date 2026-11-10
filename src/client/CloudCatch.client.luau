@@ -4,6 +4,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local tools = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
+local speciesCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local player = Players.LocalPlayer
 local remote = ReplicatedStorage:WaitForChild("RequestCloudCatch")
 local folder = Workspace:WaitForChild("CatchableClouds")
@@ -77,14 +78,25 @@ message.Parent = gui
 button.Activated:Connect(function()
     local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
     if not root then return end
+    -- Prefer the nearest *reachable* cloud. The old nearest-only approach could
+    -- repeatedly target an out-of-range species while another was catchable.
+    local toolId = player:GetAttribute("EquippedCatchTool")
+    local tool = tools[toolId] or tools.starter_net
     local nearest, distance = nil, math.huge
-    for _, cloud in folder:GetChildren() do
-        if cloud:IsA("BasePart") then
-            local d = (root.Position - cloud.Position).Magnitude
-            if d < distance then nearest, distance = cloud, d end
+    for _, cloud in ipairs(folder:GetChildren()) do
+        if cloud:IsA("BasePart") and cloud:GetAttribute("CloudId") then
+            local species = speciesCatalog[cloud:GetAttribute("SpeciesId")]
+            if species then
+                local d = (root.Position - cloud.Position).Magnitude
+                local maxRange = species.baseCatchRadius + tool.rangeBonus
+                if toolId == "cloud_magnet" then maxRange += 12 end
+                if d <= maxRange and d < distance then
+                    nearest, distance = cloud, d
+                end
+            end
         end
     end
-    if nearest and distance <= 48 then
+    if nearest then
         remote:FireServer(nearest:GetAttribute("CloudId"))
     else
         message.Text = "Move closer to a cloud!"
