@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Cloud Evolution Altar (original native 3D)
+- `src/server/EvolutionAltar.server.luau` creates a walkable platform, marble pillar, neon orb and ring using only Roblox `Part` objects with `ProximityPrompt`. Original project geometry, no external model, no MeshPart MeshId, no Model asset ID. ScreenGui not used. Source-level 3D-only compliance; Roblox runtime visual and interaction verification pending.
