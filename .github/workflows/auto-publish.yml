@@ -108,7 +108,7 @@ jobs:
                       value = body.get(key)
                       if isinstance(value, (str, int)) and len(str(value)) < 500:
                           safe = str(value)
-                          safe = re.sub(r"(?i)(api[_-]?key|token|authorization)\\s*[:=]\\s*\\S+", r"\\1=[REDACTED]", safe)
+                          safe = re.sub(r"(?i)(api[_-]?key|token|authorization)\s*[:=]\s*\S+", r"\1=[REDACTED]", safe)
                           print(f"Roblox {key}: {safe}")
                   if isinstance(body.get("errors"), list):
                       for item in body["errors"][:3]:
