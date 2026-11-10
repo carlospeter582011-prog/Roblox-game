@@ -14,6 +14,7 @@ local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
+local SpeciesMasteryRules = require(ReplicatedStorage:WaitForChild("SpeciesMasteryRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
@@ -67,7 +68,10 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
-    catchOptions.xp = baseXp + resonance
+    -- Mastery uses saved base-species counts before this catch; mutations share mastery.
+    -- The bonus is bounded and cannot be supplied by the client.
+    local mastery = SpeciesMasteryRules.bonusXp(baseXp, data.species[speciesId] or 0)
+    catchOptions.xp = baseXp + resonance + mastery
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
