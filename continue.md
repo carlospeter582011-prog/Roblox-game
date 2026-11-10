@@ -356,3 +356,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added registered fake-DataStore regression test for save/rejoin and malformed cooldowns in tests/run.luau.
 - Branch: feature/sky-observatories-20261110, PR #40. **CI, runtime, real DataStore persistence, Android and publish remain unverified**. No main merge authorized before checks. Note: autosave delay still means crash before next successful save can lose the last reward/cooldown; a fully transactional durable claim requires an atomic DataStore receipt flow.
 - Next: inspect CI and branch conflicts; verify in-game, consider immediate save/atomic receipt for crash resistance, then merge only after gates.
+
+## 2026-11-10 21:11 Cairo — observatory durable receipt hardening
+- PR #40 branch: `Profile.AwardObservatory` now commits the Coins/XP and per-station cooldown in the same profile Save before success feedback. A pending guard prevents simultaneous observatory awards; an in-flight autosave is awaited. Failed/uncertain writes fail closed and disconnect the player rather than allowing repeated rewards. Code commits: 5d9f780 and 858344f.
+- This is NOT a fully transactional DataStore operation: unrelated in-flight profile mutations and shutdown races still need stress tests. No CI, real DataStore, Android runtime or Roblox publish verified for these commits. Draft PR must remain unmerged until tests and integration review.
+- Next: add focused fake-DataStore regression tests for concurrent autosave, ambiguous save failure, retry and rejoin; inspect PR CI and reconcile overlapping profile/economy PRs. Do not check launch acceptance boxes.
