@@ -119,6 +119,17 @@ remote.OnClientEvent:Connect(function(success, text)
     end
 end)
 
+-- Server travel prompts share the compact status display; no in-world Canvas UI.
+player:GetAttributeChangedSignal("TravelFeedback"):Connect(function()
+    local feedback = player:GetAttribute("TravelFeedback")
+    if type(feedback) ~= "string" or feedback == "" then return end
+    message.Text = feedback
+    message.Visible = true
+    task.delay(3, function()
+        if message.Text == feedback then message.Visible = false end
+    end)
+end)
+
 -- Native crystal discoveries use a ProximityPrompt, while this ScreenGui provides
 -- immediate touch-friendly confirmation of rewards and total progress.
 local crystalToast = Instance.new("TextLabel")
