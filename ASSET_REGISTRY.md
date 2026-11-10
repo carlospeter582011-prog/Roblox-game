@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Sky Cloud Recycler 3D (feature branch)
+- Source: `src/server/CloudRecycler.server.luau`; creator: project original; license: original procedural Roblox Parts; external URL/asset ID: none. Model consists of Slate base, Metal column, Neon sphere core with native ProximityPrompt. HUD toast uses ScreenGui only, not world geometry. **Source integrated on feature branch; CI, Roblox Studio appearance, mobile reachability, collisions and publish unverified.** No Mesh ID or third-party GLB introduced.
