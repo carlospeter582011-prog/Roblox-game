@@ -9,6 +9,8 @@ local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
+local SkyWeather = require(ReplicatedStorage:WaitForChild("SkyWeather"))
+local weatherEpoch = os.time()
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
@@ -73,7 +75,8 @@ end
 local function spawnCloud()
     nextId += 1
     local id = tostring(nextId)
-    local speciesId = SpawnRules.rollSpecies(catalog, math.random) or "breeze"
+    local phase = SkyWeather.phaseAt(os.time() - weatherEpoch)
+    local speciesId = SpawnRules.rollSpecies(SkyWeather.adjustedCatalog(catalog, phase), math.random) or "breeze"
     local species = catalog[speciesId]
     local mutationId = Mutations.roll(math.random)
     local tint = Color3.fromRGB(species.colorRGB[1], species.colorRGB[2], species.colorRGB[3])
@@ -94,6 +97,7 @@ local function spawnCloud()
         math.random(region.minX, region.maxX), 9,
         math.random(region.minZ, region.maxZ))
     cloud:SetAttribute("SpawnRegion", region.name)
+    cloud:SetAttribute("SpawnWeather", phase)
     cloud:SetAttribute("CloudId", id)
     cloud:SetAttribute("SpeciesId", speciesId)
     if mutationId then cloud:SetAttribute("MutationId", mutationId) end
