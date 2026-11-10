@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Regional ecology (PR #51)
+- No new visual assets or external licenses. Cloud ecology changes the server-side selection of existing procedural 3D clouds across StarterMeadow, EastwindOutlook and ThunderheadRidge. Existing 3D models remain provisional; runtime visual verification still outstanding. https://github.com/carlospeter582011-prog/Roblox-game/pull/51
