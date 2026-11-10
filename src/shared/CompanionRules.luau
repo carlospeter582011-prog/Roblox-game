@@ -61,4 +61,16 @@ function Rules.airReachBonus(companionId, species, catalog, bond)
     if entry.element ~= "Air" then return 0 end
     return math.min(3, Rules.bondLevel(bond and bond[companionId]))
 end
+
+-- Water companions make matching-element catches more valuable. Applies only to
+-- base catch Coins, never quest rewards, and requires server-owned Bond/collection.
+function Rules.waterCoinBonus(baseCoins, companionId, targetId, species, catalog, bond)
+    if type(baseCoins) ~= "number" or baseCoins ~= baseCoins or baseCoins < 0
+        or baseCoins == math.huge or baseCoins > 100000 then return 0 end
+    if not Rules.owned(companionId, species, catalog) then return 0 end
+    local companion, target = catalog[companionId], catalog[targetId]
+    if not target or companion.element ~= "Water" or target.element ~= "Water" then return 0 end
+    local level = Rules.bondLevel(bond and bond[companionId])
+    return math.floor(baseCoins * math.min(level, 3) * 0.03)
+end
 return Rules
