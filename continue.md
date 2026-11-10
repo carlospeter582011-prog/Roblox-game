@@ -341,3 +341,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+## 2026-11-10 — Sky Forge training (isolated draft branch)
+- Branch `feature/sky-forge-training-20261110` adds three server-priced repeatable Coin-to-XP recipes (60/180/450 Coins, 25/85/230 XP) unlocked at 5/25/75 catches.
+- Original anchored 3D Parts and native ProximityPrompts near (-35, 5, 32), alive/range/profile checks, 5s successful-use cooldown; ProfileStore mutates persisted Coins/XP without yielding between validation and debit.
+- New pure `SkyForgeRules` and `SkyForgeSpec` registered in test runner. No new third-party assets or schema changes.
+- Evidence: source commits on feature branch; CI and Roblox runtime/publish verification pending. Do not merge without checking latest main and concurrent PRs.
