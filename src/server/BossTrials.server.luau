@@ -107,7 +107,6 @@ task.spawn(function()
                     local rewarded, coins, xp = ProfileStore.AwardBossTrial(player, trial.id)
                     if rewarded then
                         player:SetAttribute("BossChallengeFeedback", config.name .. " defeated! +" .. coins .. " coins, +" .. xp .. " XP!")
-                        player:SetAttribute("BossTrialsWon", (player:GetAttribute("BossTrialsWon") or 0) + 1)
                     else
                         player:SetAttribute("BossChallengeFeedback", "Trial complete, but reward unavailable. Rejoin if your profile disconnected.")
                     end
