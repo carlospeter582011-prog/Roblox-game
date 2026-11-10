@@ -29,7 +29,11 @@ function Rules.canEquip(toolId, captures, tools)
 end
 
 function Rules.isInRange(distance, species, tool)
-    return distance <= species.baseCatchRadius + tool.rangeBonus
+    return type(distance) == "number" and distance == distance and distance == distance and distance >= 0 and distance < math.huge
+        and type(species) == "table" and type(tool) == "table"
+        and type(species.baseCatchRadius) == "number" and species.baseCatchRadius >= 0
+        and type(tool.rangeBonus) == "number" and tool.rangeBonus >= 0
+        and distance <= species.baseCatchRadius + tool.rangeBonus
 end
 
 -- Cloud Magnet has an active long-distance pull/catch field, not just a stat bonus.
@@ -50,7 +54,7 @@ function Rules.selectBurstTargets(requestedId, candidates, limit)
     for _, candidate in ipairs(candidates) do
         if type(candidate.id) == "string" and candidate.id ~= requestedId
             and type(candidate.distance) == "number"
-            and candidate.distance >= 0 and candidate.distance < math.huge then
+            and candidate.distance == candidate.distance and candidate.distance >= 0 and candidate.distance < math.huge then
             table.insert(nearby, candidate)
         end
     end
