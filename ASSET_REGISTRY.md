@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## Sky Signal Relay pylons — 2026-11-10
+- Three native 3D Roblox Models assembled from anchored Parts (base, mast, neon orb), created by `src/server/SkySignalRelay.server.luau`; locations Meadow/Eastwind/Ridge. Creator: project original; license: original; source URL and asset IDs: none. ProximityPrompt is attached to a BasePart attachment. No MeshPart, third-party GLB or Canvas in world. Code-integrated on draft branch only; CI, collision, visibility, accessibility, Roblox Studio/Android and published status unverified.
