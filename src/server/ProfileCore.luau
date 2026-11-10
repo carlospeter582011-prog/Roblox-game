@@ -26,6 +26,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        evolutions = {},
         lastSeen = now or 0,
     }
 end
@@ -61,6 +62,14 @@ function Core.sanitize(raw, validQuests, now)
             if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$")
                 and isCount(points, 1000001) then
                 clean.companionBond[id] = math.floor(points)
+            end
+        end
+    end
+    if type(raw.evolutions) == "table" then
+        for id, stage in pairs(raw.evolutions) do
+            if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$")
+                and isCount(stage, 4) then
+                clean.evolutions[id] = math.floor(stage)
             end
         end
     end
