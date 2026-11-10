@@ -150,6 +150,12 @@ function Profile.AwardObservatory(player, stationId)
     local Rules = require(ReplicatedStorage:WaitForChild("ObservatoryRules"))
     local coins, xp = Rules.reward(stationId)
     if not coins then return false end
+    local now = os.time()
+    data.observatoryCooldowns = data.observatoryCooldowns or {}
+    if now < (data.observatoryCooldowns[stationId] or 0) then
+        return false, "Observatory recharging"
+    end
+    data.observatoryCooldowns[stationId] = now + Rules.COOLDOWN
     data.coins += coins
     data.xp += xp
     player:SetAttribute("CloudCoins", data.coins)
