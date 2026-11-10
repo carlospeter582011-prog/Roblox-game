@@ -341,3 +341,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Commits: [rules](https://github.com/carlospeter582011-prog/Roblox-game/commit/f41f610504d73b5868b8e4cd075e3cece2a51045), [catch integration](https://github.com/carlospeter582011-prog/Roblox-game/commit/10e6673c66eca9675860344f4d80fba4eda869ff), [test](https://github.com/carlospeter582011-prog/Roblox-game/commit/fcf0e92c12ce2ed9703e6517fcb090ff725fbe7b), [registration](https://github.com/carlospeter582011-prog/Roblox-game/commit/295d1f4d2d3e9c858939c41e05c15a89edeae049).
 - CI status at inspection: [latest auto-publish run 42822233074](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42822233074) PENDING; prior partial runs cancelled/in progress. **No verified CI success or Roblox publish for final commit; no Studio/Android runtime test.**
 - Next: inspect final workflow test/build/publish jobs, fix any failures, visually test companion range on Android, and keep expanding distinct gameplay systems and full launch content. Existing 3D procedural models unchanged; no new assets or IDs.
+
+
+## 2026-11-10 — cooperative Sky Restoration Wells (draft PR pending)
+- Branch `feature/sky-restoration-wells-20261110` from main; adds server-created 3D healing basins at Meadow, Eastwind and Ridge. Injured player activates a ProximityPrompt; server checks range, life, health and 120-second cooldown; restores up to 35% max HP to nearby injured living players within 20 studs. No client-controlled healing, new asset IDs, currency or persistence fields.
+- New pure `SkyWellRules` and five registered regression tests. This is code-only until CI and Roblox runtime/Android and multiplayer tests confirm functionality; no merge or publication claimed.
+- Next: inspect CI and actual route reachability, evaluate balancing and cooldown behavior; coordinate open PRs before merging.

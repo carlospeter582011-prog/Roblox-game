@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-10 — Sky Restoration Wells (feature branch)
+- Three original procedural native Roblox `Model`/`Part` restoration basins (`src/server/SkyWells.server.luau`) with glass water, stone pedestal and glowing droplets; no external asset, mesh ID, Canvas world representation or license dependency. Branch `feature/sky-restoration-wells-20261110` only; appearance, collisions, prompt placement, Roblox runtime and Android accessibility **unverified**.
