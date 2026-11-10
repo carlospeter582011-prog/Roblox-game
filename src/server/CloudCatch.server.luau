@@ -141,8 +141,11 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     end
     local cloud = active[cloudId]
     if not cloud or not cloud.Parent then return end
-    local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if not root then return end
+    local character = player.Character
+    local root = character and character:FindFirstChild("HumanoidRootPart")
+    local humanoid = character and character:FindFirstChildOfClass("Humanoid")
+    -- A dead, seated-in-reset, or otherwise invalid character must never collect rewards.
+    if not root or not humanoid or humanoid.Health <= 0 or humanoid:GetState() == Enum.HumanoidStateType.Dead then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
     local targetDistance = (root.Position - cloud.Position).Magnitude
@@ -174,7 +177,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud then
+        if targetSpecies and active[targetId] == targetCloud and humanoid.Health > 0 then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
