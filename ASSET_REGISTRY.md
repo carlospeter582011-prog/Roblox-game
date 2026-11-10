@@ -92,3 +92,15 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — island production rules branch
+- `IslandProductionRules.luau` is pure logic only: no world geometry, new MeshPart, Model ID, external art or Canvas stand-in. Future habitats require original native Roblox 3D models or verified licensed assets; integration and runtime verification pending.
+
+## 2026-11-11 — Island production claim logic
+- `IslandProductionRules.claim` is a pure numerical calculation only; it creates no visual asset or Model/MeshPart. No asset IDs or external licenses added. Production habitats remain **not integrated or visually verified**.
+
+## 2026-11-11 — Habitat purchase proposal
+- Pure `IslandProductionRules.build` transaction proposal only; adds no models, meshes, geometry, textures, audio, or external assets. 3D habitat assets and in-game visual verification still outstanding.
+
+## 2026-11-11 — multi-habitat claim logic audit
+- `IslandProductionRules.claimAll` changes only pure numeric settlement logic. No 3D assets, meshes, Canvas world objects or licenses added. Existing Model vs Mesh ID restrictions remain unchanged. CI and Roblox runtime visuals remain unverified.
