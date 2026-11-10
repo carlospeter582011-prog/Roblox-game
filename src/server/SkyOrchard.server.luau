@@ -3,9 +3,12 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
+local MemoryStoreService = game:GetService("MemoryStoreService")
 local Profile = require(script.Parent:WaitForChild("ProfileStore"))
 local Rules = require(ReplicatedStorage:WaitForChild("SkyOrchardRules"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
+local cooldowns = MemoryStoreService:GetSortedMap("CatchACloud_OrchardCooldown_v1")
+local inFlight = {}
 local harvestTimes = {}
 local folder = Instance.new("Folder")
 folder.Name = "SkyOrchard3D"
@@ -58,7 +61,7 @@ local function plant(id, label, center, tint)
         local root = character and character:FindFirstChild("HumanoidRootPart")
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
         if not profile or not root or not humanoid then return end
-        local now = os.clock()
+        local now = os.time()
         local record = harvestTimes[player]
         local last = record and record[id] or nil
         local distance = (root.Position - prompt.Parent.Position).Magnitude
@@ -67,7 +70,30 @@ local function plant(id, label, center, tint)
             player:SetAttribute("OrchardFeedback", "Not ready: unlock or wait for fruit to regrow")
             return
         end
-        -- No yielding between validation, timestamp update and wallet mutation.
+        -- Atomically reserve a cross-server cooldown before awarding currency.
+        -- Fail closed during MemoryStore outages, rather than allowing rejoin farming.
+        local key = tostring(player.UserId) .. ":" .. id
+        if inFlight[key] then return end
+        inFlight[key] = true
+        local reserved = false
+        local ok, err = pcall(function()
+            cooldowns:UpdateAsync(key, function(previous)
+                if type(previous) == "number" and previous > now then
+                    return nil
+                end
+                reserved = true
+                return now + Rules.GROW_SECONDS, now + Rules.GROW_SECONDS
+            end, Rules.GROW_SECONDS + 30)
+        end)
+        inFlight[key] = nil
+        if not ok or not reserved then
+            player:SetAttribute("OrchardFeedback", "Fruit regrowing or orchard service unavailable")
+            if not ok then warn("Orchard cooldown reservation failed", err) end
+            return
+        end
+        if Profile.Get(player) ~= profile or not player.Parent
+            or player:GetAttribute("ProfileReady") ~= true then return end
+        -- No yield between timestamp update and wallet mutation.
         record = record or {}
         harvestTimes[player] = record
         record[id] = now
