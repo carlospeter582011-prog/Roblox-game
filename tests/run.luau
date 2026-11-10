@@ -378,6 +378,28 @@ require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
+test("fusion accounting survives profile save and reload without duplicate rewards", function()
+    local Fusion = require("../src/shared/FusionRules")
+    local store = FakeStore.new()
+    local first = repoFor(store, "fusion-A")
+    local loaded = first:Load("fusion-player").data
+    loaded.species.breeze = 5
+    loaded.coins = 200
+    local catalog = { breeze = { element = "Air" } }
+    local result = Fusion.apply(loaded, "breeze", catalog)
+    eq(result.ok, true, "fusion accepted")
+    eq(result.data.species.breeze, 3, "copies consumed")
+    eq(first:Save("fusion-player", result.data, true).ok, true, "fusion saved")
+    local second = repoFor(store, "fusion-B"):Load("fusion-player").data
+    eq(second.species.breeze, 3, "copies persist")
+    eq(second.coins, 125, "cost persists")
+    eq(second.companionBond.breeze, 15, "bond persists")
+    local again = Fusion.apply(second, "breeze", catalog)
+    eq(again.ok, true, "second fusion possible with three copies")
+    eq(again.data.species.breeze, 1, "last specimen protected")
+    eq(Fusion.apply(again.data, "breeze", catalog).reason, "need_spares", "no third fusion")
+end)
+
 require("./FusionRulesSpec")(test, eq)
 
 local failures = 0
