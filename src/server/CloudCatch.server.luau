@@ -10,6 +10,7 @@ local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
+local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
@@ -134,6 +135,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     local baseTool = tool
     tool = table.clone(baseTool)
     tool.rangeBonus = baseTool.rangeBonus + training * 2
+        + CompanionRules.airReachBonus(profile.companionSpecies, profile.species, catalog, profile.companionBond)
     if equipped~=nil and equipped~=toolId then
         player:SetAttribute("EquippedCatchTool",toolId)
     end
