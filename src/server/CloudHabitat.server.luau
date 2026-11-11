@@ -5,9 +5,9 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
-local HabitatRules = require(ReplicatedStorage.Shared.HabitatRules)
+local HabitatRules = require(ReplicatedStorage:WaitForChild("HabitatRules"))
 local ProfileStore = require(script.Parent.ProfileStore)
-local CompanionRules = require(ReplicatedStorage.Shared.CompanionRules)
+local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 
 local STATION_POSITION = Vector3.new(40, 12, 30) -- near starter island, adjust as needed
 
