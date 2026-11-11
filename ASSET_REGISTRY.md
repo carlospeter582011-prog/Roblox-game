@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Cloud Care Grove provenance
+- Original project-owned Roblox Model containing anchored SmoothPlastic Part pedestal and Neon Part sphere, with native ProximityPrompt. Source: src/server/CloudCareGrove.server.luau. No external mesh, texture, GLB, Model ID, MeshPart ID or Canvas world geometry. Studio visual/mobile placement verification pending. Not yet merged/published.
