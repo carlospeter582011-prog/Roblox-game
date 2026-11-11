@@ -33,6 +33,26 @@ function Spawn.rollSpecies(species, rng)
     return ids[#ids] -- float rounding edge: target reached the total
 end
 
+-- Each island has a recognisable elemental ecosystem. A positive floor multiplier
+-- preserves access to all catalog species while making exploration worthwhile.
+-- All weights and RNG decisions are server-owned; the client never chooses species.
+Spawn.regionElements = {
+    StarterMeadow = { Air = 3, Nature = 3, Water = 1.5 },
+    EastwindOutlook = { Air = 5, Light = 2, Cosmic = 1.5 },
+    ThunderheadRidge = { Storm = 5, Fire = 2, Earth = 1.5 },
+}
+function Spawn.rollForRegion(species, regionName, rng)
+    local boosts = Spawn.regionElements[regionName]
+    if not boosts then return Spawn.rollSpecies(species, rng) end
+    local weighted = {}
+    for id, entry in pairs(species) do
+        if type(entry) == "table" and validWeight(entry.spawnWeight) then
+            weighted[id] = { spawnWeight = entry.spawnWeight * (boosts[entry.element] or 0.35) }
+        end
+    end
+    return Spawn.rollSpecies(weighted, rng)
+end
+
 -- Region layout must match the actual walkable floors in StarterWorld.server.luau.
 -- A stable rotation keeps the starter island populated while sending players onward.
 function Spawn.regionBounds(sequence)
