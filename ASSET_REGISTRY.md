@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Rune Bridge, three elemental rune stones and hidden garden | n/a (`src/server/SkyRuneBridge.server.luau`) | Project (original procedural Roblox 3D Parts) | Original | none | Project-owned | Draft branch `feature/sky-rune-coop-bridge-1120`; server-generated native Parts and ProximityPrompts | Source only; collision, timed disappearance, Studio/Android visuals and multiplayer not verified |
