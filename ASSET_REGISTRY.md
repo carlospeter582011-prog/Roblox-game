@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Boss trial finite-state hardening | n/a (pure rules only, no asset) | Project | Original code | none | Project-owned | PR #143 adjusts existing boss challenge validation; no new 3D asset | Luau regression added; CI/runtime unverified |
