@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Sky Wind Lift Pads (feature branch)
+- Three original 3D launch platforms and glass wind cores in `src/server/WindLiftPads.server.luau`; creator: project; license: original; asset IDs: none. Native Roblox Model/Parts and ProximityPrompts only, no Canvas world geometry, GLB, MeshPart IDs or third-party assets. Server validates proximity, living Humanoid and per-player cooldown before imparting movement. **Unverified**: platform placement/walkability, Studio/mobile traversal, gameplay balance, CI and Published state.
