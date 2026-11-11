@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Cloud Exchange Kiosk (base, column, orb) | n/a (`src/server/CloudExchange.server.luau`) | Project (original procedural Roblox Parts) | Original | none | Project-owned | Draft branch `feature/cloud-recycling-station-20261111-0833`; native 3D kiosk and ProximityPrompt | Source integration only; CI, Studio/mobile visual placement and collision not verified |
