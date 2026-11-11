@@ -1,0 +1,29 @@
+return function(test, eq)
+-- Elemental cloud flight is deterministic, bounded, and robust to invalid input.
+local Flight = require("../src/shared/CloudFlightRules")
+test("elemental flight patterns are distinct and bounded", function()
+    local ax, ay, az = Flight.offset("Air", 2, 4)
+    local ex, ey, ez = Flight.offset("Earth", 2, 4)
+    eq(ax == ex and ay == ey and az == ez, false, "different elemental trajectories")
+    for _, element in ipairs({ "Air", "Storm", "Ice", "Cosmic", "unknown" }) do
+        for t = 0, 60, 3 do
+            local x, y, z = Flight.offset(element, t, 7)
+            eq(math.abs(x) <= 6, true, "horizontal x bounded")
+            eq(math.abs(z) <= 6, true, "horizontal z bounded")
+            eq(math.abs(y) <= 1.5, true, "vertical bounded")
+        end
+    end
+end)
+test("cloud flight clamps to safe island and ignores invalid times", function()
+    local bounds = { minX = -55, maxX = 55, minZ = -55, maxZ = 55 }
+    local x, y, z = Flight.clampPosition(999, -40, -999, bounds)
+    eq(x, 48, "east edge")
+    eq(y, 7, "min height")
+    eq(z, -48, "south edge")
+    local a, b, c = Flight.offset("Storm", math.huge, 1)
+    eq(a, 0, "invalid time x")
+    eq(b, 0, "invalid time y")
+    eq(c, 0, "invalid time z")
+end)
+
+end
