@@ -352,3 +352,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Branch `feature/quest-expansion-20261111-0350` adds 64 progressive catch-species quests (16 existing species x four thresholds) to the existing server-awarded QuestCatalog, raising 38 to 102 quest entries. Existing CatchRules awards and ProfileStore quest flags provide one-time rewards; this is not 64 unique story/NPC quest designs.
 - `tests/FieldJournalSpec.luau` validates catalog references, bounded rewards, one-time payout and mutated catch accounting; registered in tests/run.luau.
 - No new 3D assets or meshes; CI and Roblox runtime unverified at commit time. PR review required before merge; main auto-publish is gated.
+
+- CI follow-up: run https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42942211081 built successfully but failed 2 pre-existing exact-payout tests because new quests add valid additional rewards. Commit c694d16943b0bc4294acf236e4f64083319236da isolates legacy exact-payout fixtures; rerun result pending. Do not merge before green CI.
