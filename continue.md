@@ -354,3 +354,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Next: verify Luau CI, fix errors, test two-account invites/leave/rejoin and mobile UI; only then consider gated merge. Session-only party state is intentionally not a completed multiplayer milestone.
 
 - PR #68 CI run 42930604727: build success, Luau 104/105 tests pass; invitation-expiry regression failed. Corrected stale-invite cleanup and test time ordering in commits 47db9098, 361fa3fc. Rerun pending verification; do not merge before green.
+
+- 2026-11-11 02:35 Cairo: PR #68 CI run 42930711745 succeeded (build and luau-tests) on prior head e288492. Follow-up hardened PartyRules: voluntary leave revokes outstanding invitations even for a solo inviter, nonfinite clock values rejected, expiry boundary is exclusive. Added two regression cases; commits e9fa629 and 23ae30a. Fresh CI for these commits pending; no Roblox runtime test, merge or publish.
