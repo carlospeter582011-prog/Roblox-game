@@ -1,5 +1,4 @@
 -- Original native 3D crafting station. No third-party assets or client-trusted rewards.
-local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
@@ -48,4 +47,3 @@ end
 local feedback = Instance.new("RemoteEvent")
 feedback.Name = "RelicCraftFeedback"
 feedback.Parent = ReplicatedStorage
-Players.PlayerRemoving:Connect(function() end)
