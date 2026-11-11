@@ -12,6 +12,7 @@ local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
+local CloudMotionRules = require(ReplicatedStorage:WaitForChild("CloudMotionRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -46,6 +47,7 @@ local active = {}
 local lastAttempt = {}
 local nextId = 0
 local visuals = {}
+local cloudMotion = {}
 -- Brief original 3D catch feedback, visible to nearby players without a 2D world stand-in.
 -- No external asset IDs, textures or unbounded permanent parts.
 local function showCatchPulse(position, color, isMagnet)
@@ -114,6 +116,7 @@ local function spawnCloud()
     glow.Parent = cloud
     visuals[id] = { model = model, offsets = offsets }
     active[id] = cloud
+    cloudMotion[id] = { origin = cloud.Position, born = os.clock(), element = species.element, phase = nextId * 2.39996 }
 end
 -- Keep a dozen discoverable clouds near the starter activity zone.
 for _ = 1, 12 do spawnCloud() end
@@ -143,6 +146,8 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     if not cloud or not cloud.Parent then return end
     local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
     if not root then return end
+    local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+    if not humanoid or humanoid.Health <= 0 then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
     local targetDistance = (root.Position - cloud.Position).Magnitude
@@ -184,6 +189,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
                 active[targetId] = nil
+                cloudMotion[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
                 if visuals[targetId] then
@@ -213,6 +219,11 @@ task.spawn(function()
         for id, entry in pairs(visuals) do
             local cloud = active[id]
             if cloud and cloud.Parent and entry.model.Parent then
+                local motion = cloudMotion[id]
+                if motion then
+                    local x, y, z = CloudMotionRules.offset(motion.element, os.clock() - motion.born, motion.phase)
+                    cloud.Position = motion.origin + Vector3.new(x, y, z)
+                end
                 local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.5, 0)
                 for part, offset in pairs(entry.offsets) do
                     if part.Parent then
