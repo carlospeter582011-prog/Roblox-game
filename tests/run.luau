@@ -379,6 +379,10 @@ require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
+test("wind lift traversal validation and bounded impulse", function()
+    eq(require("./wind_lifts"), true, "wind lift rules")
+end)
+
 local failures = 0
 for _, t in ipairs(tests) do
     local ok, err = pcall(t.fn)
