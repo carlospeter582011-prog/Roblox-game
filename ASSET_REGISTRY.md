@@ -92,3 +92,8 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## 2026-11-11 — Sky Compass 3D provenance
+- Original project-authored `SkyCompass3D` cylinder/needle native Roblox Parts and a temporary native `Beam` with `Attachment` endpoints. Source: `src/server/SkyCompass.server.luau`; license: original; external source: none; asset ID: none; no MeshPart or Model asset ID used.
+- Runtime visibility, placement, performance and mobile interaction remain unverified; source-level 3D-only check only.
