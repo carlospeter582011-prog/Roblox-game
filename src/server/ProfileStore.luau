@@ -121,6 +121,22 @@ function Profile.DiscoverCrystal(player, index)
     return true
 end
 
+-- Server-only reward endpoint for the physical three-beacon Sky Relay.
+-- Never exposed through a client RemoteEvent; capped to avoid malformed payouts.
+function Profile.AwardSkyRelay(player, coins, xp)
+    local data = sessions[player]
+    if not data or coins ~= 90 or xp ~= 45 then return false end
+    if type(data.coins) ~= "number" or type(data.xp) ~= "number" then return false end
+    if data.coins ~= data.coins or data.xp ~= data.xp then return false end
+    if data.coins < 0 or data.xp < 0 or data.coins > 999999900 or data.xp > 999999900 then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 -- Reward a completed server-validated boss trial. Only the server passes a catalog id.
 -- Rewards use the existing persistent coin/XP fields; no save schema migration.
 function Profile.AwardBossTrial(player, bossId)
