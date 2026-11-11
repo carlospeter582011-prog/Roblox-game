@@ -5,6 +5,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
+local TravelSafetyRules = require(ReplicatedStorage:WaitForChild("TravelSafetyRules"))
 
 local stations = Instance.new("Folder")
 stations.Name = "CloudTravelStations3D"
@@ -69,16 +70,17 @@ local function makeStation(id, label, x, z, color)
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
         local root = character and character:FindFirstChild("HumanoidRootPart")
         if not profile or not root or not humanoid or humanoid.Health <= 0 then return end
-        if (root.Position - beacon.Position).Magnitude > 15 then return end
         local now = os.clock()
-        if now - (lastTravel[player] or -100) < 2 then return end
-        if not SpawnRules.canFastTravel(id, profile.captures) then
+        local destination = SpawnRules.travelDestinations[id]
+        if not destination then return end
+        local distance = (root.Position - beacon.Position).Magnitude
+        if not TravelSafetyRules.canTravel(profile.captures, destination.requiredCatches, distance, humanoid.Health, now - (lastTravel[player] or -100)) then
+            if distance > 15 or humanoid.Health <= 0 or now - (lastTravel[player] or -100) < 2 then return end
             player:SetAttribute("TravelFeedback", label .. " unlocks at " ..
                 tostring(SpawnRules.travelDestinations[id].requiredCatches) .. " catches")
             return
         end
         lastTravel[player] = now
-        local destination = SpawnRules.travelDestinations[id]
         root.AssemblyLinearVelocity = Vector3.zero
         root.AssemblyAngularVelocity = Vector3.zero
         character:PivotTo(CFrame.new(destination.x, destination.y, destination.z))
