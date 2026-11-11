@@ -8,6 +8,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local CloudClaimRules = require(ReplicatedStorage:WaitForChild("CloudClaimRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
@@ -43,6 +44,7 @@ local cloudFolder = Instance.new("Folder")
 cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
 local active = {}
+local claimed = {} -- prevents overlapping yielding AddCatch calls awarding one cloud twice
 local lastAttempt = {}
 local nextId = 0
 local visuals = {}
@@ -174,7 +176,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud then
+        if targetSpecies and CloudClaimRules.begin(claimed, targetId, active, targetCloud) then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
@@ -193,6 +195,8 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 caught += 1
                 task.delay(5, spawnCloud)
             end
+            -- AddCatch may yield for persistence. Release failed claims for retry.
+            CloudClaimRules.finish(claimed, targetId)
         end
     end
     if caught > 0 then
