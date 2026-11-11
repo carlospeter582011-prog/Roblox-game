@@ -5,6 +5,7 @@ local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local Rules = require(ReplicatedStorage:WaitForChild("OuterWorldRules"))
+local WorldCatalog = require(ReplicatedStorage:WaitForChild("WorldCatalog"))
 local regions = Instance.new("Folder")
 regions.Name = "OuterWorldExpeditions3D"
 regions.Parent = Workspace
@@ -55,7 +56,7 @@ local function portal(parent, name, pos, color, destination, requiredCatches)
         local now = os.clock()
         if now - (lastUse[player] or -100) < 2 then return end
         if not Rules.canActivate(destination.id, profile.captures,
-            (root.Position - beacon.Position).Magnitude, humanoid.Health > 0) then
+            (root.Position - beacon.Position).Magnitude, humanoid.Health > 0, WorldCatalog) then
             player:SetAttribute("TravelFeedback", name .. " requires " .. requiredCatches .. " catches")
             return
         end
@@ -70,7 +71,7 @@ end
 local hub = Instance.new("Folder")
 hub.Name = "OuterWorldDeparturePortals"
 hub.Parent = regions
-local entries = Rules.entries()
+local entries = Rules.entries(WorldCatalog)
 for index, entry in ipairs(entries) do
     local color = palette[index]
     local model = Instance.new("Model")
