@@ -23,6 +23,7 @@ function Core.defaultData(now)
         ownedTools = { starter_net = true },
         crystals = {},
         rangeTraining = 0,
+        researchLevel = 0,
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
@@ -91,6 +92,9 @@ function Core.sanitize(raw, validQuests, now)
                 clean.bossVictories[id] = math.floor(raw.bossVictories[id])
             end
         end
+    end
+    if isCount(raw.researchLevel, 4) then
+        clean.researchLevel = math.floor(raw.researchLevel)
     end
     if isCount(raw.rangeTraining, 4) then
         clean.rangeTraining = math.floor(raw.rangeTraining)
