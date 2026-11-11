@@ -1,0 +1,12 @@
+local Rules = require("../src/shared/SkyUpdraftRules")
+local function eq(a,b) assert(a==b, tostring(a).." ~= "..tostring(b)) end
+eq(Rules.canLaunch(10, 100, nil, true), true)
+eq(Rules.canLaunch(16, 100, nil, true), false)
+eq(Rules.canLaunch(5, 100, 95, true), false)
+eq(Rules.canLaunch(5, 103, 95, true), true)
+eq(Rules.canLaunch(5, 100, nil, false), false)
+eq(Rules.canLaunch(0/0, 100, nil, true), false)
+local x,y,z = Rules.velocity(3,4)
+eq(y,72)
+assert(math.abs(x-15.6)<0.001 and math.abs(z-20.8)<0.001)
+print("SkyUpdraftSpec: 8 assertions passed")
