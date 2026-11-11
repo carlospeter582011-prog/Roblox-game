@@ -13,6 +13,7 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 | SkyLantern3D wayfinding markers (5) | n/a (`src/server/WorldAssetModels.luau`) | Project (original procedural 3D Parts) | Original | none | Project-owned | `StarterWorld.server.luau` spawn approach | Source integration only; CI and Roblox visual/runtime verification pending |
 | Fast-travel portal arch pillars and lintels (five stations) | n/a (`src/server/WorldTravel.server.luau`) | Project (original procedural Parts) | Original | none | Project-owned | Native anchored Roblox 3D Parts, server-created | Source inspected; CI, Roblox Android visual/runtime and Published upload unverified |
 | Three boss trial statues and arenas (Meadow Warden, Wind Guardian, Stormheart Titan) | n/a (`src/server/BossTrials.server.luau`) | Project (original procedural 3D Parts/Models) | Original | none | Project-owned | Server-generated anchored Roblox 3D geometry, ProximityPrompt interaction | Source implementation only; collision, Android visuals, tests and Published upload unverified |
+| Evolution Altar 3D (base, pillar, orb) | n/a (`src/server/EvolutionAltar.server.luau`) | Project (original procedural) | Original | none | Project-owned | Native Roblox Model/Parts + ProximityPrompt; server-validated evolution | Source only; CI, runtime, walkability and Android visual unverified |
 | Sports car (removed prototype asset) | Uploaded via Open Cloud by the owner's account | Unknown (listed in the old prototype as an uploaded GLB; original source and license **not recorded**) | **Unverified** | 124315115505635 | Owner account 7550783083 per old code comment; permission for the experience unverified | **Removed** with the house-and-car prototype (`World.server.luau` deleted); still in `baseline/house-car-prototype` | Do not reuse until source/license are established |
 
 ## Notes
@@ -92,3 +93,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-12 — Evolution Altar 3D provenance
+- **Asset:** Original Evolution Altar (marble base, neon pillar, neon ball orb) with ProximityPrompt. Source: `src/server/EvolutionAltar.server.luau`; creator: project; license: original; no external URL or Roblox Asset ID. Model ID / MeshPart MeshId: not applicable (procedural Parts only). Integrated as native Roblox 3D geometry. CI, Studio/mobile visual, walkability and Published upload **unverified**. No Model ID confused with MeshPart.MeshId.
