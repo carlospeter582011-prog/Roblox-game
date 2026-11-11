@@ -353,3 +353,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added three regression scenarios in `tests/CraftingRulesSpec.luau`, registered in `tests/run.luau`.
 - **Not yet playable**: material acquisition, persistent inventory, atomic crafting commit, output use/placement and crafting UI are not implemented. No runtime or CI evidence yet; do not check crafting acceptance criteria.
 - Next: inspect PR CI; add validated material drops and session-locked persistent inventory, then atomic crafting transaction and mobile crafting station UI, test and merge safely.
+
+## 2026-11-11 — Crafting queue safety extension (PR #156)
+- Added `CraftingRules.previewBatch` for up to 20 recipe lines / 100 total crafts, strict integer/finite counts, sequential balance checks, owned-item overflow rejection and all-or-nothing immutable previews.
+- Three new regression cases for multi-recipe accounting, later-step rollback, quantity limits and output overflow. Commits `74162c9c0f02e7a16987926a670000b9fc87d4a5`, `27bd975230e4f75f8453e5cceab67b9d00eb2969`.
+- This remains **policy-only**: no inventory persistence, actual crafting station, material drops or live item grants. CI and Roblox runtime unverified at time of documentation; do not merge/publish without evidence.
+- Next: integrate durable inventory with session-locked profile transactions, server-authoritative material acquisition, item consumption and touch UI; validate CI and concurrency before merge.
