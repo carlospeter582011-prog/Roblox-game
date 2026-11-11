@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Sky Survey route 3D asset provenance
+- Three checkpoint models in `src/server/SkySurvey.server.luau` use project-original anchored Roblox `Part` pedestals and glowing sphere Parts with native `ProximityPrompt`. No external license, asset ID, MeshPart or Canvas used. Source-integrated on `feature/sky-survey-time-trial-20261111` only; Roblox collision, visibility, touch/mobile accessibility and runtime not verified. Existing Model ID 104852877755332 remains a Model, not a MeshId.
