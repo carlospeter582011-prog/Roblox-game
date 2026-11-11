@@ -142,6 +142,19 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Server-only shared beacon reward. Cooldown and contribution checks live in SkyBeacon.server.
+function Profile.AwardSkyBeacon(player)
+    local data = sessions[player]
+    if not data then return false end
+    local coins, xp = 90, 45
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true, coins, xp
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
