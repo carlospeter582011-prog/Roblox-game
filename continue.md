@@ -353,3 +353,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Coordinates begin at the starter meadow edge and extend outward over the sky; visual walkability and mobile jump distances are **not** Studio verified.
 - No external meshes; original Roblox Parts recorded in ASSET_REGISTRY.md. This is a draft feature, not a published or merged game. CI and Open Cloud publication evidence must be checked before integration.
 - Next: verify CI, fix any Luau/build failures, Studio playtest gate collisions and jumping, add HUD progress/localization, and integrate with racing leaderboard once persistence and anti-exploit design are reviewed.
+
+- Initial PR #110 CI run 43001000147: Rojo build passed; Luau tests failed at run.luau:380 due to a literal escaped newline introduced in runner registration. Fixed in commit bc3d821c; replacement CI pending. No runtime/publish verification.
