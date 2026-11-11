@@ -351,3 +351,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-11 04:10 Cairo — Restorative Sky Wells (draft PR)
 - Independent original 3D healing stations on starter and Eastwind islands, server-side distance/alive/profile checks, 35% max-health healing capped at maximum, 90-second per-player cooldown. Native ProximityPrompt for touch/gamepad. New pure `SkyWellRules` and regression test. No currencies, DataStore schema, imported assets or untrusted remotes.
 - Feature branch `feature/sky-healing-wells-20261111-0410`. Requires CI, collision/accessibility and actual Roblox playtest; not merged/published. Coordinate with other world geometry PRs.
+
+## 2026-11-11 04:22 Cairo — Sky Well validation follow-up
+- PR #76: confirmed CI run https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42944542460 passed `luau-tests` and `build` for 69564e9 (after previous missing-return test fix).
+- Hardened pure `SkyWellRules.healedHealth` to reject nonfinite, dead/full, and excessive health bounds; added five focused regression assertions. Commits 7155957 and f92cca1. Latest CI on new head pending. Draft remains unmerged/unpublished; Roblox mobile, DataStore and geometry not runtime verified.
