@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Crystal exploration milestones (PR #97)
+- No new 3D objects, external assets, Mesh IDs or Model IDs. Uses previously documented original procedural sky crystals. Source-integrated reward rules only; Roblox visual and Android runtime remain unverified.
