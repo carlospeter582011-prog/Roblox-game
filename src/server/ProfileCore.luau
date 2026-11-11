@@ -3,7 +3,7 @@
 -- ProfileStore.luau wires this to the real DataStore, Players events and the shutdown flow.
 local Core = {}
 
-Core.SCHEMA_VERSION = 3
+Core.SCHEMA_VERSION = 4
 -- A lock not refreshed for this many seconds is treated as dead (crashed server).
 -- Autosave refreshes it every 90s, so this tolerates several missed saves.
 Core.LOCK_TIMEOUT = 300
@@ -26,6 +26,8 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        habitatOwned = false,
+        habitatLastClaim = 0,
         lastSeen = now or 0,
     }
 end
@@ -90,6 +92,12 @@ function Core.sanitize(raw, validQuests, now)
             if isCount(raw.bossVictories[id], 1000001) then
                 clean.bossVictories[id] = math.floor(raw.bossVictories[id])
             end
+        end
+    end
+    if raw.habitatOwned == true then
+        clean.habitatOwned = true
+        if isCount(raw.habitatLastClaim, MAX_COUNTER) then
+            clean.habitatLastClaim = math.floor(raw.habitatLastClaim)
         end
     end
     if isCount(raw.rangeTraining, 4) then
