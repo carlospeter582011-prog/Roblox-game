@@ -9,13 +9,15 @@ end
 -- species: map of id -> { spawnWeight = number, ... }. rng: function() -> number in [0, 1).
 -- Entries without a positive finite spawnWeight never spawn. Returns the chosen id, or nil if
 -- nothing is spawnable. Ids are visited in sorted order so a given rng value is reproducible.
-function Spawn.rollSpecies(species, rng)
+function Spawn.rollSpecies(species, rng, preferredElement)
     local ids = {}
     local total = 0
     for id, entry in pairs(species) do
         if validWeight(entry.spawnWeight) then
             table.insert(ids, id)
-            total += entry.spawnWeight
+            -- A region's native element is three times as common, without making
+            -- any species impossible to discover or trusting client-supplied state.
+            total += entry.spawnWeight * (entry.element == preferredElement and 3 or 1)
         end
     end
     if #ids == 0 then
@@ -25,7 +27,8 @@ function Spawn.rollSpecies(species, rng)
     local target = rng() * total
     local acc = 0
     for _, id in ipairs(ids) do
-        acc += species[id].spawnWeight
+        local entry = species[id]
+        acc += entry.spawnWeight * (entry.element == preferredElement and 3 or 1)
         if target < acc then
             return id
         end
@@ -41,11 +44,11 @@ function Spawn.regionBounds(sequence)
     end
     local slot = sequence % 5
     if slot == 0 then
-        return { name = "ThunderheadRidge", minX = 285, maxX = 345, minZ = -30, maxZ = 30 }
+        return { name = "ThunderheadRidge", element = "Storm", minX = 285, maxX = 345, minZ = -30, maxZ = 30 }
     elseif slot == 2 then
-        return { name = "EastwindOutlook", minX = 140, maxX = 200, minZ = -30, maxZ = 30 }
+        return { name = "EastwindOutlook", element = "Air", minX = 140, maxX = 200, minZ = -30, maxZ = 30 }
     end
-    return { name = "StarterMeadow", minX = -55, maxX = 55, minZ = -55, maxZ = 55 }
+    return { name = "StarterMeadow", element = "Nature", minX = -55, maxX = 55, minZ = -55, maxZ = 55 }
 end
 
 -- Region fast-travel unlocks are derived from persisted catches; no extra save schema.
