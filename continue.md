@@ -350,3 +350,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-11 — Sky Sprint race draft
 - Isolated branch `feature/sky-sprint-race-20261111`: original five-gate physical 3D Sky Sprint with server-owned sequential checkpoint validation, 95-second limit, 180-second session cooldown, minimum 4-second completion, and 140 Coins / 80 XP through existing profile persistence. Two Luau regression tests added to runner.
 - Not merged or published. Requires CI, real Studio/Android course geometry, race pacing and multiplayer exploit tests. Cooldown is session-only; consider durable cooldown before release. Avoid concurrent ProfileStore/tests/run.luau merges without rebasing.
+
+- CI evidence for PR #127 head 9b48864: [run 43027960678](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/43027960678) completed success; build job 130547349303 and luau-tests job 130547349916 both success. Studio/mobile runtime and publishing not tested.
