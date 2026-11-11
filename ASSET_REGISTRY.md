@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Sky Wind Lifts 3D provenance
+- `src/server/SkyWindLifts.server.luau`: three original native Roblox `Model` assemblies using anchored `Part` pads and rings plus `ProximityPrompt`, on existing three connected islands. Creator: project; license: original; no external GLB, MeshPart, Model ID or Mesh ID. `ScreenGui` not used. Source-only geometry review; Roblox Studio/mobile visual and physics verification pending.
