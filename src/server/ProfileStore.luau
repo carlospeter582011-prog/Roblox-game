@@ -155,6 +155,31 @@ function Profile.CycleCompanion(player)
     return true, "Companion: " .. CloudCatalog[nextId].name
 end
 
+-- Exchange one genuinely owned duplicate for a modest, bounded reward.
+-- The last specimen is never consumed; all mutations/companions use the same base inventory.
+function Profile.OfferDuplicate(player)
+    local data = sessions[player]
+    if not data then return false end
+    local SanctuaryRules = require(ReplicatedStorage:WaitForChild("SanctuaryRules"))
+    local selected, bestCoins, bestXp
+    -- Deterministic order: prefer the lowest-value eligible duplicate to protect rare clouds.
+    for speciesId in pairs(CloudCatalog) do
+        local coins, xp = SanctuaryRules.preview(speciesId, data.species, CloudCatalog)
+        if coins and (not bestCoins or coins < bestCoins or (coins == bestCoins and speciesId < selected)) then
+            selected, bestCoins, bestXp = speciesId, coins, xp
+        end
+    end
+    if not selected then return false end
+    data.species[selected] -= 1
+    data.coins += bestCoins
+    data.xp += bestXp
+    player:SetAttribute("SpeciesCount_" .. selected, data.species[selected])
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true, selected, bestCoins, bestXp
+end
+
 function Profile.BuyTool(player, toolId)
     local data = sessions[player]
     local tool = type(toolId) == "string" and toolCatalog[toolId] or nil
