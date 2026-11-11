@@ -22,6 +22,7 @@ local colors = {
 }
 local states = {}
 local boosts = {}
+local baseSpeeds = {}
 
 local function part(name, size, position, color, parent)
     local p = Instance.new("Part")
@@ -67,11 +68,13 @@ for i, position in ipairs(positions) do
             -- Temporary non-stacking reward. Token guards delayed reset after respawn/retrigger.
             local token = (boosts[player] or 0) + 1
             boosts[player] = token
-            local original = humanoid.WalkSpeed
+            local original = baseSpeeds[player] or humanoid.WalkSpeed
+            baseSpeeds[player] = original
             humanoid.WalkSpeed = math.max(original, 23)
             task.delay(Rules.BOOST_SECONDS, function()
                 if boosts[player] == token and humanoid.Parent and humanoid.Health > 0 then
                     humanoid.WalkSpeed = original
+                    baseSpeeds[player] = nil
                 end
             end)
         end
@@ -81,4 +84,5 @@ end
 Players.PlayerRemoving:Connect(function(player)
     states[player] = nil
     boosts[player] = nil
+    baseSpeeds[player] = nil
 end)
