@@ -84,6 +84,10 @@ function Profile.AddCatch(player, speciesId, coins, options)
         data.companionBond[companion] = points
         local bonus = CompanionRules.bonusCoins(coins, points)
         data.coins += bonus
+        -- Nature companions turn earned Bond into a modest additional Coin sink offset.
+        -- Only a successfully processed server catch reaches this point.
+        data.coins += CompanionRules.natureHarvestCoins(coins, companion,
+            data.species, CloudCatalog, data.companionBond)
         player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
         player:SetAttribute("CompanionBondPoints", points)
     end
