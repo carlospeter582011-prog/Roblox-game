@@ -359,3 +359,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Three new regression cases for multi-recipe accounting, later-step rollback, quantity limits and output overflow. Commits `74162c9c0f02e7a16987926a670000b9fc87d4a5`, `27bd975230e4f75f8453e5cceab67b9d00eb2969`.
 - This remains **policy-only**: no inventory persistence, actual crafting station, material drops or live item grants. CI and Roblox runtime unverified at time of documentation; do not merge/publish without evidence.
 - Next: integrate durable inventory with session-locked profile transactions, server-authoritative material acquisition, item consumption and touch UI; validate CI and concurrency before merge.
+
+## 2026-11-12 — Crafting essence drop policy and batch input hardening (PR #156)
+- Added deterministic `CraftingRules.catchEssence(speciesId, serverCatalog)` returning 1–3 Air/Storm/Nature/Earth essence per supported catalog catch (no client-provided rarity), as a foundation for real material acquisition. **Not wired to catch or persistence yet; no player rewards claimed.**
+- `previewBatch` now rejects sparse arrays and extra keyed fields instead of relying only on Luau `#` length. Added two regression cases. Commits aef8d925 and ead9a19e. CI, runtime, save, merge and publish pending independent verification.
+- Next: integrate essence into server-authoritative catch and ProfileCore inventory with migration/sanitization; commit only after transactional save tests. Build a 3D crafting station and useful consumable item effects; avoid merging policy-only work as complete crafting.
