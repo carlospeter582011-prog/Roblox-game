@@ -29,8 +29,10 @@ return function(test, eq)
         local quest = quests.field_pebbleflow
         eq(quest ~= nil, true, "known field quest")
         local data = { coins = 0, xp = 0, captures = 0, species = {}, quests = {} }
-        local awardedFirst = CatchRules.applyCatch(data, quest.speciesId, 0, quests)
-        eq(data.quests[quest.id], true, "field quest completed")
+        for _ = 1, quest.required do
+            CatchRules.applyCatch(data, quest.speciesId, 0, quests)
+        end
+        eq(data.quests[quest.id], true, "field quest completed at required threshold")
         local coins = data.coins
         CatchRules.applyCatch(data, quest.speciesId, 0, quests)
         eq(data.coins, coins, "repeat catch does not repay quest")
