@@ -1,0 +1,12 @@
+local Rules = require("../src/shared/WindLiftRules")
+assert(Rules.canLaunch(5, 4, true, true))
+assert(not Rules.canLaunch(12, 4, true, true))
+assert(not Rules.canLaunch(5, 3.99, true, true))
+assert(not Rules.canLaunch(5, 4, false, true))
+assert(not Rules.canLaunch(5, 4, true, false))
+assert(not Rules.canLaunch(0/0, 4, true, true))
+assert(not Rules.canLaunch(5, math.huge * 0, true, true))
+local x,y,z = Rules.velocity("east")
+assert(x == 28 and y == 66 and z == 0)
+assert(Rules.velocity("north") == nil)
+return true
