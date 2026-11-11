@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## 2026-11-11 — Cooperative Sky Lantern asset checkpoint
+- Three original server-generated 3D Models containing Roblox Parts (slate pedestals, glass lantern spheres), in `src/server/SkyLanternCoop.server.luau`. No external asset, GLB, Model ID or MeshPart ID; license: project-original. `ProximityPrompt` is an interaction control, not a Canvas world representation. Studio/Android visual, collision and multiplayer verification pending. Full 3D audit remains open.
