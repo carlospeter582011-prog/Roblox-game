@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local SpeciesMastery = require(ReplicatedStorage:WaitForChild("SpeciesMasteryRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -68,8 +69,18 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
     catchOptions.xp = baseXp + resonance
+    local previousSpeciesCount = data.species[speciesId] or 0
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
+    end
+    -- The saved species count itself is the idempotency key: a threshold pays once per species.
+    local masteryCoins, masteryXP, tier = SpeciesMastery.reward(previousSpeciesCount, data.species[speciesId])
+    if tier then
+        data.coins += masteryCoins
+        data.xp += masteryXP
+        player:SetAttribute("LastSpeciesMastery", speciesId .. ":" .. tier)
+        player:SetAttribute("LastSpeciesMasteryCoins", masteryCoins)
+        player:SetAttribute("LastSpeciesMasteryXP", masteryXP)
     end
     if data.companionSpecies == "" then
         data.companionSpecies = speciesId
