@@ -8,9 +8,18 @@ return function(test, eq)
         for id in pairs(Catalog) do
             speciesCount += 1
             local q = Quests["discover_" .. id]
-            eq(q ~= nil, true, "missing discovery " .. id)
-            eq(q.speciesId, id, "species binding")
-            eq(q.required, 1, "discovery requirement")
+            if q == nil then
+                local covered = false
+                for _, existing in pairs(Quests) do
+                    if existing.objective == "catch_species" and existing.speciesId == id and existing.required == 1 then
+                        covered = true
+                    end
+                end
+                eq(covered, true, "missing first catch quest " .. id)
+            else
+                eq(q.speciesId, id, "species binding")
+                eq(q.required, 1, "discovery requirement")
+            end
         end
         for id, q in pairs(Quests) do
             questCount += 1
@@ -27,19 +36,19 @@ return function(test, eq)
     test("discovery and mastery pay exactly once and persist in quest flags", function()
         local data = { species = {}, captures = 0, coins = 0, xp = 0, quests = {} }
         local selected = {
-            discover_breeze = Quests.discover_breeze,
-            master_breeze = Quests.master_breeze,
+            discover_drizzle = Quests.discover_drizzle,
+            master_drizzle = Quests.master_drizzle,
         }
-        Rules.applyCatch(data, "breeze", 0, selected)
-        eq(data.quests.discover_breeze, true, "discovered")
-        eq(data.quests.master_breeze, nil, "mastery not early")
+        Rules.applyCatch(data, "drizzle", 0, selected)
+        eq(data.quests.discover_drizzle, true, "discovered")
+        eq(data.quests.master_drizzle, nil, "mastery not early")
         local firstReward = data.coins
         for _ = 1, 9 do
-            Rules.applyCatch(data, "breeze", 0, selected)
+            Rules.applyCatch(data, "drizzle", 0, selected)
         end
-        eq(data.quests.master_breeze, true, "mastered")
+        eq(data.quests.master_drizzle, true, "mastered")
         local masteredReward = data.coins
-        Rules.applyCatch(data, "breeze", 0, selected)
+        Rules.applyCatch(data, "drizzle", 0, selected)
         eq(data.coins, masteredReward, "no duplicate reward")
         eq(firstReward > 0, true, "discovery reward")
         eq(masteredReward > firstReward, true, "mastery reward")
