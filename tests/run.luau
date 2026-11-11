@@ -378,6 +378,17 @@ require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
+require("./CloudResearchSpec")(test, eq)
+
+test("research level survives locked profile save and reload", function()
+    local store = FakeStore.new()
+    local first = repoFor(store, "researchA")
+    local data = first:Load("research_player").data
+    data.researchLevel = 2
+    eq(first:Save("research_player", data, true).ok, true, "saved")
+    eq(repoFor(store, "researchB"):Load("research_player").data.researchLevel, 2, "persisted")
+    eq(Core.sanitize({ researchLevel = math.huge }, validQuests, 0).researchLevel, 0, "invalid rejected")
+end)
 
 local failures = 0
 for _, t in ipairs(tests) do
