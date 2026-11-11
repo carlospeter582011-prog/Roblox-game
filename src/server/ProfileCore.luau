@@ -24,6 +24,7 @@ function Core.defaultData(now)
         crystals = {},
         rangeTraining = 0,
         bossVictories = {},
+        skyRelayCompleted = false,
         companionSpecies = "",
         companionBond = {},
         lastSeen = now or 0,
@@ -92,6 +93,7 @@ function Core.sanitize(raw, validQuests, now)
             end
         end
     end
+    clean.skyRelayCompleted = raw.skyRelayCompleted == true
     if isCount(raw.rangeTraining, 4) then
         clean.rangeTraining = math.floor(raw.rangeTraining)
     end
