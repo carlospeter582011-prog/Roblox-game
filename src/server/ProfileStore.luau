@@ -14,6 +14,7 @@ local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
+local BondAcademyRules = require(ReplicatedStorage:WaitForChild("BondAcademyRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
@@ -153,6 +154,21 @@ function Profile.CycleCompanion(player)
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
     return true, "Companion: " .. CloudCatalog[nextId].name
+end
+
+-- Spend Coins on a genuinely owned companion; saved in existing bond map.
+function Profile.TrainCompanion(player, distance)
+    local data = sessions[player]
+    local ok, id, points = BondAcademyRules.evaluate(data, CloudCatalog, distance,
+        player:GetAttribute("ProfileReady"))
+    if not ok then return false, id end
+    data.companionBond = data.companionBond or {}
+    data.coins -= BondAcademyRules.COST
+    data.companionBond[id] = points
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CompanionBondPoints", points)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
+    return true, "Bond trained! " .. points .. "/100"
 end
 
 function Profile.BuyTool(player, toolId)
