@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local ElementDiscoveryRules = require(ReplicatedStorage:WaitForChild("ElementDiscoveryRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -68,8 +69,16 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
     catchOptions.xp = baseXp + resonance
+    -- Compute before the catch mutates species counts. Existing saved counts make
+    -- this reward one-time per element across sessions, without a new save field.
+    local discoveryCoins, discoveryXp = ElementDiscoveryRules.firstElementReward(speciesId, data.species, CloudCatalog)
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
+    end
+    data.coins += discoveryCoins
+    data.xp += discoveryXp
+    if discoveryXp > 0 then
+        player:SetAttribute("LastElementDiscovered", CloudCatalog[speciesId].element)
     end
     if data.companionSpecies == "" then
         data.companionSpecies = speciesId
