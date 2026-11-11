@@ -37,7 +37,10 @@ function Rules.sanitize(raw)
             local candidate = { id = item.id, x = item.x, z = item.z, rotation = item.rotation }
             local blocked = false
             for _, placed in ipairs(items) do
-                if Rules.overlaps(candidate, placed) then blocked = true break end
+                if Rules.overlaps(candidate, placed) then
+                    blocked = true
+                    break
+                end
             end
             if not blocked then table.insert(items, candidate) end
         end
