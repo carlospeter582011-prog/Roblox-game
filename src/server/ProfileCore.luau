@@ -11,6 +11,7 @@ Core.LOCK_TIMEOUT = 300
 local MAX_COUNTER = 1e12
 local MAX_SPECIES_COUNT = 100000
 local MAX_ID_LENGTH = 48
+local MAX_BUILDINGS = 50
 
 function Core.defaultData(now)
     return {
@@ -26,6 +27,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        buildings = {},
         lastSeen = now or 0,
     }
 end
@@ -94,6 +96,26 @@ function Core.sanitize(raw, validQuests, now)
     end
     if isCount(raw.rangeTraining, 4) then
         clean.rangeTraining = math.floor(raw.rangeTraining)
+    end
+    if type(raw.buildings) == "table" then
+        local cleanBuildings = {}
+        local count = 0
+        for _, b in ipairs(raw.buildings) do
+            if count >= MAX_BUILDINGS then break end
+            if type(b) == "table" and type(b.id) == "string" and #b.id <= MAX_ID_LENGTH and
+               type(b.x) == "number" and type(b.y) == "number" and type(b.z) == "number" and
+               b.x == b.x and b.y == b.y and b.z == b.z then -- reject NaN
+                table.insert(cleanBuildings, {
+                    id = b.id,
+                    x = b.x,
+                    y = b.y,
+                    z = b.z,
+                    rot = (type(b.rot) == "number" and b.rot == b.rot) and b.rot or 0
+                })
+                count += 1
+            end
+        end
+        clean.buildings = cleanBuildings
     end
     if isCount(raw.lastSeen, MAX_COUNTER) then
         clean.lastSeen = math.floor(raw.lastSeen)
