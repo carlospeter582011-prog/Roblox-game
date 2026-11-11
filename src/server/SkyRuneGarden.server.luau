@@ -64,6 +64,8 @@ end
 local exitStone = part("ReturnStone", Vector3.new(5, 5, 5), garden + Vector3.new(0, 1, 12),
     Color3.fromRGB(110, 187, 215), Enum.Material.Slate)
 local exitPrompt = prompt(exitStone, "Return to meadow", "Sky Rune Garden")
+local hintStone = part("RuneGuideStone", Vector3.new(4, 4, 4), origin + Vector3.new(0, 0, -9), Color3.fromRGB(195, 211, 224), Enum.Material.Slate)
+local hintPrompt = prompt(hintStone, "Read rune order", "Sky Rune Guide")
 local state = {} -- player -> { round, sequence, step, started, cooldown }
 local function livingRoot(player)
     local character = player.Character
@@ -82,6 +84,22 @@ local function teleport(player, target)
     root.AssemblyLinearVelocity = Vector3.zero
     return true
 end
+hintPrompt.Triggered:Connect(function(player)
+    if not Profile.Get(player) then return end
+    local root = livingRoot(player)
+    if not root or (root.Position - hintStone.Position).Magnitude > 14 then return end
+    local now = os.clock()
+    local current = state[player] or { round = 0, cooldown = 0 }
+    if now < current.cooldown then return end
+    if not current.sequence or now - current.started > Rules.TIME_LIMIT then
+        current.round += 1
+        current.sequence = Rules.sequence(player.UserId, current.round)
+        current.step = 1
+        current.started = now
+    end
+    state[player] = current
+    notify(player, "Rune order: " .. table.concat(current.sequence, " - ") .. " (40 seconds)")
+end)
 for i, rune in ipairs(runes) do
     rune.prompt.Triggered:Connect(function(player)
         if not Profile.Get(player) then return end
