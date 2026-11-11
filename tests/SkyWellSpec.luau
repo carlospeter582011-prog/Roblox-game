@@ -10,3 +10,5 @@ assert(not Rules.canUse(10, 40, 100, 90, false), "profile readiness required")
 assert(not Rules.canUse(0/0, 40, 100, 90, true), "NaN rejected")
 assert(not Rules.canUse(10, 40, math.huge, 90, true), "infinity rejected")
 print("SkyWellSpec passed")
+
+return true
