@@ -193,6 +193,27 @@ function Profile.BuyRangeTraining(player)
     return true, "Range upgraded! +" .. (nextLevel * 2) .. " studs"
 end
 
+-- All fusion inventory and wallet changes happen together without yielding.
+-- Only server-side callers may invoke this method; the 3D station checks distance.
+function Profile.FuseFirstAvailable(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local FusionRules = require(ReplicatedStorage:WaitForChild("CloudFusionRules"))
+    local first, second = FusionRules.firstAvailable(data.species, data.coins, CloudCatalog)
+    if not first then return false, "Need 2 copies each of two same-element clouds and enough Coins" end
+    local result = FusionRules.apply(first, second, data.species, data.coins, CloudCatalog)
+    if not result.ok then return false, "Fusion unavailable: " .. result.reason end
+    data.species = result.species
+    data.coins = result.coins
+    player:SetAttribute("CloudCoins", data.coins)
+    for _, id in ipairs({ first, second, result.output }) do
+        if CatchRules.isAttributeSafe("SpeciesCount_" .. id) then
+            player:SetAttribute("SpeciesCount_" .. id, data.species[id])
+        end
+    end
+    return true, "Fused " .. first .. " + " .. second .. " into " .. result.output .. " (-" .. result.cost .. " Coins)"
+end
+
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
 local function persist(player, release)
