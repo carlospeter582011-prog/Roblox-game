@@ -142,6 +142,18 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Session-cooldown gated shrine rewards; only server-owned ProximityPrompts invoke this.
+function Profile.AwardWeatherShrine(player, coins, xp)
+    local data = sessions[player]
+    if not data or coins ~= 65 or xp ~= 35 then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
