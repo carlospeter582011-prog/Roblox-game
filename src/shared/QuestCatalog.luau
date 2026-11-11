@@ -40,4 +40,30 @@ local Quests = {
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
 }
+
+-- Expedition commissions: two escalating, persistent catch objectives per distinct species.
+-- These are deterministic authored objectives, not daily-reset quests. They use the existing
+-- server-authoritative catch completion and saved quest IDs; no new remotes or schema.
+local expeditionSpecies = { "gale", "spring", "autumn", "twilight", "dusk", "solar", "lunar", "mistveil", "stormfront", "breeze", "drizzle", "cirrus", "sunbeam", "thunder", "frost", "ember", "rainbow", "aurora", "crystal", "comet", "nebula", "void", "mist", "voltage", "pebble", "solarflare", "voidrift", "solarcore", "zephyr" }
+local expeditionStages = {
+    { suffix = "scout", required = 2, coins = 90, xp = 45, chapter = 2, title = "Scout" },
+    { suffix = "keeper", required = 8, coins = 260, xp = 130, chapter = 4, title = "Keeper" },
+}
+for _, speciesId in ipairs(expeditionSpecies) do
+    for _, stage in ipairs(expeditionStages) do
+        local id = "expedition_" .. speciesId .. "_" .. stage.suffix
+        assert(Quests[id] == nil, "duplicate expedition quest id")
+        Quests[id] = {
+            id = id,
+            title = stage.title .. " of " .. speciesId,
+            description = "Catch " .. stage.required .. " " .. speciesId .. " clouds to chart their sky habitat.",
+            objective = "catch_species",
+            speciesId = speciesId,
+            required = stage.required,
+            rewardCoins = stage.coins,
+            rewardXP = stage.xp,
+            chapter = stage.chapter,
+        }
+    end
+end
 return table.freeze(Quests)
