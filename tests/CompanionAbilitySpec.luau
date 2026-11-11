@@ -20,4 +20,20 @@ return function(test, eq)
         eq(Rules.airReachBonus("breeze", owned, catalog, { breeze = 0/0 }), 0, "invalid points")
         eq(Rules.airReachBonus(nil, owned, catalog, { breeze = 100 }), 0, "no selection")
     end)
+    test("Nature harvest scales with Bond and stays capped", function()
+        local species = { sprout = 1 }
+        local entries = { sprout = { element = "Nature" } }
+        eq(Rules.natureHarvestCoins(100, "sprout", species, entries, { sprout = 0 }), 0, "no bond")
+        eq(Rules.natureHarvestCoins(100, "sprout", species, entries, { sprout = 10 }), 3, "tier one")
+        eq(Rules.natureHarvestCoins(100, "sprout", species, entries, { sprout = 40 }), 6, "tier two")
+        eq(Rules.natureHarvestCoins(100, "sprout", species, entries, { sprout = 100 }), 9, "tier three")
+    end)
+    test("Nature harvest rejects spoofed ownership and invalid reward", function()
+        local entries = { sprout = { element = "Nature" }, breeze = { element = "Air" } }
+        eq(Rules.natureHarvestCoins(100, "sprout", {}, entries, { sprout = 100 }), 0, "not owned")
+        eq(Rules.natureHarvestCoins(100, "breeze", { breeze = 1 }, entries, { breeze = 100 }), 0, "wrong element")
+        eq(Rules.natureHarvestCoins(math.huge, "sprout", { sprout = 1 }, entries, { sprout = 100 }), 0, "infinite")
+        eq(Rules.natureHarvestCoins(0/0, "sprout", { sprout = 1 }, entries, { sprout = 100 }), 0, "nan")
+        eq(Rules.natureHarvestCoins(100001, "sprout", { sprout = 1 }, entries, { sprout = 100 }), 0, "excessive")
+    end)
 end
