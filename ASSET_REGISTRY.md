@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Rune Garden puzzle plaza, 3 rune pillars, guide stone, floating garden, 8 trees and return stone | n/a (`src/server/SkyRuneGarden.server.luau`) | Project (original procedural 3D Parts) | Original | none | Project-owned | Draft branch `feature/sky-rune-garden-20261111-0914`; server-generated Roblox Parts + ProximityPrompts | Code only; Studio geometry, mobile interaction, collision and Published upload unverified. No Mesh IDs used |
