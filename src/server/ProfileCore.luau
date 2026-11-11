@@ -3,7 +3,7 @@
 -- ProfileStore.luau wires this to the real DataStore, Players events and the shutdown flow.
 local Core = {}
 
-Core.SCHEMA_VERSION = 3
+Core.SCHEMA_VERSION = 4
 -- A lock not refreshed for this many seconds is treated as dead (crashed server).
 -- Autosave refreshes it every 90s, so this tolerates several missed saves.
 Core.LOCK_TIMEOUT = 300
@@ -11,6 +11,7 @@ Core.LOCK_TIMEOUT = 300
 local MAX_COUNTER = 1e12
 local MAX_SPECIES_COUNT = 100000
 local MAX_ID_LENGTH = 48
+local MAX_MATERIAL = 1000000
 
 function Core.defaultData(now)
     return {
@@ -26,6 +27,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        materials = {},
         lastSeen = now or 0,
     }
 end
@@ -61,6 +63,14 @@ function Core.sanitize(raw, validQuests, now)
             if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$")
                 and isCount(points, 1000001) then
                 clean.companionBond[id] = math.floor(points)
+            end
+        end
+    end
+    if type(raw.materials) == "table" then
+        for id, count in pairs(raw.materials) do
+            if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$")
+                and isCount(count, MAX_MATERIAL + 1) then
+                clean.materials[id] = math.floor(count)
             end
         end
     end
