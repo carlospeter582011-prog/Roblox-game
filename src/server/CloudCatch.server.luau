@@ -169,6 +169,26 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         end
     end
     local targetIds = CatchRules.selectBurstTargets(cloudId, candidates, toolId == "storm_vacuum" and 3 or 1)
+    -- Ember Cannon has a distinct splash ability: catch up to two nearby clouds
+    -- around the primary impact. Every extra cloud is independently checked against
+    -- the player's server-resolved range; walls/line-of-sight remain a runtime QA item.
+    if toolId == "ember_cannon" then
+        local splashCandidates = {}
+        for otherId, otherCloud in pairs(active) do
+            if otherId ~= cloudId and otherCloud.Parent then
+                local otherSpecies = catalog[otherCloud:GetAttribute("SpeciesId")]
+                if otherSpecies then
+                    local playerDistance = (root.Position - otherCloud.Position).Magnitude
+                    table.insert(splashCandidates, {
+                        id = otherId,
+                        splashDistance = (cloud.Position - otherCloud.Position).Magnitude,
+                        inPlayerRange = CatchRules.isInRange(playerDistance, otherSpecies, tool),
+                    })
+                end
+            end
+        end
+        targetIds = CatchRules.selectEmberSplashTargets(cloudId, splashCandidates, 9, 3)
+    end
     local caught = 0
     for _, targetId in ipairs(targetIds) do
         local targetCloud = active[targetId]
@@ -196,7 +216,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         end
     end
     if caught > 0 then
-        remote:FireClient(player, true, caught > 1 and ("Vacuum burst! Caught " .. caught .. " clouds!") or (magnetPull and "Magnet pull! Cloud caught!" or "Cloud caught!"))
+        remote:FireClient(player, true, caught > 1 and ((toolId == "ember_cannon" and "Ember splash! " or "Vacuum burst! ") .. "Caught " .. caught .. " clouds!") or (magnetPull and "Magnet pull! Cloud caught!" or "Cloud caught!"))
     else
         remote:FireClient(player, false, "Unable to save catch. Try again.")
     end
