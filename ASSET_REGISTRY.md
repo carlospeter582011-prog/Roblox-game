@@ -96,3 +96,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-11 04:10 Cairo — Restorative Sky Wells
 - Original project-authored 3D `Part`/`Model` basins and glass water surfaces, generated in `src/server/SkyWells.server.luau` on starter meadow and Eastwind. No external asset, Model ID, MeshPart ID, third-party license or Canvas stand-in. `ProximityPrompt` is native interaction UI. Code-level integration only; physical placement, collision and mobile visuals remain unverified.
+
+## 2026-11-11 — Sky Well rule validation
+- No new assets or ID changes. Existing original native 3D wells remain unverified in Roblox runtime; server-side healing input validation tightened on PR #76.
