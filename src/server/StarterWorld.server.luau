@@ -174,6 +174,44 @@ for _, z in ipairs({ -22, 22 }) do
 end
 ridge.PrimaryPart = ridgeFloor
 
+-- Sunset Dunes: fourth traversable native 3D region; warm sandstone formations.
+-- Ridge edge x=370, Dunes edge x=405; bridge overlaps both ends.
+local dunes = Instance.new("Model")
+dunes.Name = "SunsetDunes3D"
+dunes.Parent = world
+local dunesFloor = part("DunesWalkableGround", Vector3.new(110, 2, 105),
+    Vector3.new(460, 0, 0), Color3.fromRGB(203, 165, 105), Enum.Material.Sand, dunes)
+local dunesRock = part("DunesFloatingBedrock", Vector3.new(114, 16, 109),
+    Vector3.new(460, -10, 0), Color3.fromRGB(138, 98, 83), Enum.Material.Sandstone, dunes)
+dunesRock.Shape = Enum.PartType.Ball
+dunesRock.CanCollide = false
+part("SunsetBridgeWalkway", Vector3.new(42, 2, 15),
+    Vector3.new(387, 0, 0), Color3.fromRGB(163, 119, 95), Enum.Material.Sandstone, dunes)
+for _, z in ipairs({ -8, 8 }) do
+    part("SunsetBridgeRail", Vector3.new(42, 3, 1),
+        Vector3.new(387, 3, z), Color3.fromRGB(129, 92, 79), Enum.Material.Sandstone, dunes)
+end
+-- Landmarks are anchored native Roblox Parts, never HUD or unlicensed meshes.
+for i = 1, 8 do
+    local angle = i * math.pi / 4
+    local radius = 32 + (i % 2) * 5
+    local x = 460 + math.cos(angle) * radius
+    local z = math.sin(angle) * radius
+    local pillarHeight = 9 + (i % 4) * 3
+    local spire = part("DuneSandstoneSpire" .. i, Vector3.new(5, pillarHeight, 5),
+        Vector3.new(x, pillarHeight / 2 + 1, z),
+        Color3.fromRGB(178 + (i % 3) * 7, 129, 91), Enum.Material.Sandstone, dunes)
+    spire.CanCollide = false
+    local cap = part("DuneSpireCap" .. i, Vector3.new(7, 2, 7),
+        Vector3.new(x, pillarHeight + 1, z), Color3.fromRGB(221, 171, 113), Enum.Material.Sandstone, dunes)
+    cap.CanCollide = false
+end
+WorldAssetModels.skyArch(dunes, Vector3.new(460, 1, 0), 0.95, math.pi / 2)
+for _, z in ipairs({ -24, 24 }) do
+    WorldAssetModels.skyLantern(dunes, Vector3.new(432, 1, z), 0.7)
+end
+dunes.PrimaryPart = dunesFloor
+
 local spawn=Instance.new("SpawnLocation")
 spawn.Name="SkyArrival"
 spawn.Size=Vector3.new(12,1,12)
