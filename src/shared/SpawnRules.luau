@@ -33,6 +33,26 @@ function Spawn.rollSpecies(species, rng)
     return ids[#ids] -- float rounding edge: target reached the total
 end
 
+-- Region-specific elemental habitats make traveling change what players discover.
+-- Multipliers alter relative weights without removing any species or granting rewards.
+Spawn.habitats = {
+    StarterMeadow = { Nature = 3, Air = 2, Water = 1.5 },
+    EastwindOutlook = { Air = 3, Light = 2, Cosmic = 1.5 },
+    ThunderheadRidge = { Storm = 4, Fire = 2, Earth = 1.5 },
+}
+function Spawn.rollRegionSpecies(species, regionName, rng)
+    local habitat = Spawn.habitats[regionName]
+    if not habitat then return Spawn.rollSpecies(species, rng) end
+    local weighted = {}
+    for id, entry in pairs(species) do
+        if type(entry) == "table" and validWeight(entry.spawnWeight) then
+            local factor = habitat[entry.element] or 1
+            weighted[id] = { spawnWeight = entry.spawnWeight * factor }
+        end
+    end
+    return Spawn.rollSpecies(weighted, rng)
+end
+
 -- Region layout must match the actual walkable floors in StarterWorld.server.luau.
 -- A stable rotation keeps the starter island populated while sending players onward.
 function Spawn.regionBounds(sequence)
