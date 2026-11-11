@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## Island building asset status — 2026-11-11
+- `IslandPlacementRules.luau` defines four **logical** structure IDs (cloud_perch, windmill, crystal_garden, weather_station), with pricing and placement rules only. No Roblox Part/Model/MeshPart for these structures has been created or imported yet. **No visual asset integration or runtime validation is claimed.**

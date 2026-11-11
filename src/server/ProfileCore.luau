@@ -26,6 +26,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        islandLayout = {},
         lastSeen = now or 0,
     }
 end
@@ -61,6 +62,26 @@ function Core.sanitize(raw, validQuests, now)
             if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$")
                 and isCount(points, 1000001) then
                 clean.companionBond[id] = math.floor(points)
+            end
+        end
+    end
+    -- Sanitize persisted building layouts before any world placement can consume them.
+    -- Roblox-safe sanitizer, kept independent of runtime-only ModuleScript require paths.
+    local catalog = { cloud_perch = 2, windmill = 3, crystal_garden = 3, weather_station = 4 }
+    if type(raw.islandLayout) == "table" then
+        for _, item in ipairs(raw.islandLayout) do
+            if #clean.islandLayout >= 64 then break end
+            local half = type(item) == "table" and catalog[item.id] or nil
+            if half and type(item.x) == "number" and type(item.z) == "number" and type(item.rotation) == "number"
+                and item.x == math.floor(item.x) and item.z == math.floor(item.z)
+                and math.abs(item.x) + half <= 24 and math.abs(item.z) + half <= 24
+                and item.rotation == math.floor(item.rotation) and item.rotation >= 0 and item.rotation <= 3 then
+                local overlap = false
+                for _, other in ipairs(clean.islandLayout) do
+                    local gap = half + catalog[other.id] + 1
+                    if math.abs(item.x - other.x) < gap and math.abs(item.z - other.z) < gap then overlap = true break end
+                end
+                if not overlap then table.insert(clean.islandLayout, { id = item.id, x = item.x, z = item.z, rotation = item.rotation }) end
             end
         end
     end
