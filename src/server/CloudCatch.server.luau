@@ -12,6 +12,7 @@ local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
+local SkyWeather = require(ReplicatedStorage:WaitForChild("SkyWeatherRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -177,10 +178,11 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         if targetSpecies and active[targetId] == targetCloud then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
-            local coins = Mutations.bonusCoins(baseCoins, mut)
+            local phase = SkyWeather.phaseAt(os.time() - (Workspace:GetAttribute("SkyWeatherEpoch") or os.time()))
+            local coins = SkyWeather.reward(Mutations.bonusCoins(baseCoins, mut), phase.coins)
             local options = {
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
-                xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
+                xp = SkyWeather.reward(Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut), phase.xp),
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
                 active[targetId] = nil
