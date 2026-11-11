@@ -61,4 +61,15 @@ function Rules.airReachBonus(companionId, species, catalog, bond)
     if entry.element ~= "Air" then return 0 end
     return math.min(3, Rules.bondLevel(bond and bond[companionId]))
 end
+-- Water companions teach weather-reading: earned Bond grants a small catch-XP
+-- bonus even when the caught cloud has a different element. Server-owned only.
+-- Reward applies once per catch, never to quest/boss payouts.
+function Rules.waterLearningXp(baseXp, companionId, species, catalog, bond)
+    if type(baseXp) ~= "number" or baseXp ~= baseXp or baseXp < 0
+        or baseXp == math.huge or baseXp > 100000 then return 0 end
+    if not Rules.owned(companionId, species, catalog) then return 0 end
+    if catalog[companionId].element ~= "Water" then return 0 end
+    local level = Rules.bondLevel(bond and bond[companionId])
+    return math.floor(baseXp * level * 0.03)
+end
 return Rules

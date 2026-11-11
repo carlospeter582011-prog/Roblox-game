@@ -67,7 +67,9 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
-    catchOptions.xp = baseXp + resonance
+    local waterLearning = CompanionRules.waterLearningXp(baseXp, data.companionSpecies,
+        data.species, CloudCatalog, data.companionBond)
+    catchOptions.xp = baseXp + resonance + waterLearning
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
