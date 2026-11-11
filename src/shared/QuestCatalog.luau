@@ -40,4 +40,35 @@ local Quests = {
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
 }
+-- Additional progression quests use existing server-awarded catch objectives and stable species IDs.
+-- Generated from a fixed, authored roster (not arbitrary player input), so every objective
+-- is achievable with the live species catalog and persists through the existing quest map.
+local species = require("./CloudCatalog")
+local questRoster = {
+    "breeze", "drizzle", "cirrus", "mist", "sunbeam", "thunder", "frost",
+    "ember", "rainbow", "twilight", "aurora", "dusk", "gale", "spring",
+    "autumn", "crystal", "void", "comet", "mistveil", "solar", "lunar",
+    "stormfront", "blossom", "pebble", "tide", "spark", "hush", "prism",
+    "glacier", "emberglow", "pollen", "moss", "hail", "monsoon", "voltage",
+}
+for index, speciesId in ipairs(questRoster) do
+    assert(species[speciesId], "Quest roster species missing: " .. speciesId)
+    local name = species[speciesId].name
+    for tier = 1, 2 do
+        local required = tier == 1 and 3 or 12
+        local id = "expedition_" .. speciesId .. "_" .. tostring(tier)
+        assert(Quests[id] == nil, "Duplicate quest ID: " .. id)
+        Quests[id] = {
+            id = id,
+            title = tier == 1 and ("Discover " .. name) or ("Master " .. name),
+            description = "Catch " .. tostring(required) .. " " .. name .. " clouds.",
+            objective = "catch_species",
+            speciesId = speciesId,
+            required = required,
+            rewardCoins = tier == 1 and (90 + index * 8) or (300 + index * 22),
+            rewardXP = tier == 1 and (45 + index * 4) or (150 + index * 11),
+            chapter = tier == 1 and 3 or 5,
+        }
+    end
+end
 return table.freeze(Quests)
