@@ -92,3 +92,9 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## Sky Fusion Altar — 2026-11-11, PR #91 (draft)
+- Source: original project-authored `src/server/SkyFusion.server.luau`; creator: project; license: original; Roblox Asset ID: none; ownership: project-owned.
+- Integration: native Roblox 3D Model, anchored Parts, Neon/Glass core/orbit stones, ProximityPrompt; HUD feedback is ScreenGui only. No third-party assets or Model/Mesh ID assumptions.
+- Validation: source implementation only; Rojo CI, collision/walkability, prompt accessibility, Roblox Android appearance and live publication **not verified**.
