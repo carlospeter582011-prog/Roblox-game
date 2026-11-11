@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local Research = require(ReplicatedStorage:WaitForChild("CloudResearchRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -67,7 +68,7 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
-    catchOptions.xp = baseXp + resonance
+    catchOptions.xp = baseXp + resonance + Research.bonusXp(baseXp, data.researchLevel)
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
@@ -153,6 +154,16 @@ function Profile.CycleCompanion(player)
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
     return true, "Companion: " .. CloudCatalog[nextId].name
+end
+
+function Profile.BuyCloudResearch(player)
+    local data = sessions[player]
+    local ok, message = Research.purchase(data)
+    if ok then
+        player:SetAttribute("CloudCoins", data.coins)
+        player:SetAttribute("CloudResearchLevel", data.researchLevel)
+    end
+    return ok, message
 end
 
 function Profile.BuyTool(player, toolId)
@@ -272,6 +283,7 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     player:SetAttribute("RangeTraining", math.clamp(math.floor(tonumber(data.rangeTraining) or 0), 0, 3))
+    player:SetAttribute("CloudResearchLevel", Research.level(data.researchLevel))
     if not CompanionRules.owned(data.companionSpecies, data.species, CloudCatalog) then
         data.companionSpecies = CompanionRules.next(nil, data.species, CloudCatalog) or ""
     end
