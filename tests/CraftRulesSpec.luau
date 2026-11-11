@@ -23,4 +23,26 @@ check(not Craft.apply(c, "mist_gloves", Tools), "unlock bypassed")
 local d = profile()
 d.coins = 0/0
 check(not Craft.apply(d, "wind_lasso", Tools), "NaN accepted")
+
+-- Every recipe must be independently craftable and spend only its listed inputs.
+for _, id in ipairs({ "wind_lasso", "mist_gloves", "cloud_magnet" }) do
+    local sample = profile()
+    local recipe = Craft.Recipes[id]
+    local originalCoins = sample.coins
+    local before = {}
+    for speciesId in pairs(sample.species) do before[speciesId] = sample.species[speciesId] end
+    check(Craft.apply(sample, id, Tools), "recipe failed: " .. id)
+    check(sample.ownedTools[id] == true, "tool not granted: " .. id)
+    check(sample.coins == originalCoins - recipe.coins, "incorrect coin debit: " .. id)
+    for speciesId, count in pairs(before) do
+        check(sample.species[speciesId] == count - (recipe.species[speciesId] or 0),
+            "unexpected species debit: " .. id .. "/" .. speciesId)
+    end
+end
+-- Missing one ingredient must never partially charge coins or consume other species.
+local partial = profile()
+partial.species.gale = 2
+check(not Craft.apply(partial, "cloud_magnet", Tools), "missing ingredient accepted")
+check(partial.coins == 100 and partial.species.pebble == 5 and partial.species.gale == 2,
+    "failed recipe caused partial debit")
 return true
