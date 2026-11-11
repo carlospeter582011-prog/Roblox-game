@@ -4,7 +4,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local EvolutionRules = require(ReplicatedStorage.Shared.EvolutionRules)
-local ProfileStore = require(script.Parent.ProfileStore)
+local Profile = require(script.Parent.ProfileStore)
 local CloudCatalog = require(ReplicatedStorage.Shared.CloudCatalog)
 
 local station = Instance.new("Model")
@@ -36,7 +36,7 @@ prompt.Triggered:Connect(function(player)
     end
     lastUse[player] = now
 
-    local data = ProfileStore.GetData(player)
+    local data = Profile.Get(player)
     if not data then return end
 
     -- Find first evolvable owned species for this simple interaction.
@@ -50,9 +50,8 @@ prompt.Triggered:Connect(function(player)
     if not target then return end
 
     if EvolutionRules.applyEvolve(data, target) then
-        ProfileStore.Save(player)
-        -- Optional feedback: could fire a remote for HUD, but keep minimal.
-        print(player.Name .. " evolved " .. target)
+        Profile.Save(player)
+        print(player.Name .. " evolved " .. target .. " into " .. EvolutionRules.evolvedId(target))
     end
 end)
 
