@@ -142,6 +142,22 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Server-only fusion: consumes two duplicate copies, retaining one, to strengthen
+-- the currently equipped companion. Existing species/bond profile fields persist it.
+function Profile.FuseCompanionDuplicates(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local speciesId = data.companionSpecies
+    local FusionRules = require(ReplicatedStorage:WaitForChild("FusionRules"))
+    data.companionBond = data.companionBond or {}
+    local ok, points = FusionRules.apply(speciesId, data.species, data.companionBond, CloudCatalog)
+    if not ok then return false, "Equip a companion with 3 copies to fuse 2 spares" end
+    player:SetAttribute("SpeciesCount_" .. speciesId, data.species[speciesId])
+    player:SetAttribute("CompanionBondPoints", points)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
+    return true, "Fusion complete! Companion bond +" .. FusionRules.BOND_GAIN
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
