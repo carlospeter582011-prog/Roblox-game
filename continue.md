@@ -353,3 +353,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Parallel PRs #87 (species expansion) and #88 (first-discovery grants) are separate; avoid merging until main drift and economy reward stacking are reviewed.
 
 - CI run [42964486384](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42964486384): build passed, Luau 102/103 tests passed; new duplicate-reward test incorrectly expected a 2-catch quest to complete after one catch. Corrected test to satisfy configured threshold first (commit `23c0c44a19ed6dbb5a93500af90a9252bba7a51a`). Follow-up CI outcome pending.
+
+## 2026-11-11 — PR #89 CI regression correction (follow-up)
+- CI run 42964546921 on commit 23c0c44 failed `luau-tests` (build passed): the test assumed total Coins would stay unchanged after another catch, but an unrelated quest legitimately paid 80 Coins. This was a **test isolation bug**, not evidence of duplicate rewards.
+- Commit 0251df232b2cb0579c7c4e83846408f7ef37ba85 changes `FieldJournalSpec.luau` to run the target quest against an isolated catalog; now checks exactly that quest's one-time reward. Await fresh CI result; Roblox runtime, merge and publish remain unverified.
