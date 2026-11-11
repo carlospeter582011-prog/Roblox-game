@@ -142,7 +142,8 @@ remote.OnServerEvent:Connect(function(player, cloudId)
     local cloud = active[cloudId]
     if not cloud or not cloud.Parent then return end
     local root = player.Character and player.Character:FindFirstChild("HumanoidRootPart")
-    if not root then return end
+    local humanoid = player.Character and player.Character:FindFirstChildOfClass("Humanoid")
+    if not root or not humanoid or not CatchRules.canCatchAlive(humanoid.Health) then return end
     local species = catalog[cloud:GetAttribute("SpeciesId")]
     if not species then return end
     local targetDistance = (root.Position - cloud.Position).Magnitude
@@ -174,7 +175,12 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud then
+        -- Recheck each burst target after any yielding profile operation or world movement.
+        local freshDistance = (root.Position - targetCloud.Position).Magnitude
+        local inReach = CatchRules.isInRange(freshDistance, targetSpecies, tool)
+            or (targetId == cloudId and CatchRules.canMagnetPull(freshDistance, targetSpecies, toolId, tool))
+        if targetSpecies and active[targetId] == targetCloud and inReach
+            and humanoid.Parent and CatchRules.canCatchAlive(humanoid.Health) then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
