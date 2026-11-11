@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Catch Streak Combo | Original gameplay logic (`CatchStreakRules.luau` and server catch flow) | Project | Original code; no visual asset | none | Project-owned | Server-authoritative timed catch streak XP reward; no in-world geometry or asset IDs | Luau regression tests added on feature branch; CI and Roblox runtime pending |
