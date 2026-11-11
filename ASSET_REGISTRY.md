@@ -98,3 +98,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-11 — Batch crafting extension (PR #156)
 - `CraftingRules.previewBatch` is a pure data policy and adds **no** Roblox Models, MeshParts, Terrain, assets, or UI. Recipe outputs are logical identifiers, not verified usable 3D inventory items. No asset IDs or provenance changes. Roblox Studio visual/runtime verification remains pending.
+
+## 2026-11-12 — Crafting essence rule extension
+- No new world assets, Mesh IDs, Model IDs or GUI. `CraftingRules.catchEssence` adds logical essence types only, not a world drop model or inventory. Source-integrated in PR #156; runtime and CI unverified. No external licensing needed.
