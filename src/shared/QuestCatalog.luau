@@ -40,4 +40,30 @@ local Quests = {
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
 }
+
+-- Three persistent research tiers for 21 additional cloud species (63 playable quests).
+-- These use the existing server-authoritative species counts and one-time quest ledger;
+-- no new client remote, profile schema or artificial repeatable payout is introduced.
+local fieldSpecies = { "twilight", "dusk", "gale", "spring", "autumn", "stormfront", "blossom", "tide", "spark", "hush", "prism", "glacier", "emberglow", "pollen", "moss", "hail", "monsoon", "dewdrop", "breezelet", "pebbleflow", "nightshade" }
+local fieldTiers = {
+    { suffix = "observe", required = 2, coins = 30, xp = 15, label = "Observe" },
+    { suffix = "study", required = 6, coins = 65, xp = 30, label = "Study" },
+    { suffix = "master", required = 15, coins = 120, xp = 60, label = "Master" },
+}
+for _, speciesId in ipairs(fieldSpecies) do
+    for tierIndex, tier in ipairs(fieldTiers) do
+        local id = "field_" .. speciesId .. "_" .. tier.suffix
+        Quests[id] = {
+            id = id,
+            title = tier.label .. " " .. speciesId .. " Clouds",
+            description = "Catch " .. tier.required .. " " .. speciesId .. " clouds for your field journal.",
+            objective = "catch_species",
+            speciesId = speciesId,
+            required = tier.required,
+            rewardCoins = tier.coins,
+            rewardXP = tier.xp,
+            chapter = math.min(5, tierIndex + 1),
+        }
+    end
+end
 return table.freeze(Quests)
