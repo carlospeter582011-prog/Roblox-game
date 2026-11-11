@@ -1,0 +1,13 @@
+local Rules = require("../src/shared/TravelSafetyRules")
+return function(test, eq)
+    test("travel safety permits earned travel in range", function()
+        eq(Rules.canTravel(10, 5, 10, 100, 3), true)
+        eq(Rules.canTravel(4, 5, 10, 100, 3), false)
+    end)
+    test("travel safety rejects invalid coordinates and cooldown", function()
+        eq(Rules.canTravel(10, 5, 0/0, 100, 3), false)
+        eq(Rules.canTravel(10, 5, 16, 100, 3), false)
+        eq(Rules.canTravel(10, 5, 10, 100, 1), false)
+        eq(Rules.canTravel(10, 5, 10, 0, 3), false)
+    end)
+end
