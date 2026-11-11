@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Sky Beacon Puzzle
+- Three original native Roblox `Part` beacons created by `src/server/SkyBeaconPuzzle.server.luau`, no third-party assets, Model IDs or Mesh IDs. Server-authoritative ProximityPrompt ordered puzzle; world geometry is 3D, not Canvas. Code integrated on feature branch only. Placement, collisions, visual quality and Android playability require Roblox runtime QA.
