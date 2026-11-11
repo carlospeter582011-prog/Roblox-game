@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## 2026-11-11 04:10 Cairo — Restorative Sky Wells
+- Original project-authored 3D `Part`/`Model` basins and glass water surfaces, generated in `src/server/SkyWells.server.luau` on starter meadow and Eastwind. No external asset, Model ID, MeshPart ID, third-party license or Canvas stand-in. `ProximityPrompt` is native interaction UI. Code-level integration only; physical placement, collision and mobile visuals remain unverified.
