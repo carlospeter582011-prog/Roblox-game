@@ -1,5 +1,31 @@
 local Crafting = require("../src/shared/CraftingRules")
 return function(test, eq)
+    test("crafting essence maps legitimate species to bounded material drops", function()
+        local catalog = {
+            breeze = { element = "Air", rarity = "Common" },
+            storm = { element = "Storm", rarity = "Epic" },
+            earth = { element = "Earth", rarity = "Legendary" },
+            fake = { element = "Unknown", rarity = "Rare" },
+        }
+        local id, amount = Crafting.catchEssence("breeze", catalog)
+        eq(id, "air_essence", "air material")
+        eq(amount, 1, "common yield")
+        id, amount = Crafting.catchEssence("storm", catalog)
+        eq(id, "storm_essence", "storm material")
+        eq(amount, 2, "epic yield")
+        id, amount = Crafting.catchEssence("earth", catalog)
+        eq(amount, 3, "legendary cap")
+        id, amount = Crafting.catchEssence("fake", catalog)
+        eq(id, nil, "unsupported element")
+        eq(amount, 0, "no unsupported yield")
+        id, amount = Crafting.catchEssence("forged", catalog)
+        eq(amount, 0, "unknown species")
+    end)
+    test("batch rejects sparse and forged-index queues", function()
+        local inv = { air_essence = 100 }
+        eq(Crafting.previewBatch({ [1] = { recipeId = "breeze_lure", quantity = 1 }, [3] = { recipeId = "breeze_lure", quantity = 1 } }, 1000, inv, {}), nil, "sparse")
+        eq(Crafting.previewBatch({ [1] = { recipeId = "breeze_lure", quantity = 1 }, extra = true }, 1000, inv, {}), nil, "extra key")
+    end)
     test("crafting preview charges exact coins and ingredients", function()
         local input = { air_essence = 5, nature_essence = 2 }
         local result = Crafting.preview("breeze_lure", 100, input)
