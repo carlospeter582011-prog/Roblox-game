@@ -378,6 +378,7 @@ require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
+require("./SkyConstellationSpec")(test, eq)
 
 local failures = 0
 for _, t in ipairs(tests) do
