@@ -4,6 +4,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
 local catalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Progress = require(ReplicatedStorage:WaitForChild("ProgressRules"))
+local Locale = require(ReplicatedStorage:WaitForChild("LocaleText"))
+local function tr(key) return Locale.text(player:GetAttribute("UILanguage"), key) end
 local equip = ReplicatedStorage:WaitForChild("EquipCatchTool")
 local purchase = ReplicatedStorage:WaitForChild("PurchaseCatchTool")
 local trainingPurchase = ReplicatedStorage:WaitForChild("PurchaseRangeTraining")
@@ -16,6 +18,18 @@ local button = Instance.new("TextButton")
 button.Size = UDim2.fromOffset(80, 32)
 button.Position = UDim2.new(0, 16, 0, 144)
 button.Text = "Shop"
+local languageButton = Instance.new("TextButton")
+languageButton.Name = "LanguageToggle"
+languageButton.Size = UDim2.fromOffset(64, 32)
+languageButton.Position = UDim2.new(0, 104, 0, 144)
+languageButton.Font = Enum.Font.GothamBold
+languageButton.TextSize = 13
+languageButton.TextColor3 = Color3.new(1, 1, 1)
+languageButton.BackgroundColor3 = Color3.fromRGB(55, 77, 110)
+languageButton.Parent = gui
+languageButton.Activated:Connect(function()
+    player:SetAttribute("UILanguage", player:GetAttribute("UILanguage") == "ar" and "en" or "ar")
+end)
 button.TextSize = 14
 button.Font = Enum.Font.GothamBold
 button.BackgroundColor3 = Color3.fromRGB(33, 85, 125)
@@ -64,7 +78,7 @@ companionButton.Activated:Connect(function()
 end)
 local function refreshCompanion()
     local id = player:GetAttribute("CompanionSpecies")
-    companionButton.Text = id and id ~= "" and ("Companion: " .. id .. " | Tap to switch") or "Catch a cloud to unlock companion"
+    companionButton.Text = id and id ~= "" and (tr("companion") .. ": " .. id .. " | " .. tr("switch")) or tr("catchFirst")
 end
 player:GetAttributeChangedSignal("CompanionSpecies"):Connect(refreshCompanion)
 companionRemote.OnClientEvent:Connect(function(ok, message)
@@ -96,17 +110,19 @@ for _, id in ipairs(order) do
     rows[id] = row
 end
 local function refresh()
+    languageButton.Text = player:GetAttribute("UILanguage") == "ar" and "EN" or "عربي"
+    if not panel.Visible then button.Text = tr("shop") end
     local count = player:GetAttribute("CloudCount") or 0
     local training = math.clamp(player:GetAttribute("RangeTraining") or 0, 0, 3)
     local costs = { 100, 250, 500 }
     local levels = { 2, 4, 6 }
-    trainingButton.Text = training == 3 and "Range Training MAX (+6 studs)" or ("Train Range +" .. ((training + 1) * 2) .. " | " .. costs[training + 1] .. " coins | Lv " .. levels[training + 1])
+    trainingButton.Text = training == 3 and (tr("maxRange") .. " (+6 studs)") or (tr("train") .. " +" .. ((training + 1) * 2) .. " | " .. Locale.number(costs[training + 1]) .. " " .. tr("coins") .. " | " .. tr("level") .. " " .. levels[training + 1])
     for id, row in pairs(rows) do
         local tool = catalog[id]
         local locked = count < tool.unlockCatches
         local selected = player:GetAttribute("EquippedCatchTool") == id
         local owned = id == "starter_net" or player:GetAttribute("OwnsTool_" .. id) == true
-        row.Text = tool.name .. (id == "storm_vacuum" and " [3-cloud burst]" or (id == "cloud_magnet" and " [12-stud pull]" or "")) .. (locked and (" | " .. tool.unlockCatches .. " catches") or (selected and " | Equipped" or (owned and " | Equip" or (" | Buy " .. tool.priceCoins .. " coins"))))
+        row.Text = tool.name .. (id == "storm_vacuum" and " [3-cloud burst]" or (id == "cloud_magnet" and " [12-stud pull]" or "")) .. (locked and (" | " .. tool.unlockCatches .. " " .. tr("catches")) or (selected and (" | " .. tr("equipped")) or (owned and (" | " .. tr("equip")) or (" | " .. tr("buy") .. " " .. Locale.number(tool.priceCoins) .. " " .. tr("coins")))))
         row.BackgroundColor3 = selected and Color3.fromRGB(36, 133, 95) or (locked and Color3.fromRGB(55, 66, 83) or Color3.fromRGB(45, 103, 139))
     end
 end
@@ -121,12 +137,16 @@ end
 trainingPurchase.OnClientEvent:Connect(function(ok, result)
     button.Text = tostring(result)
     refresh()
-    task.delay(2, function() button.Text = "Shop" end)
+    task.delay(2, function() button.Text = tr("shop") end)
 end)
 purchase.OnClientEvent:Connect(function(ok, result)
-    button.Text = ok and "Purchased!" or tostring(result)
+    button.Text = ok and tr("purchased") or tostring(result)
     refresh()
     task.delay(2, function() button.Text = "Shop" end)
+end)
+player:GetAttributeChangedSignal("UILanguage"):Connect(function()
+    refresh()
+    refreshCompanion()
 end)
 button.Activated:Connect(function()
     refresh()
