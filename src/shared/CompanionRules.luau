@@ -61,4 +61,15 @@ function Rules.airReachBonus(companionId, species, catalog, bond)
     if entry.element ~= "Air" then return 0 end
     return math.min(3, Rules.bondLevel(bond and bond[companionId]))
 end
+
+-- Nature companion harvest: small Coin income on successful catches, earned through Bond.
+-- Server supplies catalog, ownership and base reward; never accept a client multiplier.
+function Rules.natureHarvestCoins(baseCoins, companionId, species, catalog, bond)
+    if type(baseCoins) ~= "number" or baseCoins ~= baseCoins or baseCoins < 0
+        or baseCoins == math.huge or baseCoins > 100000 then return 0 end
+    if not Rules.owned(companionId, species, catalog) then return 0 end
+    if catalog[companionId].element ~= "Nature" then return 0 end
+    local level = Rules.bondLevel(bond and bond[companionId])
+    return math.floor(baseCoins * math.min(level, 3) * 0.03)
+end
 return Rules
