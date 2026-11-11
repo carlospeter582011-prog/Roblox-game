@@ -51,4 +51,23 @@ function Rules.apply(first, second, species, coins, catalog)
     inventory[p.output] += 1
     return { ok = true, cost = p.cost, output = p.output, coins = coins - p.cost, species = inventory }
 end
+-- Choose an affordable same-element duplicate pair without trusting client-supplied IDs.
+-- Stable ordering makes the station predictable across servers.
+function Rules.firstAvailable(species, coins, catalog)
+    if type(species) ~= "table" or type(catalog) ~= "table" then return nil end
+    local ids = {}
+    for id, amount in pairs(species) do
+        if type(id) == "string" and count(amount) and amount >= 2 and catalog[id] then
+            table.insert(ids, id)
+        end
+    end
+    table.sort(ids)
+    for i = 1, #ids do
+        for j = i + 1, #ids do
+            local result = Rules.preview(ids[i], ids[j], species, coins, catalog)
+            if result.ok then return ids[i], ids[j], result end
+        end
+    end
+    return nil
+end
 return Rules
