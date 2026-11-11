@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Three Sky Observatory survey lenses and pedestals | n/a (`src/server/SkyObservatory.server.luau`) | Project original procedural Roblox Parts | Original | none | Project-owned | Branch feature/sky-observatory-20261111; server-built 3D Models, no imported Mesh IDs | Source only; CI, geometry placement, Roblox runtime and mobile walkability unverified |
