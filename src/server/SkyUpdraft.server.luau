@@ -1,6 +1,6 @@
 -- Original 3D updraft pads: reusable exploration shortcuts, no client-trusted remotes.
 local Players = game:GetService("Players")
-local Rules = require(game:GetService("ReplicatedStorage"):WaitForChild("Shared"):WaitForChild("SkyUpdraftRules"))
+local Rules = require(game:GetService("ReplicatedStorage"):WaitForChild("SkyUpdraftRules"))
 local lastLaunch = {}
 local pads = {
     { name = "Meadow Updraft", position = Vector3.new(18, 13, 0), heading = Vector3.new(1, 0, 0), color = Color3.fromRGB(124, 225, 245) },
