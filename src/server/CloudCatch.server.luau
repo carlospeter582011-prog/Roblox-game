@@ -8,6 +8,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local CatchFinesse = require(ReplicatedStorage:WaitForChild("CatchFinesseRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
@@ -180,7 +181,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             local coins = Mutations.bonusCoins(baseCoins, mut)
             local options = {
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
-                xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
+                xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut)
+                    + CatchFinesse.bonus((root.Position - targetCloud.Position).Magnitude,
+                        targetSpecies.baseCatchRadius + tool.rangeBonus),
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
                 active[targetId] = nil
