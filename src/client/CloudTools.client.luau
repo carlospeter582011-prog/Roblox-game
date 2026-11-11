@@ -2,10 +2,10 @@
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local player = Players.LocalPlayer
+local function tr(key) return Locale.text(player:GetAttribute("UILanguage"), key) end
 local catalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local Progress = require(ReplicatedStorage:WaitForChild("ProgressRules"))
 local Locale = require(ReplicatedStorage:WaitForChild("LocaleText"))
-local function tr(key) return Locale.text(player:GetAttribute("UILanguage"), key) end
 local equip = ReplicatedStorage:WaitForChild("EquipCatchTool")
 local purchase = ReplicatedStorage:WaitForChild("PurchaseCatchTool")
 local trainingPurchase = ReplicatedStorage:WaitForChild("PurchaseRangeTraining")
