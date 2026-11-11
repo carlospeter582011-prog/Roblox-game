@@ -5,6 +5,8 @@ local Species = require("../src/shared/CloudCatalog")
 local Quests = require("../src/shared/QuestCatalog")
 local Tools = require("../src/shared/CatchToolCatalog")
 local SpawnRules = require("../src/shared/SpawnRules")
+-- Isolate historical exact-reward tests from future catalog additions.
+local legacyQuests = { first_breeze = Quests.first_breeze, three_clouds = Quests.three_clouds }
 
 local function newData()
     return { version = 2, coins = 0, xp = 0, captures = 0, species = {}, quests = {}, lastSeen = 0 }
@@ -112,15 +114,15 @@ return function(test, eq)
 
     test("third catch completes three_clouds; later catches award nothing extra", function()
         local data = newData()
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "first_breeze", "catch 1")
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "", "catch 2")
-        eq(joined(Rules.applyCatch(data, "drizzle", 12, Quests)), "three_clouds", "catch 3")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, legacyQuests)), "first_breeze", "catch 1")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, legacyQuests)), "", "catch 2")
+        eq(joined(Rules.applyCatch(data, "drizzle", 12, legacyQuests)), "three_clouds", "catch 3")
         eq(data.captures, 3, "captures")
         eq(data.species.breeze, 2, "breeze")
         eq(data.species.drizzle, 1, "drizzle")
         eq(data.coins, 10 + 50 + 10 + 12 + 80, "coins after 3")
         eq(data.xp, 10 + 25 + 10 + 10 + 40, "xp after 3")
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "", "catch 4")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, legacyQuests)), "", "catch 4")
         eq(data.coins, 10 + 50 + 10 + 12 + 80 + 10, "no repeat reward")
     end)
 
@@ -135,7 +137,7 @@ return function(test, eq)
         local data = newData()
         data.captures = 2
         data.species.drizzle = 2
-        eq(joined(Rules.applyCatch(data, "breeze", 10, Quests)), "first_breeze,three_clouds", "both")
+        eq(joined(Rules.applyCatch(data, "breeze", 10, legacyQuests)), "first_breeze,three_clouds", "both")
         eq(data.coins, 10 + 50 + 80, "both rewards")
     end)
 
