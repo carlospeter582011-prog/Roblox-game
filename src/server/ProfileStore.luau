@@ -193,6 +193,20 @@ function Profile.BuyRangeTraining(player)
     return true, "Range upgraded! +" .. (nextLevel * 2) .. " studs"
 end
 
+-- Atomic in-session purchase. ProfileCore's existing locked save pipeline persists the layout.
+function Profile.BuyIslandBuilding(player, slot, buildingId)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local Rules = require(ReplicatedStorage:WaitForChild("IslandBuildRules"))
+    local ok, layoutOrReason, remaining = Rules.purchase(data.islandLayout or {}, data.coins, slot, buildingId)
+    if not ok then return false, layoutOrReason end
+    data.islandLayout = layoutOrReason
+    data.coins = remaining
+    player:SetAttribute("CloudCoins", remaining)
+    player:SetAttribute("IslandBuilt_" .. tostring(slot), buildingId)
+    return true, "Built " .. Rules.Buildings[buildingId].name
+end
+
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
 local function persist(player, release)
@@ -262,6 +276,9 @@ local function onPlayerAdded(player)
     local data = result.data
     sessions[player] = data
     player:SetAttribute("ProfileReady", true)
+    for slot, id in pairs(data.islandLayout or {}) do
+        player:SetAttribute("IslandBuilt_" .. tostring(slot), id)
+    end
     local crystalCount = 0
     for _, found in pairs(data.crystals or {}) do
         if found then crystalCount += 1 end

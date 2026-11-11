@@ -26,6 +26,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        islandLayout = {},
         lastSeen = now or 0,
     }
 end
@@ -62,6 +63,14 @@ function Core.sanitize(raw, validQuests, now)
                 and isCount(points, 1000001) then
                 clean.companionBond[id] = math.floor(points)
             end
+        end
+    end
+    -- Fixed-slot island buildings are validated on both load and save; unknown ids never persist.
+    if type(raw.islandLayout) == "table" then
+        local allowed = { breeze_habitat = true, crystal_garden = true, storm_roost = true }
+        for slot = 1, 6 do
+            local id = raw.islandLayout[slot]
+            if type(id) == "string" and allowed[id] then clean.islandLayout[slot] = id end
         end
     end
     if type(raw.quests) == "table" then
