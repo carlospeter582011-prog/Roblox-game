@@ -352,3 +352,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Files: PartyRules.luau, PartyService.server.luau, PartyPanel.client.luau, PartyRulesSpec.luau; registered four tests in tests/run.luau.
 - PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/68 ; branch feature/party-invites-20261111-0219. No merge or publish. CI and multiplayer runtime validation pending. Other open PRs remain unmerged; avoid concurrent main merges.
 - Next: verify Luau CI, fix errors, test two-account invites/leave/rejoin and mobile UI; only then consider gated merge. Session-only party state is intentionally not a completed multiplayer milestone.
+
+- PR #68 CI run 42930604727: build success, Luau 104/105 tests pass; invitation-expiry regression failed. Corrected stale-invite cleanup and test time ordering in commits 47db9098, 361fa3fc. Rerun pending verification; do not merge before green.
