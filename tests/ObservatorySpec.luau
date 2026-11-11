@@ -1,5 +1,6 @@
 local Rules = require("../src/shared/ObservatoryRules")
-local function eq(a,b) assert(a == b, tostring(a) .. " ~= " .. tostring(b)) end
+return function(test, eq)
+test("observatory scan cooldown and nearest valid target", function()
 eq(Rules.canScan(100, nil), true)
 eq(Rules.canScan(129, 100), false)
 eq(Rules.canScan(130, 100), true)
@@ -11,4 +12,5 @@ local nearest, distance = Rules.nearest(origin,list)
 eq(nearest.id,"a")
 eq(distance,10)
 eq(Rules.nearest(origin,{{id="far",species="storm",x=181,z=0}}),nil)
-print("ObservatorySpec passed")
+end)
+end
