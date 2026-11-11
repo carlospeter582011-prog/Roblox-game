@@ -6,7 +6,7 @@ Fusion.BOND_GAIN = 20
 function Fusion.canFuse(speciesId, species, catalog)
     if type(speciesId) ~= "string" or not catalog[speciesId] then return false end
     local count = type(species) == "table" and species[speciesId] or nil
-    return type(count) == "number" and count == math.floor(count) and count >= 3
+    return type(count) == "number" and count == math.floor(count) and count >= 3 and count <= 1000000
 end
 function Fusion.apply(speciesId, species, bonds, catalog)
     if not Fusion.canFuse(speciesId, species, catalog) then return false end
