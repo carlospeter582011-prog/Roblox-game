@@ -88,6 +88,27 @@ return function(test, eq)
         eq(counts.common > counts.rare, true, "common more frequent")
     end)
 
+    test("regional ecology makes elemental cloud discoveries location-dependent", function()
+        local fixture = {
+            air = { element = "Air", spawnWeight = 10 },
+            storm = { element = "Storm", spawnWeight = 10 },
+        }
+        eq(Spawn.rollForRegion(fixture, "StarterMeadow", fixed(0.5)), "air", "meadow favours air")
+        eq(Spawn.rollForRegion(fixture, "ThunderheadRidge", fixed(0.5)), "storm", "ridge favours storm")
+        eq(Spawn.rollForRegion(fixture, "UnknownRegion", fixed(0.5)), "storm", "unknown uses original weights")
+    end)
+
+    test("regional spawn never excludes other elements or malformed weights", function()
+        local fixture = {
+            air = { element = "Air", spawnWeight = 1 },
+            storm = { element = "Storm", spawnWeight = 1 },
+            invalid = { element = "Air", spawnWeight = math.huge },
+        }
+        eq(Spawn.rollForRegion(fixture, "StarterMeadow", fixed(0.99999)), "storm", "off-biome species possible")
+        eq(Spawn.rollForRegion(fixture, "StarterMeadow", fixed(0)), "air", "boosted species")
+        eq(Spawn.rollForRegion({}, "StarterMeadow", fixed(0)), nil, "empty catalog")
+    end)
+
     test("xpForLevel follows 25*(L-1)*L and clamps", function()
         eq(Leveling.xpForLevel(1), 0)
         eq(Leveling.xpForLevel(2), 50)
