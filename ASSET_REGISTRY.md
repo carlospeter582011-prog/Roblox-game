@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — 64 new species data, no new art assets
+- `CloudCatalog.luau` adds 64 original species **definitions**, using existing original procedural 3D cloud visuals and tint palette; no GLB, MeshPart, Model asset ID, texture or external licence introduced. Source: project authored. Geometry unchanged. Per-species unique 3D silhouettes, animation and mobile visual verification **not completed**; catalog data is not final asset quality. Existing Model asset 104852877755332 remains a Model ID, not a MeshPart MeshId.
