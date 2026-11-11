@@ -69,7 +69,7 @@ local function createBoss(id, x, z, tint)
             player:SetAttribute("BossChallengeFeedback", "Boss resting. Try again shortly.")
             return
         end
-        active[player] = { id = id, startCatches = profile.captures, deadline = now + config.seconds, phase = 1 }
+        active[player] = { id = id, startCatches = profile.captures, startedAt = now, deadline = now + config.seconds, phase = 1 }
         player:SetAttribute("BossChallengePhase", 1)
         player:SetAttribute("BossChallengeFeedback", config.name .. ": catch " .. config.goal .. " clouds in " .. config.seconds .. "s!")
         player:SetAttribute("BossChallengeProgress", "0/" .. config.goal)
@@ -104,9 +104,9 @@ task.spawn(function()
                     -- Clear active state before crediting, so this trial cannot pay twice.
                     active[player] = nil
                     cooldown[player] = now + 45
-                    local rewarded, coins, xp = ProfileStore.AwardBossTrial(player, trial.id)
+                    local rewarded, coins, xp, rank = ProfileStore.AwardBossTrial(player, trial.id, now - trial.startedAt)
                     if rewarded then
-                        player:SetAttribute("BossChallengeFeedback", config.name .. " defeated! +" .. coins .. " coins, +" .. xp .. " XP!")
+                        player:SetAttribute("BossChallengeFeedback", config.name .. " defeated! " .. rank .. " rank: +" .. coins .. " coins, +" .. xp .. " XP!")
                     else
                         player:SetAttribute("BossChallengeFeedback", "Trial complete, but reward unavailable. Rejoin if your profile disconnected.")
                     end
