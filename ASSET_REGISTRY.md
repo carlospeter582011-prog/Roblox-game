@@ -95,3 +95,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-11 — party feature asset audit
 - PR #68 adds no world geometry, meshes, Model IDs, third-party assets or audio. Its ScreenGui is strictly a player party HUD; the world 3D-only policy remains unchanged. UI and Roblox runtime remain unverified.
+
+## 2026-11-11 — party invitation hardening
+- No assets added or changed. Party invite security and pure Luau tests only; existing ScreenGui remains HUD-only. No visual or runtime validation.
