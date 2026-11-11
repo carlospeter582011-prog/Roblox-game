@@ -48,7 +48,9 @@ local function interact(player, station)
         local ok = Profile.AwardSkyRelay(player, Rules.REWARD_COINS, Rules.REWARD_XP)
         if ok then
             s.lastFinish = now
-            player:SetAttribute("SkyRelayFeedback", "Sky Relay complete! +90 Coins +45 XP")
+            player:SetAttribute("SkyRelayFeedback", "Sky Relay complete! +90 Coins +45 XP (one-time)")
+        else
+            player:SetAttribute("SkyRelayFeedback", "Sky Relay complete! Practice run finished.")
         end
         s.stage = 0
         player:SetAttribute("SkyRelayProgress", 0)
