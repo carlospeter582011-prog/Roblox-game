@@ -39,4 +39,52 @@ function Crafting.preview(recipeId, coins, inventory)
     return { coins = coins - recipe.costCoins, materials = remaining,
         output = recipe.output, quantity = recipe.quantity }, "ok"
 end
+-- Validate and preview a whole crafting queue without mutating balances or items.
+-- A failed step rejects the entire queue; callers must still commit under a session lock.
+function Crafting.previewBatch(requests, coins, materials, ownedItems)
+    if type(requests) ~= "table" or #requests == 0 or #requests > 20 then
+        return nil, "invalid_batch"
+    end
+    if not safeCount(coins) or type(materials) ~= "table" or type(ownedItems) ~= "table" then
+        return nil, "invalid_inventory"
+    end
+    local remaining = {}
+    local outputs = {}
+    for id, count in pairs(materials) do
+        if type(id) ~= "string" or not safeCount(count) then return nil, "invalid_inventory" end
+        remaining[id] = count
+    end
+    for id, count in pairs(ownedItems) do
+        if type(id) ~= "string" or not safeCount(count) then return nil, "invalid_inventory" end
+        outputs[id] = count
+    end
+    local total = 0
+    for index = 1, #requests do
+        local request = requests[index]
+        if type(request) ~= "table" or type(request.recipeId) ~= "string"
+            or not safeCount(request.quantity) or request.quantity < 1 or request.quantity > 100 then
+            return nil, "invalid_request"
+        end
+        total += request.quantity
+        if total > 100 then return nil, "batch_limit" end
+        local recipe = Crafting.Recipes[request.recipeId]
+        if not recipe then return nil, "unknown_recipe" end
+        local charge = recipe.costCoins * request.quantity
+        if coins < charge then return nil, "insufficient_coins" end
+        for material, count in pairs(recipe.materials) do
+            local needed = count * request.quantity
+            if not safeCount(remaining[material]) then return nil, "invalid_inventory" end
+            if remaining[material] < needed then return nil, "insufficient_materials" end
+        end
+        local gained = recipe.quantity * request.quantity
+        local old = outputs[recipe.output] or 0
+        if not safeCount(old + gained) then return nil, "output_overflow" end
+        coins -= charge
+        for material, count in pairs(recipe.materials) do
+            remaining[material] -= count * request.quantity
+        end
+        outputs[recipe.output] = old + gained
+    end
+    return { coins = coins, materials = remaining, items = outputs }, "ok"
+end
 return Crafting
