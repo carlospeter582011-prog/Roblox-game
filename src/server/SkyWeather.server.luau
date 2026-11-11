@@ -29,6 +29,7 @@ light.Brightness = 0.6
 light.Range = 14
 light.Parent = orb
 local start = os.time()
+Workspace:SetAttribute("SkyWeatherEpoch", start)
 local lastId
 while true do
     local phase, remaining = Weather.phaseAt(os.time() - start)
