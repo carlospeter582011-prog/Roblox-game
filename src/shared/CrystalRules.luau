@@ -38,4 +38,30 @@ function Rules.count(discovered)
     return total
 end
 
+-- One-time exploration milestones. Discovery state already persists in the player profile,
+-- so the transition across a threshold is the idempotency key (no new save field).
+Rules.MILESTONES = {
+    [3] = { coins = 50, xp = 20 },
+    [6] = { coins = 100, xp = 40 },
+    [12] = { coins = 250, xp = 100 },
+    [18] = { coins = 500, xp = 200 },
+}
+
+function Rules.milestoneReward(before, after)
+    if type(before) ~= "number" or type(after) ~= "number"
+        or before ~= math.floor(before) or after ~= math.floor(after)
+        or before < 0 or after < before or after > Rules.MAX_CRYSTALS then
+        return 0, 0, nil
+    end
+    local coins, xp, reached = 0, 0, nil
+    for threshold, prize in pairs(Rules.MILESTONES) do
+        if before < threshold and after >= threshold then
+            coins += prize.coins
+            xp += prize.xp
+            reached = math.max(reached or 0, threshold)
+        end
+    end
+    return coins, xp, reached
+end
+
 return Rules
