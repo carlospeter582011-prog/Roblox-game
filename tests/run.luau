@@ -369,6 +369,7 @@ test("crystal migration drops invalid keys and values", function()
     eq(clean.crystals[3.5], nil, "fraction")
 end)
 
+require("./CloudCatalogExpansionSpec")(test, eq)
 require("./CatchRulesSpec")(test, eq)
 require("./SpawnLevelSpec")(test, eq)
 require("./MutationsSpec")(test, eq)
