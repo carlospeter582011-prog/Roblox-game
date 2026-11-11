@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+| Eastwind Sky Chime Sanctuary (3 bells, gate, bridge, balcony) | n/a (`src/server/SkyChime.server.luau`) | Project (original procedural) | Original | none | Project-owned | Feature branch `feature/sky-chime-coop-puzzle-20261111-0212`: Roblox 3D Parts and ProximityPrompts | Source only; CI, Studio visuals, collision and mobile unverified |
