@@ -19,7 +19,8 @@ end
 function Rules.accept(state, target, from, now)
     if not valid(target) or not valid(from) or type(now) ~= "number" then return false, "invalid" end
     local invite = state.invites[target]
-    if not invite or invite.from ~= from or now > invite.expires then return false, "expired" end
+    if not invite or invite.from ~= from then return false, "expired" end
+    if now > invite.expires then state.invites[target] = nil return false, "expired" end
     state.invites[target] = nil
     if state.membership[target] then return false, "already_in_party" end
     local id = invite.partyId
