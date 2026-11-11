@@ -8,6 +8,19 @@ Crafting.Recipes = {
     cloud_habitat = { costCoins = 300, materials = { air_essence = 6, nature_essence = 5 }, output = "cloud_habitat", quantity = 1 },
     sky_bridge = { costCoins = 220, materials = { earth_essence = 5, air_essence = 3 }, output = "sky_bridge", quantity = 1 },
 }
+-- Crafting essence earned from genuine server-confirmed catches; caller must persist the grant.
+-- Deterministic and bounded: never trust client-provided element, rarity, or amount.
+Crafting.EssenceByElement = { Air = "air_essence", Storm = "storm_essence", Nature = "nature_essence", Earth = "earth_essence" }
+Crafting.RarityBonus = { Common = 0, Uncommon = 0, Rare = 1, Epic = 1, Legendary = 2, Mythic = 2, Secret = 2 }
+function Crafting.catchEssence(speciesId, catalog)
+    if type(speciesId) ~= "string" or type(catalog) ~= "table" then return nil, 0 end
+    local species = catalog[speciesId]
+    if type(species) ~= "table" then return nil, 0 end
+    local material = Crafting.EssenceByElement[species.element]
+    local bonus = Crafting.RarityBonus[species.rarity]
+    if not material or bonus == nil then return nil, 0 end
+    return material, 1 + bonus
+end
 local function safeCount(n)
     return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
         and n >= 0 and n <= 1000000000 and n == math.floor(n)
@@ -42,7 +55,15 @@ end
 -- Validate and preview a whole crafting queue without mutating balances or items.
 -- A failed step rejects the entire queue; callers must still commit under a session lock.
 function Crafting.previewBatch(requests, coins, materials, ownedItems)
-    if type(requests) ~= "table" or #requests == 0 or #requests > 20 then
+    if type(requests) ~= "table" then return nil, "invalid_batch" end
+    local requestCount = 0
+    for key in pairs(requests) do
+        if type(key) ~= "number" or key ~= math.floor(key) or key < 1 or key > 20 then
+            return nil, "invalid_batch"
+        end
+        requestCount += 1
+    end
+    if requestCount == 0 or requestCount ~= #requests then
         return nil, "invalid_batch"
     end
     if not safeCount(coins) or type(materials) ~= "table" or type(ownedItems) ~= "table" then
