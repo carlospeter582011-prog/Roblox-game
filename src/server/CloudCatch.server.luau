@@ -8,6 +8,7 @@ local catalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local ProfileStore = require(script.Parent:WaitForChild("ProfileStore"))
 local toolCatalog = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
+local CatchComboRules = require(ReplicatedStorage:WaitForChild("CatchComboRules"))
 local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
@@ -44,6 +45,7 @@ cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
 local active = {}
 local lastAttempt = {}
+local combos = {} -- session-only, server-owned successful catch streaks
 local nextId = 0
 local visuals = {}
 -- Brief original 3D catch feedback, visible to nearby players without a 2D world stand-in.
@@ -182,7 +184,13 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
+            local nextCombo = CatchComboRules.preview(combos[player], now)
+            if nextCombo then options.xp += nextCombo.bonusXP end
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
+                if nextCombo then
+                    combos[player] = nextCombo
+                    player:SetAttribute("CatchCombo", nextCombo.streak)
+                end
                 active[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
@@ -203,6 +211,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
 end)
 Players.PlayerRemoving:Connect(function(player)
     lastAttempt[player] = nil
+    combos[player] = nil
 end)
 
 task.spawn(function()
