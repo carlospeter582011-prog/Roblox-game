@@ -11,7 +11,7 @@ function Rules.start(now, lastFinish)
     if type(lastFinish) == "number" and now < lastFinish + Rules.cooldownSeconds then
         return nil, "cooldown"
     end
-    return { started = now, next = 1 }, nil
+    return { started = now, next = 2 }, nil
 end
 
 function Rules.advance(state, checkpoint, now)
