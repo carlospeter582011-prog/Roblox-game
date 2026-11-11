@@ -66,7 +66,25 @@ function Core.sanitize(raw, validQuests, now)
         end
     end
     -- Sanitize persisted building layouts before any world placement can consume them.
-    clean.islandLayout = (if script then require(game:GetService("ReplicatedStorage"):WaitForChild("IslandPlacementRules")) else require("../shared/IslandPlacementRules")).sanitize(raw.islandLayout)
+    -- Roblox-safe sanitizer, kept independent of runtime-only ModuleScript require paths.
+    local catalog = { cloud_perch = 2, windmill = 3, crystal_garden = 3, weather_station = 4 }
+    if type(raw.islandLayout) == "table" then
+        for _, item in ipairs(raw.islandLayout) do
+            if #clean.islandLayout >= 64 then break end
+            local half = type(item) == "table" and catalog[item.id] or nil
+            if half and type(item.x) == "number" and type(item.z) == "number" and type(item.rotation) == "number"
+                and item.x == math.floor(item.x) and item.z == math.floor(item.z)
+                and math.abs(item.x) + half <= 24 and math.abs(item.z) + half <= 24
+                and item.rotation == math.floor(item.rotation) and item.rotation >= 0 and item.rotation <= 3 then
+                local overlap = false
+                for _, other in ipairs(clean.islandLayout) do
+                    local gap = half + catalog[other.id] + 1
+                    if math.abs(item.x - other.x) < gap and math.abs(item.z - other.z) < gap then overlap = true break end
+                end
+                if not overlap then table.insert(clean.islandLayout, { id = item.id, x = item.x, z = item.z, rotation = item.rotation }) end
+            end
+        end
+    end
     if type(raw.quests) == "table" then
         for id, done in pairs(raw.quests) do
             if type(id) == "string" and validQuests[id] and done == true then
