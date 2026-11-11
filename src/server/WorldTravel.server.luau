@@ -90,7 +90,9 @@ end
 makeStation("starter", "Starter Meadow", -16, -42, Color3.fromRGB(99, 205, 167))
 makeStation("eastwind", "Eastwind Outlook", 0, -42, Color3.fromRGB(122, 184, 230))
 makeStation("ridge", "Thunderhead Ridge", 16, -42, Color3.fromRGB(174, 151, 230))
+makeStation("dunes", "Sunset Dunes", 32, -42, Color3.fromRGB(224, 166, 104))
 -- Return stations allow players who explored by bridge to return without retracing the route.
 makeStation("starter", "Eastwind Return", 154, -18, Color3.fromRGB(99, 205, 167))
 makeStation("starter", "Ridge Return", 295, -18, Color3.fromRGB(99, 205, 167))
+makeStation("starter", "Dunes Return", 440, -18, Color3.fromRGB(99, 205, 167))
 Players.PlayerRemoving:Connect(function(player) lastTravel[player] = nil end)

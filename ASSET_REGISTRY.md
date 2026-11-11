@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sunset Dunes fourth walkable 3D region, sandstone bridge, 8 spires, arch and lanterns | n/a (`src/server/StarterWorld.server.luau`) | Project original procedural | Original | none | Project-owned | Draft PR #79; native Roblox Parts/Model, no Mesh ID | Source integrated; CI, Studio/mobile visual, collision and publishing NOT verified |

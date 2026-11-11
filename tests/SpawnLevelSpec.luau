@@ -18,6 +18,8 @@ return function(test, eq)
         eq(Spawn.canFastTravel("ridge", 74), false, "ridge locked")
         eq(Spawn.canFastTravel("ridge", 75), true, "ridge unlocked")
         eq(Spawn.canFastTravel("ridge", 500), true, "late game")
+        eq(Spawn.canFastTravel("dunes", 99), false, "dunes locked")
+        eq(Spawn.canFastTravel("dunes", 100), true, "dunes unlocked")
         eq(Spawn.canFastTravel("invalid", 999), false, "unknown destination")
         eq(Spawn.canFastTravel("starter", nil), false, "missing profile")
     end)
@@ -27,6 +29,7 @@ return function(test, eq)
             starter = { x = 0, halfX = 102.5, halfZ = 102.5 },
             eastwind = { x = 170, halfX = 50, halfZ = 50 },
             ridge = { x = 315, halfX = 55, halfZ = 50 },
+            dunes = { x = 460, halfX = 55, halfZ = 52.5 },
         }
         for id, floor in pairs(floors) do
             local target = Spawn.travelDestinations[id]
@@ -35,6 +38,19 @@ return function(test, eq)
             eq(math.abs(target.z) < floor.halfZ - 5, true, id .. " z safe")
             eq(target.y >= 4 and target.y <= 8, true, id .. " landing height")
         end
+    end)
+
+    test("sunset dunes spawns are within the fourth walkable island", function()
+        local found = false
+        for sequence = 1, 28 do
+            local bounds = Spawn.regionBounds(sequence)
+            if bounds.name == "SunsetDunes" then
+                found = true
+                eq(bounds.minX >= 405 and bounds.maxX <= 515, true, "x inside dunes")
+                eq(bounds.minZ >= -52 and bounds.maxZ <= 52, true, "z inside dunes")
+            end
+        end
+        eq(found, true, "dunes spawn region is active")
     end)
 
     test("expanded species catalog has many unique spawnable entries and every rarity tier", function()
