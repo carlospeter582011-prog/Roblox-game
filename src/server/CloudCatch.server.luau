@@ -181,6 +181,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             local options = {
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
+                rarity = targetSpecies.rarity, -- server catalog only; one-time research bonus
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
                 active[targetId] = nil
