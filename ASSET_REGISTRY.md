@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky rescue checkpoint shrines (3) | n/a (`src/server/SkyRescue.server.luau`) | Project (original procedural Parts) | Original | none | Project-owned | Feature branch: 3 native Roblox 3D shrine models and ProximityPrompts | Source-only; CI and Roblox runtime/collision/mobile not yet verified |
