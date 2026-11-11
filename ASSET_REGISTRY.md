@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Elemental moving clouds (existing procedural cloud puffs) | n/a (`CloudFlightRules.luau` and `CloudCatch.server.luau`) | Project (original procedural) | Original | none | Project-owned | Draft branch: server-driven motion of existing 3D cloud parts | CI, Roblox Studio and mobile visual verification pending; no new external assets |
