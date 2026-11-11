@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Sky Relay draft geometry (PR #144)
+- Three Sky Relay beacons: original procedural Roblox anchored Parts/Models, created in `src/server/SkyRelay.server.luau`. Source: project-authored code; creator: project; license: original; no external assets or Mesh IDs; integration: draft PR #144 only; validation: CI and Roblox Studio/mobile visual/interaction tests pending. Do not mark as verified or published.
