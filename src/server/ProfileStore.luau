@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local FusionRules = require(ReplicatedStorage:WaitForChild("FusionRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -153,6 +154,19 @@ function Profile.CycleCompanion(player)
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
     return true, "Companion: " .. CloudCatalog[nextId].name
+end
+
+-- Consumes duplicates, not the final owned companion. Never increments catches or
+-- grants quest completion: fusion is crafting, not a catch.
+function Profile.FuseCloud(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local ok, recipe = FusionRules.apply(data, CloudCatalog)
+    if not ok then return false, recipe end
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("SpeciesCount_" .. recipe.source, data.species[recipe.source])
+    player:SetAttribute("SpeciesCount_" .. recipe.result, data.species[recipe.result])
+    return true, CloudCatalog[recipe.result].name
 end
 
 function Profile.BuyTool(player, toolId)
