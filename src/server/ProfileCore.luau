@@ -24,6 +24,7 @@ function Core.defaultData(now)
         crystals = {},
         rangeTraining = 0,
         bossVictories = {},
+        bossMedals = {},
         companionSpecies = "",
         companionBond = {},
         lastSeen = now or 0,
@@ -89,6 +90,14 @@ function Core.sanitize(raw, validQuests, now)
         for _, id in ipairs({ "meadow", "eastwind", "ridge" }) do
             if isCount(raw.bossVictories[id], 1000001) then
                 clean.bossVictories[id] = math.floor(raw.bossVictories[id])
+            end
+        end
+    end
+    if type(raw.bossMedals) == "table" then
+        for _, id in ipairs({ "meadow", "eastwind", "ridge" }) do
+            local rank = raw.bossMedals[id]
+            if isCount(rank, 4) and rank == math.floor(rank) then
+                clean.bossMedals[id] = rank
             end
         end
     end
