@@ -12,6 +12,7 @@ local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
+local CloudFlightRules = require(ReplicatedStorage:WaitForChild("CloudFlightRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -46,6 +47,7 @@ local active = {}
 local lastAttempt = {}
 local nextId = 0
 local visuals = {}
+local flightOrigins = {}
 -- Brief original 3D catch feedback, visible to nearby players without a 2D world stand-in.
 -- No external asset IDs, textures or unbounded permanent parts.
 local function showCatchPulse(position, color, isMagnet)
@@ -114,6 +116,7 @@ local function spawnCloud()
     glow.Parent = cloud
     visuals[id] = { model = model, offsets = offsets }
     active[id] = cloud
+    flightOrigins[id] = { position = cloud.Position, born = os.clock(), species = species }
 end
 -- Keep a dozen discoverable clouds near the starter activity zone.
 for _ = 1, 12 do spawnCloud() end
@@ -184,6 +187,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
                 active[targetId] = nil
+                flightOrigins[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
                 if visuals[targetId] then
@@ -213,6 +217,11 @@ task.spawn(function()
         for id, entry in pairs(visuals) do
             local cloud = active[id]
             if cloud and cloud.Parent and entry.model.Parent then
+                local flight = flightOrigins[id]
+                if flight then
+                    local dx, dz = CloudFlightRules.offset(flight.species, os.clock() - flight.born, tonumber(id) or 0)
+                    cloud.Position = flight.position + Vector3.new(dx, 0, dz)
+                end
                 local bob = Vector3.new(0, math.sin(phase + tonumber(id))*0.5, 0)
                 for part, offset in pairs(entry.offsets) do
                     if part.Parent then
