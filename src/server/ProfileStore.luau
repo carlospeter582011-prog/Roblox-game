@@ -123,12 +123,19 @@ end
 
 -- Reward a completed server-validated boss trial. Only the server passes a catalog id.
 -- Rewards use the existing persistent coin/XP fields; no save schema migration.
-function Profile.AwardBossTrial(player, bossId)
+function Profile.AwardBossTrial(player, bossId, elapsedSeconds)
     local data = sessions[player]
     if not data then return false end
     local BossRules = require(ReplicatedStorage:WaitForChild("BossChallengeRules"))
     local coins, xp = BossRules.reward(bossId)
     if not coins then return false end
+    -- Elapsed time is computed by the server trial controller, never by a client remote.
+    local Ranks = require(ReplicatedStorage:WaitForChild("BossTrialRanks"))
+    local challenge = BossRules.challenges[bossId]
+    local rank, bonusCoins, bonusXP = Ranks.evaluate(elapsedSeconds, challenge.seconds, coins, xp)
+    if not rank then return false end
+    coins += bonusCoins
+    xp += bonusXP
     data.bossVictories = data.bossVictories or {}
     local previous = data.bossVictories[bossId] or 0
     data.bossVictories[bossId] = math.min(previous + 1, 1000000)
@@ -139,7 +146,7 @@ function Profile.AwardBossTrial(player, bossId)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     player:SetAttribute("BossWins_" .. bossId, data.bossVictories[bossId])
     player:SetAttribute("BossTrialsWon", (data.bossVictories.meadow or 0) + (data.bossVictories.eastwind or 0) + (data.bossVictories.ridge or 0))
-    return true, coins, xp
+    return true, coins, xp, rank
 end
 
 function Profile.CycleCompanion(player)
