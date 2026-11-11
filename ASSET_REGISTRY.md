@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Signal Expedition pedestals and luminous beacon crystals (3) | n/a (`src/server/SkySignalExpedition.server.luau`) | Project (original procedural) | Original | none | Project-owned | Feature branch only: Roblox 3D Parts/Models and ProximityPrompts | Source only; CI, walkability, mobile visuals and runtime not verified |
