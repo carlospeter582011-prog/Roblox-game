@@ -95,3 +95,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Sky Crafting Workshop 3D asset audit
 - SkyCraftingWorkshop3D is a project-original Roblox `Model` containing anchored `Part` bench and neon crystal, plus native `ProximityPrompt`; source `src/server/SkyCrafting.server.luau`. No third-party asset, MeshId or Model asset ID. `ScreenGui` is used only for player feedback. Source integration on draft branch; Studio/Android visuals, placement and collisions unverified.
+
+## 2026-11-11 — Sky Workshop three-pedestal correction (PR #43)
+- Replaced the single shared crafting crystal with three distinct original procedural Roblox 3D cylinder Parts, each hosting its own ProximityPrompt. No third-party assets or Mesh IDs. Source-integrated on feature branch only; mobile touch prompt visibility, collisions and Studio visuals not verified.
