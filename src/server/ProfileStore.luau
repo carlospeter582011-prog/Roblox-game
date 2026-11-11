@@ -142,6 +142,25 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Spend earned Coins on permanent companion bonding. Profile is server-owned.
+function Profile.CareForCompanion(player, elapsed)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local id = data.companionSpecies
+    local owned = CompanionRules.owned(id, data.species, CloudCatalog)
+    local CareRules = require(ReplicatedStorage:WaitForChild("CloudCareRules"))
+    local current = (data.companionBond or {})[id] or 0
+    local ok, nextPoints = CareRules.evaluate(data.coins, current, owned, elapsed)
+    if not ok then return false, nextPoints end
+    data.coins -= CareRules.COST
+    data.companionBond = data.companionBond or {}
+    data.companionBond[id] = nextPoints
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CompanionBondPoints", nextPoints)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(nextPoints))
+    return true
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
