@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Personal Sky Island plots, portals, six build pads, three building structures | n/a (`src/server/PersonalIslands.server.luau`) | Project (original procedural) | Original | none | Project-owned | Draft feature branch: native anchored Roblox Parts/Model per player | Source-only; CI, runtime walkability, mobile and DataStore verification pending; not a licensed mesh |
