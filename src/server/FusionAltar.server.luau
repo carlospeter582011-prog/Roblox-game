@@ -18,7 +18,7 @@ local function make(name, shape, size, position, color, material)
     return part
 end
 make("StoneBase", Enum.PartType.Cylinder, Vector3.new(1.5, 9, 9),
-    Vector3.new(-25, 2, 25), Color3.fromRGB(86, 103, 154), Enum.Material.Slate)
+    Vector3.new(-25, 2, 25), Color3.fromRGB(86, 103, 154), Enum.Material.Slate).Orientation = Vector3.new(0, 0, 90)
 local crystal = make("FusionCrystal", Enum.PartType.Ball, Vector3.new(4, 4, 4),
     Vector3.new(-25, 6, 25), Color3.fromRGB(130, 230, 255), Enum.Material.Neon)
 local prompt = Instance.new("ProximityPrompt")
