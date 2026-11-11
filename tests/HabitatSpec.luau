@@ -1,0 +1,33 @@
+-- HabitatRules unit tests. Pure logic only.
+return function(test, eq)
+    local Rules = require("../src/shared/HabitatRules")
+
+    test("habitat rejects insufficient coins and missing companion", function()
+        local ok, reason = Rules.canUse(10, "breeze", {breeze = 1}, {}, nil, 1000, 0)
+        eq(ok, false, "coins")
+        eq(reason, "insufficient_coins", "reason")
+        ok, reason = Rules.canUse(100, "", {breeze = 1}, {}, nil, 1000, 0)
+        eq(ok, false, "no companion")
+        eq(reason, "no_companion", "reason")
+    end)
+
+    test("habitat enforces ownership, cooldown and session cap", function()
+        local ok, reason = Rules.canUse(100, "breeze", {breeze = 0}, {}, nil, 1000, 0)
+        eq(ok, false, "not owned")
+        eq(reason, "not_owned", "reason")
+        ok, reason = Rules.canUse(100, "breeze", {breeze = 1}, {}, 950, 1000, 0)
+        eq(ok, false, "cooldown")
+        eq(reason, "cooldown", "reason")
+        ok, reason = Rules.canUse(100, "breeze", {breeze = 1}, {}, nil, 1000, 20)
+        eq(ok, false, "cap")
+        eq(reason, "session_cap", "reason")
+    end)
+
+    test("habitat apply deducts coins and increases bond with cap", function()
+        local coins, bond = Rules.apply(100, {breeze = 5}, "breeze")
+        eq(coins, 75, "coins")
+        eq(bond, 13, "bond")
+        coins, bond = Rules.apply(50, {breeze = 999999}, "breeze")
+        eq(bond, 1000000, "capped")
+    end)
+end
