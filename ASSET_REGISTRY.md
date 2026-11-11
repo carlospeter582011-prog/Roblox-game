@@ -92,3 +92,8 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## 2026-11-11 — Sky Salvage energy nodes (draft)
+- Three original Roblox `Model` assemblies using native anchored `Part` cylinders and spherical Neon cores: `src/server/SkySalvage.server.luau`; no imported mesh, third-party model, Model ID or Mesh ID. Project-created procedural geometry; original provenance.
+- **Branch-only integration** `feature/sky-salvage-resource-loop-20261111`; no runtime geometry/walkability/mobile/visual verification and no publication. Positions provisional; check island boundaries in Studio. No asset licensing dependencies.
