@@ -55,6 +55,33 @@ local function test(name, fn)
     table.insert(tests, { name = name, fn = fn })
 end
 
+test("island purchases are bounded, server-priced and never overwrite slots", function()
+    local Rules = require("../src/shared/IslandBuildRules")
+    local ok, layout, coins = Rules.purchase({}, 200, 1, "breeze_habitat")
+    eq(ok, true, "first purchase")
+    eq(layout[1], "breeze_habitat", "placed")
+    eq(coins, 80, "server-priced")
+    eq(Rules.purchase(layout, 200, 1, "storm_roost"), false, "occupied")
+    eq(Rules.purchase({}, 200, 7, "breeze_habitat"), false, "out of range")
+    eq(Rules.purchase({}, 200, 1, "unknown"), false, "unknown building")
+    eq(Rules.purchase({}, 100, 1, "breeze_habitat"), false, "insufficient coins")
+    eq(Rules.purchase({}, math.huge, 1, "breeze_habitat"), false, "infinite coins")
+    eq(Rules.purchase({}, 200, 1.5, "breeze_habitat"), false, "fractional slot")
+end)
+
+test("island layout survives a locked save and rejects invalid stored buildings", function()
+    local store = FakeStore.new()
+    local a = repoFor(store, "island-A")
+    local first = a:Load("island-profile")
+    first.data.islandLayout = { [1] = "breeze_habitat", [3] = "storm_roost", [7] = "crystal_garden", [2] = "invalid" }
+    eq(a:Save("island-profile", first.data, true).ok, true, "save")
+    local b = repoFor(store, "island-B"):Load("island-profile")
+    eq(b.data.islandLayout[1], "breeze_habitat", "saved slot 1")
+    eq(b.data.islandLayout[3], "storm_roost", "saved slot 3")
+    eq(b.data.islandLayout[7], nil, "out-of-range slot rejected")
+    eq(b.data.islandLayout[2], nil, "unknown building rejected")
+end)
+
 test("new player gets default data and the lock", function()
     clock.t = 1000
     local store = FakeStore.new()
