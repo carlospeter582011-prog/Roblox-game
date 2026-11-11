@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local RelicRules = require(ReplicatedStorage:WaitForChild("RelicCraftRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -67,7 +68,8 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
-    catchOptions.xp = baseXp + resonance
+    catchOptions.xp = baseXp + resonance + RelicRules.catchXpBonus(data, baseXp)
+    coins += RelicRules.catchCoinBonus(data, coins)
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
@@ -153,6 +155,17 @@ function Profile.CycleCompanion(player)
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
     return true, "Companion: " .. CloudCatalog[nextId].name
+end
+
+function Profile.CraftRelic(player, relicId)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local ok, message = RelicRules.craft(data, relicId)
+    if ok then
+        player:SetAttribute("CloudCoins", data.coins)
+        player:SetAttribute("CraftedRelic_" .. relicId, true)
+    end
+    return ok, message
 end
 
 function Profile.BuyTool(player, toolId)
@@ -272,6 +285,9 @@ local function onPlayerAdded(player)
     player:SetAttribute("CloudXP", data.xp)
     player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
     player:SetAttribute("RangeTraining", math.clamp(math.floor(tonumber(data.rangeTraining) or 0), 0, 3))
+    for relicId in pairs(RelicRules.recipes) do
+        player:SetAttribute("CraftedRelic_" .. relicId, RelicRules.has(data, relicId))
+    end
     if not CompanionRules.owned(data.companionSpecies, data.species, CloudCatalog) then
         data.companionSpecies = CompanionRules.next(nil, data.species, CloudCatalog) or ""
     end

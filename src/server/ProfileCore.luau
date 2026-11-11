@@ -26,6 +26,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        craftedRelics = {},
         lastSeen = now or 0,
     }
 end
@@ -83,6 +84,11 @@ function Core.sanitize(raw, validQuests, now)
             if type(index) == "number" and index == math.floor(index) and index >= 1 and index <= 18 and found == true then
                 clean.crystals[index] = true
             end
+        end
+    end
+    if type(raw.craftedRelics) == "table" then
+        for _, id in ipairs({ "lantern", "charm", "compass" }) do
+            if raw.craftedRelics[id] == true then clean.craftedRelics[id] = true end
         end
     end
     if type(raw.bossVictories) == "table" then
