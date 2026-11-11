@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Cloud Fusion Altar (draft)
+- Original project-authored Roblox Model with anchored pedestal, neon core and five recipe stones (`src/server/CloudFusion.server.luau`). No imported mesh, third-party script, Model ID or Mesh ID; no Canvas world geometry. HUD uses existing player attributes.
+- Source-integrated on isolated draft branch only. Placement, collisions, touch interaction, Studio rendering and publish unverified.
