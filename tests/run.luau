@@ -378,6 +378,20 @@ require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
+require("./SkyRelaySpec")(test, eq)
+
+test("Sky Relay reward completion persists and rejects malformed flags", function()
+    local store = FakeStore.new()
+    local a = repoFor(store, "relay-A")
+    local data = a:Load("relay-player").data
+    eq(data.skyRelayCompleted, false, "new profile has not completed relay")
+    data.skyRelayCompleted = true
+    eq(a:Save("relay-player", data, true).ok, true, "save completion")
+    local b = repoFor(store, "relay-B"):Load("relay-player")
+    eq(b.data.skyRelayCompleted, true, "completion persists on rejoin")
+    eq(Core.sanitize({ skyRelayCompleted = "true" }, validQuests, 1).skyRelayCompleted, false, "reject string")
+    eq(Core.sanitize({ skyRelayCompleted = 1 }, validQuests, 1).skyRelayCompleted, false, "reject numeric flag")
+end)
 
 local failures = 0
 for _, t in ipairs(tests) do
