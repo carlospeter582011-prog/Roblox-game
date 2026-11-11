@@ -3,6 +3,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Workspace = game:GetService("Workspace")
 local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
+local Locale = require(ReplicatedStorage:WaitForChild("LocaleText"))
 local tools = require(ReplicatedStorage:WaitForChild("CatchToolCatalog"))
 local speciesCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
 local player = Players.LocalPlayer
@@ -275,13 +276,15 @@ local xpRow = statRow("XP", 2)
 local caughtRow = statRow("Caught", 3)
 local function refreshWallet()
     local level, into, needed = Leveling.progress(player:GetAttribute("CloudXP"))
-    coinsRow.Text = "Coins: " .. tostring(player:GetAttribute("CloudCoins") or 0)
-    xpRow.Text = "XP: " .. tostring(math.floor(into)) .. "/" .. (needed == 0 and "MAX" or tostring(needed)) .. " (Lv " .. tostring(level) .. ")"
-    caughtRow.Text = "Caught: " .. tostring(player:GetAttribute("CloudCount") or 0)
+    local lang = player:GetAttribute("UILanguage")
+    coinsRow.Text = Locale.text(lang, "coins") .. ": " .. Locale.number(player:GetAttribute("CloudCoins") or 0)
+    xpRow.Text = Locale.text(lang, "xp") .. ": " .. Locale.number(into) .. "/" .. (needed == 0 and Locale.text(lang, "max") or Locale.number(needed)) .. " (" .. Locale.text(lang, "level") .. " " .. Locale.number(level) .. ")"
+    caughtRow.Text = Locale.text(lang, "caught") .. ": " .. Locale.number(player:GetAttribute("CloudCount") or 0)
 end
 for _, attribute in ipairs({ "CloudLevel", "CloudCoins", "CloudXP", "CloudCount" }) do
     player:GetAttributeChangedSignal(attribute):Connect(refreshWallet)
 end
+player:GetAttributeChangedSignal("UILanguage"):Connect(refreshWallet)
 refreshWallet()
 
 -- Boss Journal: compact progress UI; server attributes are derived from saved victories.
