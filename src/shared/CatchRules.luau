@@ -87,20 +87,32 @@ function Rules.isAttributeSafe(name)
     return type(name) == "string" and #name > 0 and #name <= 90 and string.match(name, "^[%w_%-]+$") ~= nil
 end
 
+-- Exploration reward: first-ever discovery of a species gives a one-time research grant.
+-- Uses persistent species ownership, not a client flag, so reconnects and burst catches
+-- cannot farm the grant. These are additive to ordinary catch and quest rewards.
+local DISCOVERY_COINS = { Common = 10, Uncommon = 20, Rare = 45, Epic = 90, Legendary = 160, Mythic = 250, Secret = 400 }
+local DISCOVERY_XP = { Common = 5, Uncommon = 10, Rare = 20, Epic = 35, Legendary = 60, Mythic = 90, Secret = 125 }
+function Rules.discoveryReward(speciesId, speciesOwned, rarity)
+    if type(speciesId) ~= "string" or type(speciesOwned) ~= "table" then return 0, 0 end
+    if type(speciesOwned[speciesId]) == "number" and speciesOwned[speciesId] > 0 then return 0, 0 end
+    return DISCOVERY_COINS[rarity] or 0, DISCOVERY_XP[rarity] or 0
+end
+
 -- Records one catch on data and completes every quest it newly satisfies, awarding quest
 -- rewards. Mutates data. Returns the newly completed quest ids, sorted.
 -- options (optional): variantId = extra collection key for a mutated catch (e.g. "breeze:golden");
 -- the base species is ALWAYS counted too so species quests and the encyclopedia stay correct.
 -- xp = XP for this catch (default XP_PER_CATCH), used for mutation XP multipliers.
 function Rules.applyCatch(data, speciesId, coins, quests, options)
+    local researchCoins, researchXp = Rules.discoveryReward(speciesId, data.species, options and options.rarity)
     data.species[speciesId] = (data.species[speciesId] or 0) + 1
     local variantId = options and options.variantId
     if variantId and variantId ~= speciesId then
         data.species[variantId] = (data.species[variantId] or 0) + 1
     end
     data.captures += 1
-    data.coins += coins
-    data.xp += (options and options.xp) or Rules.XP_PER_CATCH
+    data.coins += coins + researchCoins
+    data.xp += ((options and options.xp) or Rules.XP_PER_CATCH) + researchXp
     local completed = {}
     for id, quest in pairs(quests) do
         if not data.quests[id] and Rules.questProgress(quest, data) >= quest.required then
