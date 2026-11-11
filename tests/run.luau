@@ -380,6 +380,26 @@ require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
 local failures = 0
+-- Companion training shrine: pure spending and progression regression checks.
+test("companion training charges coins and advances bond without mutating input", function()
+    local R = require("../src/shared/CompanionTrainingRules")
+    local proposal = R.propose(150, 10, true, 100, nil)
+    eq(proposal.coins, 75, "training cost")
+    eq(proposal.bond, 15, "training gain")
+    eq(proposal.at, 100, "training timestamp")
+end)
+test("companion training rejects unowned, insufficient, cooldown and invalid states", function()
+    local R = require("../src/shared/CompanionTrainingRules")
+    eq(R.propose(150, 10, false, 100, nil), nil, "not owned")
+    eq(R.propose(74, 10, true, 100, nil), nil, "not enough coins")
+    eq(R.propose(150, 10, true, 110, 100), nil, "cooldown")
+    eq(R.propose(150, 10, true, 90, 100), nil, "clock reversal")
+    eq(R.propose(math.huge, 10, true, 100, nil), nil, "infinite coins")
+    eq(R.propose(150, 0 / 0, true, 100, nil), nil, "NaN bond")
+    eq(R.propose(150, 1000000, true, 100, nil), nil, "max bond")
+    eq(R.propose(150, 999998, true, 100, nil).bond, 1000000, "bond capped")
+end)
+
 for _, t in ipairs(tests) do
     local ok, err = pcall(t.fn)
     if ok then

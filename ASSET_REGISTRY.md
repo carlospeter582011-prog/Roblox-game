@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Companion Bond Training Shrine (pedestal and orb) | n/a (`src/server/CompanionTraining.server.luau`) | Project (original procedural 3D Parts) | Original | none | Project-owned | PR #73 draft, server-created native Model/Parts and ProximityPrompt | CI and Roblox placement/mobile/runtime unverified; no external mesh |
