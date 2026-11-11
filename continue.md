@@ -348,6 +348,6 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Next: inspect newest failing `main` publish run and sanitized error; verify `ROBLOX_API_KEY` environment secret and key scope for target universe without revealing key, `ROBLOX_UNIVERSE_ID`/`ROBLOX_PLACE_ID` environment vars, and re-run workflow. Verify Rojo output + Published acceptance only from logs.
 
 ## 2026-11-11 — discovery quest contracts (PR #104, draft)
-- Added 86 stable one-time species discovery quests to existing 38 quest definitions (124 total) through the server-authoritative CatchRules/ProfileStore reward and persistence path. Rarity-scaled capped Coin/XP rewards; no client-trusted completion. Tests/DiscoveryQuestSpec adds coverage and duplicate-payout regression tests.
+- Added 72 non-duplicate one-time species discovery quests to existing 38 quest definitions (110 total; 14 species already had first-capture quests) through the server-authoritative CatchRules/ProfileStore reward and persistence path. Rarity-scaled capped Coin/XP rewards; no client-trusted completion. Tests/DiscoveryQuestSpec adds coverage and duplicate-payout regression tests.
 - Source commits: 9888e978, f693cf67, 5b2824f, b59a90d. PR https://github.com/carlospeter582011-prog/Roblox-game/pull/104. No new 3D assets.
 - CI and Roblox runtime unverified at this checkpoint; draft, not merged or published. This is 124 quest definitions, NOT 100 distinct story/NPC quest experiences. Check actual PR CI and integration with concurrent agents before merge.
