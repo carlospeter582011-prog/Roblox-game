@@ -39,8 +39,10 @@ function Spawn.regionBounds(sequence)
     if type(sequence) ~= "number" or sequence < 1 or sequence ~= math.floor(sequence) then
         return nil
     end
-    local slot = sequence % 5
+    local slot = sequence % 7
     if slot == 0 then
+        return { name = "SunsetDunes", minX = 430, maxX = 490, minZ = -30, maxZ = 30 }
+    elseif slot == 5 then
         return { name = "ThunderheadRidge", minX = 285, maxX = 345, minZ = -30, maxZ = 30 }
     elseif slot == 2 then
         return { name = "EastwindOutlook", minX = 140, maxX = 200, minZ = -30, maxZ = 30 }
@@ -53,6 +55,7 @@ Spawn.travelDestinations = {
     starter = { requiredCatches = 0, x = 0, y = 5, z = -25 },
     eastwind = { requiredCatches = 25, x = 170, y = 5, z = 0 },
     ridge = { requiredCatches = 75, x = 315, y = 5, z = 0 },
+    dunes = { requiredCatches = 100, x = 460, y = 5, z = 0 },
 }
 function Spawn.canFastTravel(destination, captures)
     local target = type(destination) == "string" and Spawn.travelDestinations[destination] or nil
