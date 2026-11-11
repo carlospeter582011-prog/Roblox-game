@@ -66,7 +66,7 @@ function Core.sanitize(raw, validQuests, now)
         end
     end
     -- Sanitize persisted building layouts before any world placement can consume them.
-    clean.islandLayout = require("../shared/IslandPlacementRules").sanitize(raw.islandLayout)
+    clean.islandLayout = (if script then require(game:GetService("ReplicatedStorage"):WaitForChild("IslandPlacementRules")) else require("../shared/IslandPlacementRules")).sanitize(raw.islandLayout)
     if type(raw.quests) == "table" then
         for id, done in pairs(raw.quests) do
             if type(id) == "string" and validQuests[id] and done == true then
