@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Crafting rules foundation (PR #156)
+- No new 3D geometry or external assets. `src/shared/CraftingRules.luau` defines logical recipes only; proposed cloud habitat and sky bridge outputs are **not** implemented Models/MeshParts or placed in-game. Asset integration and provenance review remain required before either becomes world geometry.
