@@ -142,6 +142,18 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
+-- Bounded repeatable survival reward; caller is server-owned storm controller.
+function Profile.AwardStormShelter(player)
+    local data = sessions[player]
+    if not data then return false end
+    data.coins += 55
+    data.xp += 30
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 function Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end

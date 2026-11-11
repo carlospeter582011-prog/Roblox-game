@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Storm Haven shelters (3) and storm cloud effect | n/a (`src/server/StormShelters.server.luau`) | Project (original procedural) | Original | none | Project-owned | Draft PR #101; Roblox Parts/Models, no external meshes or canvas world art | Source integrated; CI, mobile shelter geometry and runtime unverified |
