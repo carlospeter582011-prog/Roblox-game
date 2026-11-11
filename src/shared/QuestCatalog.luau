@@ -48,6 +48,7 @@ local expeditionSpecies = { "gale", "spring", "autumn", "twilight", "dusk", "sol
 local expeditionStages = {
     { suffix = "scout", required = 2, coins = 90, xp = 45, chapter = 2, title = "Scout" },
     { suffix = "keeper", required = 8, coins = 260, xp = 130, chapter = 4, title = "Keeper" },
+    { suffix = "master", required = 20, coins = 700, xp = 350, chapter = 5, title = "Master" },
 }
 for _, speciesId in ipairs(expeditionSpecies) do
     for _, stage in ipairs(expeditionStages) do
