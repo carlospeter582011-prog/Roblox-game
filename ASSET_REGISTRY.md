@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Cloud Observatory (feature branch)
+- Original project-authored 3D `Model` containing anchored Slate platform and Glass sphere, generated in `src/server/CloudResearch.server.luau` (no external asset, Model ID, Mesh ID or license dependency). Native `ProximityPrompt` for interaction.
+- Integration: branch `feature/cloud-research-lab-20261111-1951`; actual Roblox Studio/mobile visual, reachability, collision and runtime not yet verified. No Canvas world geometry.
