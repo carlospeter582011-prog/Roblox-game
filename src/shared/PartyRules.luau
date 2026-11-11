@@ -5,7 +5,7 @@ Rules.INVITE_TTL = 60
 local function valid(id) return type(id) == "number" and id > 0 and id == math.floor(id) and id < math.huge end
 function Rules.new() return { parties = {}, membership = {}, invites = {}, nextId = 0 } end
 function Rules.invite(state, from, target, now)
-    if not valid(from) or not valid(target) or from == target or type(now) ~= "number" or now ~= now then return false, "invalid" end
+    if not valid(from) or not valid(target) or from == target or type(now) ~= "number" or now ~= now or now == math.huge or now == -math.huge then return false, "invalid" end
     local partyId = state.membership[from]
     if state.membership[target] then return false, "already_in_party" end
     if partyId then
@@ -17,10 +17,10 @@ function Rules.invite(state, from, target, now)
     return true, "invited"
 end
 function Rules.accept(state, target, from, now)
-    if not valid(target) or not valid(from) or type(now) ~= "number" then return false, "invalid" end
+    if not valid(target) or not valid(from) or type(now) ~= "number" or now ~= now or now == math.huge or now == -math.huge then return false, "invalid" end
     local invite = state.invites[target]
     if not invite or invite.from ~= from then return false, "expired" end
-    if now > invite.expires then state.invites[target] = nil return false, "expired" end
+    if now >= invite.expires then state.invites[target] = nil return false, "expired" end
     state.invites[target] = nil
     if state.membership[target] then return false, "already_in_party" end
     local id = invite.partyId
@@ -43,7 +43,11 @@ function Rules.accept(state, target, from, now)
 end
 function Rules.leave(state, userId)
     local id = state.membership[userId]
-    if not id then state.invites[userId] = nil return false end
+    -- Revoke every invitation issued by a departing player, including voluntary leaves.
+    for target, invite in pairs(state.invites) do
+        if target == userId or invite.from == userId then state.invites[target] = nil end
+    end
+    if not id then return false end
     local party = state.parties[id]
     state.membership[userId] = nil
     state.invites[userId] = nil
