@@ -393,3 +393,6 @@ print(string.format("%d tests, %d failed", #tests, failures))
 if failures > 0 then
     os.exit(1)
 end
+
+-- Independent exchange economy regressions.
+require("./cloud_exchange")
