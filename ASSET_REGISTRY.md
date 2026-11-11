@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Outer-world expedition 3D provenance (draft)
+- Seven original outer-world walkable island models, each with a solid Part floor, noncolliding 3D floating underside, nine landmark columns and glass crowns, plus 14 native 3D portal arch stations (seven hub departures/seven return): `src/server/OuterWorldExpeditions.server.luau`. Creator: project; license: original procedural code; external source: none; Roblox asset ID: none; Model ID/MeshPart MeshId: not applicable. Server-only ProximityPrompt travel and pure catalog rules. **Source integration only; CI, mobile/Studio visual scale, collisions, portal position and Published deployment unverified.** These are provisional regions, not seven fully completed worlds.
