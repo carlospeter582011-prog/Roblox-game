@@ -98,6 +98,19 @@ function Profile.AddCatch(player, speciesId, coins, options)
     return true
 end
 
+-- Sky-signal rewards are granted only by the server-side expedition controller.
+-- Uses existing locked profile; no new persistence schema or client remote.
+function Profile.AwardSkySignal(player, coins, xp)
+    local data = sessions[player]
+    if not data or coins ~= 180 or xp ~= 90 then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 function Profile.DiscoverCrystal(player, index)
     local data = sessions[player]
     if not data or type(index) ~= "number" or index ~= math.floor(index) or index < 1 or index > 18 then
