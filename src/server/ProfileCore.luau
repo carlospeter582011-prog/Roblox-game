@@ -26,6 +26,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        islandLayout = {},
         lastSeen = now or 0,
     }
 end
@@ -64,6 +65,8 @@ function Core.sanitize(raw, validQuests, now)
             end
         end
     end
+    -- Sanitize persisted building layouts before any world placement can consume them.
+    clean.islandLayout = require("../shared/IslandPlacementRules").sanitize(raw.islandLayout)
     if type(raw.quests) == "table" then
         for id, done in pairs(raw.quests) do
             if type(id) == "string" and validQuests[id] and done == true then
