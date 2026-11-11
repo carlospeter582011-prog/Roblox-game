@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Elemental flight animation audit (feature branch)
+- `CloudFlight.server.luau` moves the existing server-owned catchable cloud anchor using native Roblox `BasePart.Position`. The existing `CloudCatch.server.luau` positions original 3D model parts from that anchor. No Canvas world geometry, new MeshPart ID, GLB, Creator Store content or third-party script was introduced.
+- `CloudFlightRules.luau` bounds offsets and clamps to existing three island rectangles. Source only; no Studio/Android visual, collision, movement or Open Cloud publish verification. No asset acceptance checklist item is checked.
