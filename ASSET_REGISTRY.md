@@ -95,3 +95,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-11 — Crafting rules foundation (PR #156)
 - No new 3D geometry or external assets. `src/shared/CraftingRules.luau` defines logical recipes only; proposed cloud habitat and sky bridge outputs are **not** implemented Models/MeshParts or placed in-game. Asset integration and provenance review remain required before either becomes world geometry.
+
+## 2026-11-11 — Batch crafting extension (PR #156)
+- `CraftingRules.previewBatch` is a pure data policy and adds **no** Roblox Models, MeshParts, Terrain, assets, or UI. Recipe outputs are logical identifiers, not verified usable 3D inventory items. No asset IDs or provenance changes. Roblox Studio visual/runtime verification remains pending.
