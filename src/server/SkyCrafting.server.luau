@@ -15,16 +15,6 @@ base.Position = Vector3.new(0, 5, -20)
 base.Material = Enum.Material.Wood
 base.Color = Color3.fromRGB(126, 91, 65)
 base.Parent = bench
-local crystal = Instance.new("Part")
-crystal.Name = "CraftingCrystal"
-crystal.Shape = Enum.PartType.Ball
-crystal.Anchored = true
-crystal.CanCollide = false
-crystal.Size = Vector3.new(2, 2, 2)
-crystal.Position = base.Position + Vector3.new(0, 2, 0)
-crystal.Material = Enum.Material.Neon
-crystal.Color = Color3.fromRGB(112, 215, 255)
-crystal.Parent = bench
 bench.PrimaryPart = base
 bench.Parent = Workspace
 local status = Instance.new("RemoteEvent")
@@ -33,6 +23,18 @@ status.Parent = ReplicatedStorage
 local last = {}
 local ordered = { "wind_lasso", "mist_gloves", "cloud_magnet" }
 for i, toolId in ipairs(ordered) do
+    -- Each recipe gets its own world-space pedestal: overlapping prompts on one
+    -- crystal were ambiguous on touch and could hide the intended purchase.
+    local pedestal = Instance.new("Part")
+    pedestal.Name = "Recipe_" .. toolId
+    pedestal.Anchored = true
+    pedestal.CanCollide = false
+    pedestal.Shape = Enum.PartType.Cylinder
+    pedestal.Size = Vector3.new(1.5, 1.6, 1.5)
+    pedestal.Position = base.Position + Vector3.new((i - 2) * 2.6, 2, 0)
+    pedestal.Material = Enum.Material.Neon
+    pedestal.Color = Color3.fromRGB(112, 215, 255)
+    pedestal.Parent = bench
     local prompt = Instance.new("ProximityPrompt")
     prompt.Name = "Craft_" .. toolId
     prompt.ActionText = "Craft " .. Tools[toolId].name
@@ -40,7 +42,7 @@ for i, toolId in ipairs(ordered) do
     prompt.HoldDuration = 0.4
     prompt.MaxActivationDistance = 10
     prompt.KeyboardKeyCode = i == 1 and Enum.KeyCode.E or (i == 2 and Enum.KeyCode.F or Enum.KeyCode.R)
-    prompt.Parent = crystal
+    prompt.Parent = pedestal
     prompt.Triggered:Connect(function(player)
         local now = os.clock()
         if now - (last[player] or -100) < 0.8 then return end
@@ -49,7 +51,7 @@ for i, toolId in ipairs(ordered) do
         local root = character and character:FindFirstChild("HumanoidRootPart")
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
         if not root or not humanoid or humanoid.Health <= 0 or
-            (root.Position - crystal.Position).Magnitude > 13 then return end
+            (root.Position - pedestal.Position).Magnitude > 13 then return end
         local data = Profile.Get(player)
         if not data then return end
         local ok, message = Craft.apply(data, toolId, Tools)
