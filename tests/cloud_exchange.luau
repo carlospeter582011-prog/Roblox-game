@@ -9,3 +9,5 @@ eq(qty, 2) eq(coins, 40) eq(xp, 10)
 local _, cappedCoins, cappedXp = Rules.quote("rare", { rare = 8 }, catalog)
 eq(cappedCoins, 500) eq(cappedXp, 100)
 print("Cloud exchange pure regression tests passed")
+
+return true
