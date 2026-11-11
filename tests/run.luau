@@ -379,6 +379,19 @@ require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
+test("elemental flight moves catch targets within safe bounds", function()
+    local Flight = require("../src/shared/CloudFlightRules")
+    local ax, ay, az = Flight.offset("Air", 7, 5)
+    local ix, iy, iz = Flight.offset("Ice", 7, 5)
+    if math.abs(ax) > 8 or math.abs(ay) > 1.6 or math.abs(az) > 8 then error("air bounds") end
+    if math.abs(ix) > 3 or math.abs(iy) > 0.5 or math.abs(iz) > 3 then error("ice bounds") end
+    if ax == ix and ay == iy and az == iz then error("flight lacks elemental variation") end
+    local x, y, z = Flight.offset("Storm", 1, math.huge)
+    eq(x, 0, "invalid time x")
+    eq(y, 0, "invalid time y")
+    eq(z, 0, "invalid time z")
+end)
+
 local failures = 0
 for _, t in ipairs(tests) do
     local ok, err = pcall(t.fn)
