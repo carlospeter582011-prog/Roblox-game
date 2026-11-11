@@ -20,7 +20,7 @@ button.TextColor3 = Color3.new(1, 1, 1)
 button.Parent = gui
 Instance.new("UICorner", button).CornerRadius = UDim.new(0, 10)
 local function update()
-    local captures = player:GetAttribute("Caught") or player:GetAttribute("Captures") or 0
+    local captures = player:GetAttribute("CloudCount") or 0
     button.Visible = captures >= 5
     button.Text = player:GetAttribute("CloudGliding") and "GLIDING" or "GLIDE"
 end
