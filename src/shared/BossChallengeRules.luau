@@ -27,6 +27,17 @@ function Boss.phaseMessage(phase, name)
     if phase == 3 then return name .. " final phase! Finish the trial!" end
     return name .. " challenge started!"
 end
+-- Timed medals reward mastery of existing boss encounters, without random loot.
+-- Only server-observed elapsed time and the configured challenge duration count.
+function Boss.medal(id, elapsed)
+    local c = type(id) == "string" and Boss.challenges[id] or nil
+    if not c or type(elapsed) ~= "number" or elapsed ~= elapsed or elapsed < 0 or elapsed == math.huge or elapsed > c.seconds then
+        return 0, 0, 0
+    end
+    local fraction = elapsed / c.seconds
+    local rank = fraction <= 0.4 and 3 or (fraction <= 0.7 and 2 or 1)
+    return rank, math.floor(c.rewardCoins * rank * 0.1), math.floor(c.rewardXP * rank * 0.1)
+end
 function Boss.reward(id)
     local challenge = type(id) == "string" and Boss.challenges[id] or nil
     if not challenge then return nil, nil end
