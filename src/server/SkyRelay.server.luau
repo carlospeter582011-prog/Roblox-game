@@ -84,7 +84,31 @@ local function makeGate(i, position)
         end
     end)
 end
-for i, offset in ipairs(offsets) do makeGate(i, origin + offset) end
+-- Wide connected stepping decks keep the course traversable on touch controls.
+for i, offset in ipairs(offsets) do
+    local point = origin + offset
+    local deck = Instance.new("Part")
+    deck.Name = "RelayDeck" .. i
+    deck.Anchored = true
+    deck.Size = Vector3.new(20, 2, 20)
+    deck.Position = point - Vector3.new(0, 1.5, 0)
+    deck.Color = Color3.fromRGB(105, 150, 175)
+    deck.Material = Enum.Material.Slate
+    deck.Parent = folder
+    makeGate(i, point)
+    if i > 1 then
+        local previous = origin + offsets[i-1]
+        local difference = point - previous
+        local bridge = Instance.new("Part")
+        bridge.Name = "RelayBridge" .. i
+        bridge.Anchored = true
+        bridge.Size = Vector3.new(12, 2, difference.Magnitude + 2)
+        bridge.CFrame = CFrame.lookAt((point + previous)/2 - Vector3.new(0,1.5,0), point - Vector3.new(0,1.5,0))
+        bridge.Color = Color3.fromRGB(130, 175, 190)
+        bridge.Material = Enum.Material.Slate
+        bridge.Parent = folder
+    end
+end
 Players.PlayerRemoving:Connect(function(player)
     states[player] = nil
     lastStarts[player] = nil
