@@ -1,14 +1,12 @@
--- Pure building placement rules. No Roblox globals.
-local Catalog = require(script.Parent.BuildingCatalog) -- Note: for tests this will be adjusted or use absolute in tests
-
+-- Pure building placement rules. No Roblox globals. Catalog passed in or required separately in Roblox.
 local Rules = {}
 
 -- Starter island approximate bounds (from StarterWorld).
 Rules.ISLAND_BOUNDS = { minX = -40, maxX = 40, minZ = -40, maxZ = 40, minY = 10, maxY = 30 }
 Rules.MAX_BUILDINGS = 50
 
-function Rules.canPlace(data, buildingId, position)
-    local item = Catalog[buildingId]
+function Rules.canPlace(catalog, data, buildingId, position)
+    local item = catalog and catalog[buildingId]
     if not item then return false, "Unknown building" end
     if not data or type(data.coins) ~= "number" then return false, "No profile" end
     if data.coins < item.costCoins then return false, "Not enough coins" end
@@ -28,8 +26,8 @@ function Rules.canPlace(data, buildingId, position)
     return true, item
 end
 
-function Rules.place(data, buildingId, position)
-    local ok, itemOrErr = Rules.canPlace(data, buildingId, position)
+function Rules.place(catalog, data, buildingId, position)
+    local ok, itemOrErr = Rules.canPlace(catalog, data, buildingId, position)
     if not ok then return false, itemOrErr end
     data.coins -= itemOrErr.costCoins
     data.buildings = data.buildings or {}
