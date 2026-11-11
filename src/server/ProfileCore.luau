@@ -26,6 +26,7 @@ function Core.defaultData(now)
         bossVictories = {},
         companionSpecies = "",
         companionBond = {},
+        evolutions = {},
         lastSeen = now or 0,
     }
 end
@@ -50,6 +51,13 @@ function Core.sanitize(raw, validQuests, now)
         for id, count in pairs(raw.species) do
             if type(id) == "string" and #id <= MAX_ID_LENGTH and isCount(count, MAX_SPECIES_COUNT + 1) then
                 clean.species[id] = math.floor(count)
+            end
+        end
+    end
+    if type(raw.evolutions) == "table" then
+        for id, claimed in pairs(raw.evolutions) do
+            if type(id) == "string" and #id <= MAX_ID_LENGTH and string.match(id, "^[%w_]+$") and claimed == true then
+                clean.evolutions[id] = true
             end
         end
     end
