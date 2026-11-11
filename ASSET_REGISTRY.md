@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Region ecology spawn weighting (Meadow/Eastwind/Ridge) | n/a (`src/shared/RegionEcology.luau`) | Project (original code; no visual asset) | Original | none | n/a | Server spawn selection integrated in PR #152 | Pure Luau tests added; CI and in-game distribution unverified; no new meshes or 2D world objects |
