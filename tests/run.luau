@@ -369,6 +369,23 @@ test("crystal migration drops invalid keys and values", function()
     eq(clean.crystals[3.5], nil, "fraction")
 end)
 
+test("boss speed medals persist and reject forged ranks", function()
+    local store = FakeStore.new()
+    local a = repoFor(store, "medal-A")
+    local data = a:Load("medal-player").data
+    data.bossMedals.meadow = 3
+    data.bossMedals.ridge = 2
+    eq(a:Save("medal-player", data, true).ok, true, "saved medals")
+    local loaded = repoFor(store, "medal-B"):Load("medal-player")
+    eq(loaded.data.bossMedals.meadow, 3, "gold persists")
+    eq(loaded.data.bossMedals.ridge, 2, "silver persists")
+    local clean = Core.sanitize({ bossMedals = { meadow = 4, eastwind = 1.5, ridge = 1, fake = 3 } }, validQuests, 0)
+    eq(clean.bossMedals.meadow, nil, "rank above gold rejected")
+    eq(clean.bossMedals.eastwind, nil, "fractional rank rejected")
+    eq(clean.bossMedals.ridge, 1, "bronze kept")
+    eq(clean.bossMedals.fake, nil, "unknown boss rejected")
+end)
+
 require("./CatchRulesSpec")(test, eq)
 require("./SpawnLevelSpec")(test, eq)
 require("./MutationsSpec")(test, eq)
