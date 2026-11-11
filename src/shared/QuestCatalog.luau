@@ -43,7 +43,14 @@ local Quests = {
 -- Discovery contracts: one-time, server-awarded first capture for every catalog species.
 -- Stable IDs survive catalog ordering changes and are validated against CloudCatalog in CI.
 local CloudCatalog = if script then require(script.Parent.CloudCatalog) else require("./CloudCatalog")
+local alreadyCovered = {}
+for _, quest in pairs(Quests) do
+    if quest.objective == "catch_species" and quest.required == 1 then
+        alreadyCovered[quest.speciesId] = true
+    end
+end
 for speciesId, species in pairs(CloudCatalog) do
+    if alreadyCovered[speciesId] then continue end
     local id = "discover_" .. speciesId
     assert(Quests[id] == nil, "Duplicate quest ID: " .. id)
     local tier = ({ Common = 1, Uncommon = 2, Rare = 3, Epic = 4, Legendary = 5, Mythic = 6, Secret = 7 })[species.rarity] or 1
