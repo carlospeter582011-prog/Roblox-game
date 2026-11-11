@@ -1,0 +1,31 @@
+-- Unit tests for CloudCareRules. Registered from tests/run.luau.
+return function(test, eq)
+    local Care = require("../src/shared/CloudCareRules")
+
+    test("canFeed rejects insufficient or invalid coins", function()
+        local ok, reason = Care.canFeed(10, nil, 1000)
+        eq(ok, false, "too few coins")
+        eq(type(reason), "string", "reason provided")
+        eq(Care.canFeed(math.huge, nil, 1000), false, "infinite coins rejected")
+        eq(Care.canFeed(0/0, nil, 1000), false, "nan rejected")
+    end)
+
+    test("canFeed enforces cooldown", function()
+        local ok = Care.canFeed(100, 1000, 1030)
+        eq(ok, false, "inside cooldown")
+        ok = Care.canFeed(100, 1000, 1061)
+        eq(ok, true, "after cooldown")
+        ok = Care.canFeed(100, nil, 1000)
+        eq(ok, true, "first feed")
+    end)
+
+    test("applyFeed advances bond and caps and sanitizes", function()
+        eq(Care.applyFeed(0), 5, "gain from zero")
+        eq(Care.applyFeed(10), 15, "gain")
+        eq(Care.applyFeed(Care.MAX_BOND), Care.MAX_BOND, "cap")
+        eq(Care.applyFeed(-5), 5, "negative resets then gains")
+        eq(Care.applyFeed(math.huge), 5, "inf resets")
+        eq(Care.applyFeed(0/0), 5, "nan resets")
+        eq(Care.applyFeed("bad"), 5, "non-number")
+    end)
+end
