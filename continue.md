@@ -346,3 +346,23 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - User reports current GitHub Actions are failing to publish. Checked existing `.github/workflows/auto-publish.yml` on `main`: old publish step hid Roblox response body and reported only HTTP code. Updated the existing gated `main` workflow with bounded retries for transient curl/network/HTTP errors, connection timeout, safe whitelisted Roblox API error diagnostics, HTTP-specific configuration hints, no raw key/response dump, and preserved strict failure on non-200 response. Commits `3a25a7421defe56c7b1e0b02b36149f9a246d062`, `76cbf4f20727c6ce82e14df684c9e30c669f5262`.
 - Previous known runs 42822233074, 42813189825, 42797257063 had successful `build-and-publish` jobs; more recent PR runs 42891913432, 42831129432, 42902444218 had build/tests only, not Published upload. These do NOT verify the current failed push. GitHub connector exposes job lookup by run ID, but no general list of recent push runs; need failing run URL/ID to inspect precise HTTP error, then correct auth/permission/place config as required. No Roblox publish success claimed for this change.
 - Next: inspect newest failing `main` publish run and sanitized error; verify `ROBLOX_API_KEY` environment secret and key scope for target universe without revealing key, `ROBLOX_UNIVERSE_ID`/`ROBLOX_PLACE_ID` environment vars, and re-run workflow. Verify Rojo output + Published acceptance only from logs.
+
+## 2026-11-11 — Crafting recipe validation foundation (PR #156)
+- Branch `feature/crafting-recipe-validation-20261111`, draft PR https://github.com/carlospeter582011-prog/Roblox-game/pull/156.
+- Added four server-compatible recipes, strict finite/integer material and Coin validation, and non-mutating transaction previews in `src/shared/CraftingRules.luau`.
+- Added three regression scenarios in `tests/CraftingRulesSpec.luau`, registered in `tests/run.luau`.
+- **Not yet playable**: material acquisition, persistent inventory, atomic crafting commit, output use/placement and crafting UI are not implemented. No runtime or CI evidence yet; do not check crafting acceptance criteria.
+- Next: inspect PR CI; add validated material drops and session-locked persistent inventory, then atomic crafting transaction and mobile crafting station UI, test and merge safely.
+
+## 2026-11-11 — Crafting queue safety extension (PR #156)
+- Added `CraftingRules.previewBatch` for up to 20 recipe lines / 100 total crafts, strict integer/finite counts, sequential balance checks, owned-item overflow rejection and all-or-nothing immutable previews.
+- Three new regression cases for multi-recipe accounting, later-step rollback, quantity limits and output overflow. Commits `74162c9c0f02e7a16987926a670000b9fc87d4a5`, `27bd975230e4f75f8453e5cceab67b9d00eb2969`.
+- This remains **policy-only**: no inventory persistence, actual crafting station, material drops or live item grants. CI and Roblox runtime unverified at time of documentation; do not merge/publish without evidence.
+- Next: integrate durable inventory with session-locked profile transactions, server-authoritative material acquisition, item consumption and touch UI; validate CI and concurrency before merge.
+
+## 2026-11-12 — Crafting essence drop policy and batch input hardening (PR #156)
+- Added deterministic `CraftingRules.catchEssence(speciesId, serverCatalog)` returning 1–3 Air/Storm/Nature/Earth essence per supported catalog catch (no client-provided rarity), as a foundation for real material acquisition. **Not wired to catch or persistence yet; no player rewards claimed.**
+- `previewBatch` now rejects sparse arrays and extra keyed fields instead of relying only on Luau `#` length. Added two regression cases. Commits aef8d925 and ead9a19e. CI, runtime, save, merge and publish pending independent verification.
+- Next: integrate essence into server-authoritative catch and ProfileCore inventory with migration/sanitization; commit only after transactional save tests. Build a 3D crafting station and useful consumable item effects; avoid merging policy-only work as complete crafting.
+
+- Verification follow-up: PR-head `d8c24a443d29a54d85994b4cb6df0d5f5acf7818` GitHub Actions [run 43118340857](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/43118340857) completed success: `build` and `luau-tests` jobs passed. This is CI only, not Roblox runtime, merge or Published upload. This documentation commit itself requires a fresh CI check.
