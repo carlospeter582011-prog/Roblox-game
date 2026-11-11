@@ -351,3 +351,9 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Branch `feature/sky-relay-course-20261111-iii`; [PR #144](https://github.com/carlospeter582011-prog/Roblox-game/pull/144). Three server-created original 3D relay beacons at Meadow, Eastwind, Ridge; 180s ordered route, 14-stud server distance guard, touch ProximityPrompt, 90 Coins/45 XP reward. Pure rules + three registered tests.
 - **BLOCKER BEFORE MERGE:** replay cooldown is session-only; reconnecting can reset it and farm rewards. Must persist an idempotent completion/cooldown in ProfileCore with schema migration and save/rejoin tests before enabling payouts in production. Also verify beacon locations, actual Studio/mobile interactions and CI.
 - This is code-only and unmerged. No new external Mesh/Model IDs; no runtime, publish, or CI success claimed. Other open PRs overlap with movement and habitat; do not merge simultaneously.
+
+## 2026-11-11 — Sky Relay anti-farming follow-up (PR #144)
+- Converted repeatable Coin/XP payouts into a **one-time persistent completion reward**, while allowing subsequent relay runs as practice. `ProfileCore` sanitizes and saves `skyRelayCompleted`; `ProfileStore.AwardSkyRelay` rejects duplicate payouts and replicates completion; relay feedback distinguishes paid completion from practice.
+- Added FakeStore save/rejoin and malformed completion-flag regression coverage in `tests/run.luau`.
+- Branch commits: 942dc1f, 2e3ad3d, 81e5bc0, db6f057. CI/Roblox runtime and published upload **not yet verified** for this change. PR remains draft; no main merge.
+- Remaining: verify CI, test real rejoin and Studio/mobile prompts; inspect other relay PRs before merging.
