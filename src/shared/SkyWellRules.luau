@@ -16,7 +16,9 @@ function Rules.canUse(distance, health, maxHealth, elapsed, ready)
 end
 
 function Rules.healedHealth(health, maxHealth)
-    if type(health) ~= "number" or type(maxHealth) ~= "number" or health ~= health or maxHealth ~= maxHealth or maxHealth <= 0 then return nil end
+    if type(health) ~= "number" or type(maxHealth) ~= "number" then return nil end
+    if health ~= health or maxHealth ~= maxHealth or health == math.huge or health == -math.huge or maxHealth == math.huge or maxHealth == -math.huge then return nil end
+    if maxHealth <= 0 or maxHealth > 100000 or health <= 0 or health >= maxHealth then return nil end
     return math.min(maxHealth, health + math.max(1, math.floor(maxHealth * Rules.HEAL_FRACTION)))
 end
 return table.freeze(Rules)
