@@ -29,7 +29,14 @@ function Rules.canEquip(toolId, captures, tools)
 end
 
 function Rules.isInRange(distance, species, tool)
-    return distance <= species.baseCatchRadius + tool.rangeBonus
+    return type(distance) == "number" and distance >= 0 and distance < math.huge
+        and species ~= nil and tool ~= nil
+        and distance <= species.baseCatchRadius + tool.rangeBonus
+end
+
+-- Reject catches from dead characters; server-side Humanoid state is authoritative.
+function Rules.canCatchAlive(health)
+    return type(health) == "number" and health > 0 and health < math.huge
 end
 
 -- Cloud Magnet has an active long-distance pull/catch field, not just a stat bonus.
