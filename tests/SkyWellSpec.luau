@@ -9,6 +9,11 @@ assert(not Rules.canUse(10, 40, 100, 89, true), "cooldown enforced")
 assert(not Rules.canUse(10, 40, 100, 90, false), "profile readiness required")
 assert(not Rules.canUse(0/0, 40, 100, 90, true), "NaN rejected")
 assert(not Rules.canUse(10, 40, math.huge, 90, true), "infinity rejected")
+assert(Rules.healedHealth(math.huge, 100) == nil, "infinite health rejected")
+assert(Rules.healedHealth(40, math.huge) == nil, "infinite maximum rejected")
+assert(Rules.healedHealth(-5, 100) == nil, "dead/negative health rejected")
+assert(Rules.healedHealth(100, 100) == nil, "full health cannot trigger healing")
+assert(Rules.healedHealth(40, 100001) == nil, "unbounded maximum health rejected")
 print("SkyWellSpec passed")
 
 return true
