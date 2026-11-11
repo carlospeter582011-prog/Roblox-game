@@ -351,3 +351,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added server-owned, session-only 25-second catch streak; bonus XP 0–5 per validated catch (streak capped at six), with no coin inflation or save schema changes. Works with vacuum burst per successfully caught cloud; invalid/stale catches cannot advance streak. `CatchCombo` attribute reflects current streak after a successful catch, reset on next successful catch after expiry; cleanup on PlayerRemoving.
 - Added three pure Luau regression tests and registered suite. CI, Studio/mobile runtime, actual gameplay and Open Cloud publishing **not verified** at authoring time. Draft PR must pass gates before merge; no direct publishing.
 - No new in-world objects or external assets. Check overlapping open PRs before merging. Next: CI and integration checks, runtime validation, substantial crafting/evolution/fusion systems.
+
+- CI run 43101213775: Rojo build passed, Luau tests initially failed (1/104) on infinite previous streak; fixed via commit `50cb511ee70b5027a65497adb06dc460bd7705f9`. Await follow-up CI before any merge.
