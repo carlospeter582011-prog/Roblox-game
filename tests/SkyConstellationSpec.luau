@@ -1,0 +1,35 @@
+return function(test, eq)
+    local Rules = require("../src/shared/SkyConstellationRules")
+    test("constellation order is a deterministic permutation for each player", function()
+        local a = Rules.order(123456)
+        local b = Rules.order(123456)
+        local seen = {}
+        for i = 1, 4 do
+            eq(a[i], b[i], "stable")
+            eq(seen[a[i]], nil, "no duplicate")
+            seen[a[i]] = true
+        end
+        eq(Rules.order(math.huge), nil, "invalid seed")
+    end)
+    test("constellation requires exact sequence and resets on wrong glyph", function()
+        local sequence = {3, 1, 4, 2}
+        local p, done = Rules.step(sequence, 0, 3, 0)
+        eq(p, 1, "first")
+        eq(done, false, "not finished")
+        p, done = Rules.step(sequence, p, 4, 3)
+        eq(p, 0, "wrong resets")
+        p = Rules.step(sequence, 0, 3, 0)
+        p = Rules.step(sequence, p, 1, 3)
+        p = Rules.step(sequence, p, 4, 6)
+        p, done = Rules.step(sequence, p, 2, 9)
+        eq(done, true, "complete")
+        eq(p, 4, "all four")
+        eq(select(1, Rules.step(sequence, 2, 4, 66)), 0, "timeout")
+        eq(select(1, Rules.step(sequence, 0, 0, 1)), 0, "bad index")
+    end)
+    test("constellation cooldown prevents repeat rewards", function()
+        eq(Rules.ready(100, nil), true, "first")
+        eq(Rules.ready(339, 100), false, "not yet")
+        eq(Rules.ready(340, 100), true, "ready")
+    end)
+end
