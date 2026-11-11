@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Cloud Tracker original 3D beacon
+- Original Roblox `Model` with anchored slate `Part` pedestal and glass `Part` orb, `ProximityPrompt`, generated in `src/server/CloudTracker.server.luau`. Creator: project; source/license: original code; external asset URL/Model ID/MeshPart MeshId: none/not applicable. Client `Highlight` targets existing 3D cloud models, not a Canvas world stand-in. Runtime appearance, prompt accessibility and rendering remain unverified.
