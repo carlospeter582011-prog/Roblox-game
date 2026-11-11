@@ -12,6 +12,7 @@ local SpawnRules = require(ReplicatedStorage:WaitForChild("SpawnRules"))
 local Mutations = require(ReplicatedStorage:WaitForChild("Mutations"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudVisuals = require(ReplicatedStorage:WaitForChild("CloudVisuals"))
+local EvolutionRules = require(ReplicatedStorage:WaitForChild("EvolutionRules"))
 local remote = Instance.new("RemoteEvent")
 remote.Name = "RequestCloudCatch"
 remote.Parent = ReplicatedStorage
@@ -68,6 +69,17 @@ local function showCatchPulse(position, color, isMagnet)
     })
     tween:Play()
     Debris:AddItem(pulse, 0.45)
+end
+
+local function tryEvolve(player, speciesId)
+    local profile = ProfileStore.Get(player)
+    if not profile then return end
+    local count = profile.species[speciesId] or 0
+    local can, evolvedId = EvolutionRules.canEvolve(speciesId, count)
+    if can and evolvedId and not (profile.species[evolvedId] and profile.species[evolvedId] > 0) then
+        -- Grant one of the evolved species as a one-time unlock reward. Uses existing species table.
+        ProfileStore.AddCatch(player, evolvedId, 0, { xp = 25 })
+    end
 end
 
 local function spawnCloud()
@@ -183,6 +195,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
             if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
+                tryEvolve(player, targetSpecies.id)
                 active[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
