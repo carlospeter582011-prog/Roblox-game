@@ -28,13 +28,13 @@ return function(test, eq)
         local CatchRules = require("../src/shared/CatchRules")
         local quest = quests.field_pebbleflow
         eq(quest ~= nil, true, "known field quest")
-        local data = { coins = 0, xp = 0, captures = 0, species = {}, quests = {} }
+        -- Isolate the milestone under test: the full catalog can legitimately award\n        -- another quest on the next catch, which is not a duplicate payout.\n        local onlyThisQuest = { [quest.id] = quest }\n        local data = { coins = 0, xp = 0, captures = 0, species = {}, quests = {} }
         for _ = 1, quest.required do
-            CatchRules.applyCatch(data, quest.speciesId, 0, quests)
+            CatchRules.applyCatch(data, quest.speciesId, 0, onlyThisQuest)
         end
         eq(data.quests[quest.id], true, "field quest completed at required threshold")
         local coins = data.coins
-        CatchRules.applyCatch(data, quest.speciesId, 0, quests)
+        CatchRules.applyCatch(data, quest.speciesId, 0, onlyThisQuest)
         eq(data.coins, coins, "repeat catch does not repay quest")
     end)
 end
