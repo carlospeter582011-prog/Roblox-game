@@ -94,3 +94,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
 
 | Cloud fusion recipes (logic only; no 3D asset) | n/a (`src/shared/CloudFusionRules.luau`, PR #66) | Project (original code) | Original | none | Project-owned | Pure fusion proposal only, not a world asset | Three Luau regression cases registered; CI, runtime, station and publishing unverified |
+
+| Cloud Fusion Altar 3D pedestal, core and four shards | n/a (`src/server/CloudFusionAltar.server.luau`) | Project (original procedural Parts) | Original, no external assets | none | Project-owned | Feature branch `feature/cloud-fusion-contract-20261111-0211`, server ProximityPrompt at starter meadow; client feedback is HUD only | Code committed; Roblox Studio visual/runtime, touch and publish **not verified** |
