@@ -1,5 +1,6 @@
 -- Pure catch/reward/quest rules used by the server systems. No Roblox globals and no catalog
 -- requires (catalogs are passed in), so tests/run.luau can exercise it with the plain Luau CLI.
+local Evolution = require("./EvolutionRules")
 local Rules = {}
 
 Rules.XP_PER_CATCH = 10
@@ -92,6 +93,7 @@ end
 -- options (optional): variantId = extra collection key for a mutated catch (e.g. "breeze:golden");
 -- the base species is ALWAYS counted too so species quests and the encyclopedia stay correct.
 -- xp = XP for this catch (default XP_PER_CATCH), used for mutation XP multipliers.
+-- Also attempts species evolution via EvolutionRules after the catch count is updated.
 function Rules.applyCatch(data, speciesId, coins, quests, options)
     data.species[speciesId] = (data.species[speciesId] or 0) + 1
     local variantId = options and options.variantId
@@ -101,6 +103,8 @@ function Rules.applyCatch(data, speciesId, coins, quests, options)
     data.captures += 1
     data.coins += coins
     data.xp += (options and options.xp) or Rules.XP_PER_CATCH
+    -- Evolution is server-authoritative and only awards once per base species.
+    Evolution.tryEvolve(data, speciesId)
     local completed = {}
     for id, quest in pairs(quests) do
         if not data.quests[id] and Rules.questProgress(quest, data) >= quest.required then
