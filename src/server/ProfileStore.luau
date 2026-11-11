@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local ElementalResearch = require(ReplicatedStorage:WaitForChild("ElementalResearchRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -35,6 +36,7 @@ local repo = ProfileCore.new(DataStoreService:GetDataStore(STORE_NAME), {
 
 local Profile = {}
 local sessions = {} -- [player] = data table (nil until loaded, nil again once released/lost)
+local researchElements = {} -- session-only, server-verified distinct catch elements
 local saving = {} -- [player] = true while a save is in flight (serialises saves per player)
 local pendingRelease = {} -- [userId] = true while a leaving player's final save runs
 local weak = { __mode = "k" }
@@ -86,6 +88,14 @@ function Profile.AddCatch(player, speciesId, coins, options)
         data.coins += bonus
         player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
         player:SetAttribute("CompanionBondPoints", points)
+    end
+    -- A modest repeatable discovery incentive: catch three distinct elements.
+    -- No client remote, new save field or arbitrary reward multiplier.
+    local nextElements, researchXp, completed = ElementalResearch.advance(researchElements[player], speciesId, CloudCatalog)
+    researchElements[player] = nextElements
+    if completed then
+        data.xp += researchXp
+        player:SetAttribute("ElementalResearchFeedback", "Elemental trio complete! +" .. researchXp .. " XP")
     end
     player:SetAttribute("CloudCount", data.captures)
     -- Only attribute-safe ids are replicated; mutation keys contain ":" and stay server-side.
@@ -313,6 +323,7 @@ Players.PlayerRemoving:Connect(function(player)
         pendingRelease[userId] = nil
     end
     sessions[player] = nil
+    researchElements[player] = nil
 end)
 
 game:BindToClose(function()
