@@ -357,3 +357,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-11 — PR #89 CI regression correction (follow-up)
 - CI run 42964546921 on commit 23c0c44 failed `luau-tests` (build passed): the test assumed total Coins would stay unchanged after another catch, but an unrelated quest legitimately paid 80 Coins. This was a **test isolation bug**, not evidence of duplicate rewards.
 - Commit 0251df232b2cb0579c7c4e83846408f7ef37ba85 changes `FieldJournalSpec.luau` to run the target quest against an isolated catalog; now checks exactly that quest's one-time reward. Await fresh CI result; Roblox runtime, merge and publish remain unverified.
+
+- Follow-up CI [42964853716](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42964853716) failed because the first test edit accidentally embedded literal `\\n` in a Luau comment, commenting out setup lines. Corrected with commit `329fad4c3a3a609861057f749611a71efbd46064`. Fresh CI pending; no green claim.
