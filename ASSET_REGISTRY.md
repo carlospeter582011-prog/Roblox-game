@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## 2026-11-11 — Sky Weather Shrine asset provenance (feature branch)
+- `src/server/WeatherShrine.server.luau`: four original anchored 3D Roblox Parts (guide + Sun/Rain/Wind stones), native ProximityPrompts. Creator: project. License: original code geometry. External asset URL: none; Roblox Model ID/MeshPart MeshId: not applicable. Client feedback is player attribute text; no in-world Canvas/ScreenGui. Studio geometry and mobile interaction verification pending.
