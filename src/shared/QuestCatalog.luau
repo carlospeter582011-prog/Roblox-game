@@ -40,4 +40,26 @@ local Quests = {
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
 }
+-- Discovery contracts: one-time, server-awarded first capture for every catalog species.
+-- Stable IDs survive catalog ordering changes and are validated against CloudCatalog in CI.
+local CloudCatalog = if script then require(script.Parent.CloudCatalog) else require("./CloudCatalog")
+local alreadyCovered = {}
+for _, quest in pairs(Quests) do
+    if quest.objective == "catch_species" and quest.required == 1 then
+        alreadyCovered[quest.speciesId] = true
+    end
+end
+for speciesId, species in pairs(CloudCatalog) do
+    if alreadyCovered[speciesId] then continue end
+    local id = "discover_" .. speciesId
+    assert(Quests[id] == nil, "Duplicate quest ID: " .. id)
+    local tier = ({ Common = 1, Uncommon = 2, Rare = 3, Epic = 4, Legendary = 5, Mythic = 6, Secret = 7 })[species.rarity] or 1
+    Quests[id] = {
+        id = id, title = "Discover " .. species.name,
+        description = "Capture a " .. species.name .. " for your sky field journal.",
+        objective = "catch_species", speciesId = speciesId, required = 1,
+        rewardCoins = 20 * tier, rewardXP = 10 * tier,
+        chapter = math.min(5, math.ceil(tier / 2)),
+    }
+end
 return table.freeze(Quests)
