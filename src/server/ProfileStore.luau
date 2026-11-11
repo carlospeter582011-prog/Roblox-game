@@ -142,7 +142,7 @@ function Profile.AwardBossTrial(player, bossId)
     return true, coins, xp
 end
 
-function Profile.CycleCompanion(player)
+-- Sky race rewards: only the server-owned checkpoint controller invokes this.\nfunction Profile.AwardSkyRace(player, coins, xp)\n    local data = sessions[player]\n    if not data or type(coins) ~= "number" or type(xp) ~= "number" or coins ~= math.floor(coins)\n        or xp ~= math.floor(xp) or coins < 1 or coins > 140 or xp < 1 or xp > 75 then return false end\n    data.coins += coins\n    data.xp += xp\n    player:SetAttribute("CloudCoins", data.coins)\n    player:SetAttribute("CloudXP", data.xp)\n    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))\n    return true\nend\n\nfunction Profile.CycleCompanion(player)
     local data = sessions[player]
     if not data then return false, "Profile unavailable" end
     local nextId = CompanionRules.next(data.companionSpecies, data.species, CloudCatalog)
