@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-11 — Sky Sprint course (draft)
+- Five original project-authored Roblox Model/Part gate assemblies with physical platforms and native ProximityPrompts in `src/server/SkySprint.server.luau`. No external assets, MeshIds, Canvas world geometry or third-party licenses. Source integrated on isolated feature branch only. Studio/mobile visual geometry and collision verification pending.
