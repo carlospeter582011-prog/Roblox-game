@@ -7,6 +7,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local HabitatRules = require(ReplicatedStorage.Shared.HabitatRules)
 local ProfileStore = require(script.Parent.ProfileStore)
+local CompanionRules = require(ReplicatedStorage.Shared.CompanionRules)
 
 local STATION_POSITION = Vector3.new(40, 12, 30) -- near starter island, adjust as needed
 
@@ -86,7 +87,6 @@ prompt.Triggered:Connect(function(player)
         sessionUses[player.UserId] or 0
     )
     if not ok then
-        -- Optional: notify client, but keep server-only for now
         return
     end
 
@@ -98,7 +98,11 @@ prompt.Triggered:Connect(function(player)
     lastUse[player.UserId] = now
     sessionUses[player.UserId] = (sessionUses[player.UserId] or 0) + 1
 
-    ProfileStore.Save(player, profile) -- assume exists; may need adjustment based on actual ProfileStore API
+    player:SetAttribute("CloudCoins", profile.coins)
+    player:SetAttribute("CompanionBondPoints", newBond)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(newBond))
+
+    ProfileStore.Save(player)
 end)
 
 Players.PlayerRemoving:Connect(function(player)
