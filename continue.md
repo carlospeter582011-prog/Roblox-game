@@ -352,3 +352,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Added `CloudFlightSpec.luau` and registered it in `tests/run.luau` (two regression cases covering trajectories, bounds and invalid time). Branch: `feature/cloud-elemental-flight-20261111-1351`.
 - Evidence pending: CI run and Roblox runtime/mobile verification. Validate cloud model follows moving anchor and island boundaries; this is not a completed 150-species behavior system.
 - Other draft PRs modify catch/spawn logic; keep this isolated until integration review. No direct merge or publication.
+
+- CI update: [run 43015642202](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/43015642202) both `build` and `luau-tests` completed SUCCESS (including static analysis, Luau unit suite, Rojo build and artifact upload). No runtime, mobile, merge or publication verification.
