@@ -123,12 +123,19 @@ end
 
 -- Reward a completed server-validated boss trial. Only the server passes a catalog id.
 -- Rewards use the existing persistent coin/XP fields; no save schema migration.
-function Profile.AwardBossTrial(player, bossId)
+function Profile.AwardBossTrial(player, bossId, elapsed)
     local data = sessions[player]
     if not data then return false end
     local BossRules = require(ReplicatedStorage:WaitForChild("BossChallengeRules"))
     local coins, xp = BossRules.reward(bossId)
     if not coins then return false end
+    local rank, bonusCoins, bonusXP = BossRules.medal(bossId, elapsed)
+    if rank == 0 then return false end
+    data.bossMedals = data.bossMedals or {}
+    data.bossMedals[bossId] = math.max(data.bossMedals[bossId] or 0, rank)
+    player:SetAttribute("BossMedal_" .. bossId, data.bossMedals[bossId])
+    coins += bonusCoins
+    xp += bonusXP
     data.bossVictories = data.bossVictories or {}
     local previous = data.bossVictories[bossId] or 0
     data.bossVictories[bossId] = math.min(previous + 1, 1000000)
@@ -265,6 +272,9 @@ local function onPlayerAdded(player)
     local crystalCount = 0
     for _, found in pairs(data.crystals or {}) do
         if found then crystalCount += 1 end
+    end
+    for id, rank in pairs(data.bossMedals or {}) do
+        player:SetAttribute("BossMedal_" .. id, rank)
     end
     player:SetAttribute("SkyCrystalsDiscovered", crystalCount)
     player:SetAttribute("CloudCount", data.captures)
