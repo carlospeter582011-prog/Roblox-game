@@ -1,0 +1,21 @@
+return function(test, eq)
+    local Rules = require("../src/shared/CoopRelayRules")
+    test("co-op relay needs distinct players and ordered physical stations", function()
+        local a = {userId=1, station=1, at=100}
+        local b = {userId=2, station=2, at=109}
+        eq(Rules.canPair(a,b,110,{}),true,"valid pair")
+        eq(Rules.canPair(a,{userId=1,station=2,at=109},110,{}),false,"same player")
+        eq(Rules.canPair(b,a,110,{}),false,"swapped")
+        eq(Rules.canPair(a,b,113,{}),false,"expired")
+        eq(Rules.canPair(a,b,109,{[1]=100}),false,"cooldown")
+        eq(Rules.canPair(a,b,110,{[2]=math.huge}),false,"invalid cooldown")
+    end)
+    test("co-op relay rejects spoofed proximity and unloaded/dead profiles", function()
+        eq(Rules.canActivate(14,true,true),true,"edge")
+        eq(Rules.canActivate(14.01,true,true),false,"too far")
+        eq(Rules.canActivate(-1,true,true),false,"negative")
+        eq(Rules.canActivate(math.huge,true,true),false,"infinite")
+        eq(Rules.canActivate(1,false,true),false,"not loaded")
+        eq(Rules.canActivate(1,true,false),false,"dead")
+    end)
+end
