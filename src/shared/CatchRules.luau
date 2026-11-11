@@ -69,6 +69,40 @@ function Rules.selectBurstTargets(requestedId, candidates, limit)
     return selected
 end
 
+-- Ember Cannon ignites a small cluster around the targeted cloud. Candidates are
+-- discovered by the server, not submitted by the client. The primary target must
+-- have passed the normal range check before this helper is called.
+-- Each secondary cloud must independently be within the player's catch range.
+function Rules.selectEmberSplashTargets(primaryId, candidates, radius, limit)
+    local selected = { primaryId }
+    if type(primaryId) ~= "string" or type(candidates) ~= "table" then return selected end
+    if type(radius) ~= "number" or radius ~= radius or radius <= 0 or radius > 20 then return selected end
+    if type(limit) ~= "number" or limit ~= limit or limit < 1 then return selected end
+    local eligible = {}
+    for _, candidate in ipairs(candidates) do
+        if type(candidate) == "table" and type(candidate.id) == "string"
+            and candidate.id ~= primaryId and #candidate.id <= 24
+            and type(candidate.splashDistance) == "number" and candidate.splashDistance >= 0
+            and candidate.splashDistance <= radius
+            and candidate.inPlayerRange == true then
+            table.insert(eligible, candidate)
+        end
+    end
+    table.sort(eligible, function(a, b)
+        if a.splashDistance == b.splashDistance then return a.id < b.id end
+        return a.splashDistance < b.splashDistance
+    end)
+    local seen = { [primaryId] = true }
+    for _, candidate in ipairs(eligible) do
+        if #selected >= math.min(3, math.floor(limit)) then break end
+        if not seen[candidate.id] then
+            seen[candidate.id] = true
+            table.insert(selected, candidate.id)
+        end
+    end
+    return selected
+end
+
 function Rules.coinReward(species, tool)
     return math.floor(species.baseRewardCoins * tool.coinMultiplier)
 end
