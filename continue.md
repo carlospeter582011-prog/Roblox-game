@@ -348,3 +348,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 
 ### Sky Crafting CI verification
 - GitHub Actions [run 42866070312](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42866070312) completed **success** on implementation/documentation head `851653f2`: `build` (Rojo build and artifact verification) and `luau-tests` (static analysis and unit tests) both passed. This verifies CI execution, **not** Roblox Studio/mobile runtime, reachability, data persistence under real server conditions or publication. PR remains draft.
+
+## 2026-11-11 — PR #43 crafting workshop interaction and regression follow-up
+- Reused existing crafting PR #43 rather than creating a fifth overlapping implementation. Commit d55ce092 separates three recipe prompts into distinct native 3D neon pedestals to prevent stacked mobile ProximityPrompt interactions. Commit bbff099c adds regression checks for all three recipes, exact deductions, and atomic rejection of insufficient materials.
+- CI, Roblox touch runtime, actual placement and Published deployment require verification. Do not merge overlapping crafting PRs #62/#135/#156 without consolidating their semantics.
