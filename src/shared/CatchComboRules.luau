@@ -12,7 +12,7 @@ function Combo.preview(previous, now)
         and previous.time == previous.time and now >= previous.time
         and now - previous.time <= Combo.WINDOW
         and type(previous.streak) == "number" and previous.streak >= 1
-        and previous.streak == math.floor(previous.streak) then
+        and previous.streak < math.huge and previous.streak == math.floor(previous.streak) then
         streak = math.min(previous.streak + 1, Combo.MAX_STREAK)
     end
     -- Up to +5 XP per catch, no coin bonus and no save-schema change.
