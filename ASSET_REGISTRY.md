@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Bridge rune pads, approach platform, destination and six glass bridge segments | Original procedural `src/server/SkyBridge.server.luau` | Project | Original | none | Project-owned | Native Roblox Parts/Model; branch feature/sky-bridge-sequence-20261111-b | Code only; CI and Roblox Studio/mobile geometry/walkability unverified |
