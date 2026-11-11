@@ -351,3 +351,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-11 — cooperative Sky Chime sanctuary (draft)
 - Isolated branch `feature/sky-chime-coop-puzzle-20261111-0212` adds a server-owned 4-note cooperative puzzle at Eastwind Outlook. Three native 3D chimes share a sequence, with 18-second step timeout, wrong-note reset, 3-second fail cooldown and 45-second gate access to a new observation balcony. ProximityPrompts support touch/gamepad; server checks profile, alive state, proximity and per-player input rate. No Coins/XP awarded, no persistent schema or external assets. Three pure Luau tests added to runner.
 - No Studio/mobile collision or puzzle runtime verification; no publish claim. Validate CI and actual bridge/gate geometry before merge. This is a replayable cooperative exploration activity, not a completed quest/world milestone.
+
+- CI evidence: [Build Roblox Place run 42929854364](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/42929854364) completed successfully on feature head efa3e823; `build` and `luau-tests` jobs passed. This does not prove Roblox runtime, collision, mobile or publishing.
