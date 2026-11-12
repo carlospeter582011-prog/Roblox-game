@@ -42,6 +42,9 @@ end)
 local cloudFolder = Instance.new("Folder")
 cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
+local ClaimRules = require(script.Parent:WaitForChild("CloudClaimRules"))
+local claims = ClaimRules.new()
+local BurstRules = require(script.Parent:WaitForChild("CloudBurstRules"))
 local active = {}
 local lastAttempt = {}
 local nextId = 0
@@ -175,6 +178,24 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
         if targetSpecies and active[targetId] == targetCloud then
+            local claimToken = claims:claim(targetId)
+            if not claimToken then continue end
+            -- A burst may yield between targets. Revalidate the *current* character,
+            -- health and distance before rewarding each cloud, not only at burst start.
+            local currentCharacter = player.Character
+            local currentRoot = currentCharacter and currentCharacter:FindFirstChild("HumanoidRootPart")
+            local humanoid = currentCharacter and currentCharacter:FindFirstChildOfClass("Humanoid")
+            local currentDistance = currentRoot and (currentRoot.Position - targetCloud.Position).Magnitude
+            local canReach = BurstRules.canReward(active[targetId], targetCloud,
+                currentRoot ~= nil and humanoid ~= nil and targetCloud.Parent ~= nil,
+                humanoid and humanoid.Health or 0, currentDistance,
+                currentDistance ~= nil and CatchRules.isInRange(currentDistance, targetSpecies, tool),
+                targetId == cloudId and currentDistance ~= nil
+                    and CatchRules.canMagnetPull(currentDistance, targetSpecies, toolId, tool))
+            if not canReach then
+                claims:release(targetId, claimToken)
+                continue
+            end
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
@@ -182,7 +203,12 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
-            if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
+            -- Claim remains held across yielding profile writes; other players cannot double-catch.
+            local callOk, saved = pcall(ProfileStore.AddCatch, player, targetSpecies.id, coins, options)
+            if not callOk then
+                warn("Catch profile operation failed; claim released for retry")
+            end
+            if callOk and saved then
                 active[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
@@ -193,6 +219,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 caught += 1
                 task.delay(5, spawnCloud)
             end
+            claims:release(targetId, claimToken)
         end
     end
     if caught > 0 then
