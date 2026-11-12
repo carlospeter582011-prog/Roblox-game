@@ -4,6 +4,9 @@ Rules.Recipes = {
     { id = "breeze_to_gale", source = "breeze", result = "gale", copies = 2, bond = 10, coins = 120 },
     { id = "drizzle_to_mistveil", source = "drizzle", result = "mistveil", copies = 2, bond = 10, coins = 150 },
     { id = "thunder_to_stormfront", source = "thunder", result = "stormfront", copies = 2, bond = 40, coins = 320 },
+    { id = "frost_to_icicle", source = "frost", result = "icicle", copies = 2, bond = 40, coins = 280 },
+    { id = "ember_to_emberheart", source = "ember", result = "emberheart", copies = 2, bond = 40, coins = 420 },
+    { id = "sunbeam_to_sunflare", source = "sunbeam", result = "sunflare", copies = 2, bond = 10, coins = 220 },
 }
 local function integer(n, max)
     return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
