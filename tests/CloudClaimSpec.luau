@@ -1,0 +1,12 @@
+local Claims = require("../src/server/CloudClaimRules")
+local guard = Claims.new()
+assert(guard:claim("cloud-1") == true)
+assert(guard:isClaimed("cloud-1") == true)
+assert(guard:claim("cloud-1") == false, "second overlapping handler must not claim")
+assert(guard:claim("cloud-2") == true, "unrelated clouds can be caught")
+guard:release("cloud-1")
+assert(guard:claim("cloud-1") == true, "failed save must allow retry")
+guard:release("cloud-1")
+guard:release("cloud-2")
+assert(guard:claim(nil) == false, "invalid identifiers rejected")
+return true
