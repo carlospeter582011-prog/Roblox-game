@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-12 — Expedition quest expansion source audit
+- 28 new catalog-driven catch quests reuse existing 3D catchable cloud Models/Parts. No new geometry, Canvas world objects, external assets, Model IDs, Mesh IDs, audio, or scripts. No additional licensing obligations. Source-only; Roblox runtime/visual/CI validation pending.
