@@ -95,3 +95,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-12 — Catch claim guard
 - Server-only `CloudClaimRules.luau` and CloudCatch handler change add no world geometry, mesh, GUI, third-party assets, or asset IDs. Existing 3D cloud visuals remain unchanged; runtime verification pending.
+
+## 2026-11-12 — Catch reservation token hardening
+- Server-side concurrency validation only; no new Roblox Models, Parts, Mesh IDs, external assets or Canvas world objects. Existing cloud visual model integration unchanged. Runtime verification pending.
