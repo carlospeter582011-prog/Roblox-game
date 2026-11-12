@@ -1,1 +1,1 @@
-PLACEHOLDER_WILL_REPLACE
+See /tmp/continue_updated.md - will be replaced by reading
