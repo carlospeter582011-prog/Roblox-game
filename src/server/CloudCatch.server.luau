@@ -176,7 +176,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud and claims:claim(targetId) then
+        if targetSpecies and active[targetId] == targetCloud then
+            local claimToken = claims:claim(targetId)
+            if not claimToken then continue end
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
@@ -200,7 +202,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 caught += 1
                 task.delay(5, spawnCloud)
             end
-            claims:release(targetId)
+            claims:release(targetId, claimToken)
         end
     end
     if caught > 0 then
