@@ -379,6 +379,20 @@ require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
 
+
+test("companion progression rejects nonfinite or corrupted ownership and bond", function()
+    local Rules = require("../src/shared/CompanionRules")
+    local catalog = { breeze = { element = "Air" } }
+    eq(Rules.owned("breeze", { breeze = math.huge }, catalog), false, "infinite count rejected")
+    eq(Rules.owned("breeze", { breeze = 0 / 0 }, catalog), false, "NaN count rejected")
+    eq(Rules.owned("breeze", { breeze = 1 }, catalog), true, "valid count accepted")
+    eq(Rules.bondLevel(math.huge), 0, "infinite bond has no level")
+    eq(Rules.advanceBond(math.huge), 1, "infinite bond resets")
+    eq(Rules.bonusCoins(math.huge, 100), 0, "infinite reward rejected")
+    eq(Rules.bonusCoins(1000001, 100), 0, "unbounded reward rejected")
+    eq(Rules.airReachBonus("breeze", { breeze = math.huge }, catalog, { breeze = 100 }), 0, "invalid ownership grants no reach")
+end)
+
 local failures = 0
 for _, t in ipairs(tests) do
     local ok, err = pcall(t.fn)
