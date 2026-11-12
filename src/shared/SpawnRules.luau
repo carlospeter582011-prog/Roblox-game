@@ -33,6 +33,28 @@ function Spawn.rollSpecies(species, rng)
     return ids[#ids] -- float rounding edge: target reached the total
 end
 
+-- Each accessible region has an elemental identity; common clouds remain possible everywhere.
+-- These weights are relative, not guarantees, and never rely on client-supplied data.
+local regionAffinity = {
+    StarterMeadow = { Air = 3, Nature = 2, Light = 1.5 },
+    EastwindOutlook = { Air = 4, Light = 2, Storm = 1.5 },
+    ThunderheadRidge = { Storm = 5, Fire = 2, Ice = 2 },
+}
+
+function Spawn.rollForRegion(species, regionName, rng)
+    if type(species) ~= "table" or type(rng) ~= "function" then return nil end
+    local affinity = regionAffinity[regionName]
+    if not affinity then return Spawn.rollSpecies(species, rng) end
+    local weighted = {}
+    for id, entry in pairs(species) do
+        if type(entry) == "table" and validWeight(entry.spawnWeight) then
+            local multiplier = affinity[entry.element] or 1
+            weighted[id] = { spawnWeight = entry.spawnWeight * multiplier }
+        end
+    end
+    return Spawn.rollSpecies(weighted, rng)
+end
+
 -- Region layout must match the actual walkable floors in StarterWorld.server.luau.
 -- A stable rotation keeps the starter island populated while sending players onward.
 function Spawn.regionBounds(sequence)
