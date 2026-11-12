@@ -1,0 +1,22 @@
+return function(test, eq)
+    local Rules = require("../src/shared/RainfallReefRules")
+    test("rainfall reef walkable footprint and bridge connect", function()
+        eq(Rules.bridgeConnects(), true, "bridge overlaps both shores")
+        eq(Rules.onReef(455, 0), true, "center inside")
+        eq(Rules.onReef(400, 55), true, "edge inside")
+        eq(Rules.onReef(399, 0), false, "outside reef")
+        eq(Rules.onReef(math.huge, 0), false, "infinite rejected")
+        eq(#Rules.beacons, 3, "three beacons")
+        for _, beacon in ipairs(Rules.beacons) do
+            eq(Rules.onReef(beacon.x, beacon.z), true, beacon.id .. " on reef")
+        end
+    end)
+    test("rainfall beacon server eligibility is bounded", function()
+        eq(Rules.canActivate(12, true, true), true, "nearby valid player")
+        eq(Rules.canActivate(14, true, true), false, "too far")
+        eq(Rules.canActivate(2, false, true), false, "profile not ready")
+        eq(Rules.canActivate(2, true, false), false, "dead")
+        eq(Rules.canActivate(0/0, true, true), false, "NaN rejected")
+        eq(Rules.canActivate(-1, true, true), false, "negative rejected")
+    end)
+end
