@@ -42,6 +42,8 @@ end)
 local cloudFolder = Instance.new("Folder")
 cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
+local ClaimRules = require(script.Parent:WaitForChild("CloudClaimRules"))
+local claims = ClaimRules.new()
 local active = {}
 local lastAttempt = {}
 local nextId = 0
@@ -174,7 +176,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         local targetCloud = active[targetId]
         if not targetCloud then continue end
         local targetSpecies = catalog[targetCloud:GetAttribute("SpeciesId")]
-        if targetSpecies and active[targetId] == targetCloud then
+        if targetSpecies and active[targetId] == targetCloud and claims:claim(targetId) then
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
@@ -182,7 +184,9 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 variantId = mut and Mutations.key(targetSpecies.id, mut) or nil,
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
-            if ProfileStore.AddCatch(player, targetSpecies.id, coins, options) then
+            -- Claim remains held across yielding profile writes; other players cannot double-catch.
+            local saved = ProfileStore.AddCatch(player, targetSpecies.id, coins, options)
+            if saved then
                 active[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
@@ -193,6 +197,7 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 caught += 1
                 task.delay(5, spawnCloud)
             end
+            claims:release(targetId)
         end
     end
     if caught > 0 then
