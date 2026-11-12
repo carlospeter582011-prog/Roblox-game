@@ -350,3 +350,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-12 — Cloud tool crafting (draft, unverified)
 - Feature branch `feature/cloud-tool-crafting-20261112-0148` from main; `ToolCraftRules.luau`, `ToolCrafting.server.luau` and `ToolCraftRulesSpec.luau` add five recipe-based permanent tool crafts using Coins and duplicate species while retaining the final copy. Existing ownedTools/species/coins persistence and catch progression reused; server-only native 3D ProximityPrompts and validation.
 - Registered three regression tests in `tests/run.luau`. CI, Roblox runtime, mobile workbench placement and save/rejoin remain unverified. No direct publish or checklist completion. Review concurrent PRs before merge. Next: verify CI, UI recipe discovery and progression, then evolution/fusion and island production.
+
+## 2026-11-12 — Tool crafting expansion (PR #173)
+- Expanded server-authoritative craft recipes from 5 to 10 permanent catching tools, with rare-cloud progression and final-copy protection. Added ten individually prompted native Roblox Part recipe pedestals to avoid stacked prompts, and rejected nonfinite Coins/capture counts. Two more regression cases registered in ToolCraftRulesSpec.
+- Implementation commits ed1d6d5, 9fa925f, cdec4f7. CI, Roblox mobile interaction, physical geometry, persistence and Published upload remain UNVERIFIED. PR stays draft/unmerged; do not check launch acceptance.
