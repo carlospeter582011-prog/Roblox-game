@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## Companion Training Pavilion — 2026-11-12 (draft)
+- Provenance: original Roblox procedural Parts created in `src/server/CompanionTraining.server.luau`; no imported meshes, model IDs, textures or external licensing required. Components: anchored stone platform, four marble pillars, roof and glass altar with server ProximityPrompt. World collision/placement and mobile visibility require Roblox runtime verification. No asset ID claimed.
