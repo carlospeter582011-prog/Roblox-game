@@ -378,6 +378,9 @@ require("./RecoverySpec")(test, eq)
 require("./CrystalRulesSpec")(test, eq)
 require("./BossChallengeSpec")(test, eq)
 require("./CompanionAbilitySpec")(test, eq)
+test("Sky Survey order, timing and distance validation", function()
+    eq(require("./SkySurveySpec"), true, "survey rules")
+end)
 
 local failures = 0
 for _, t in ipairs(tests) do
