@@ -44,6 +44,7 @@ cloudFolder.Name = "CatchableClouds"
 cloudFolder.Parent = Workspace
 local ClaimRules = require(script.Parent:WaitForChild("CloudClaimRules"))
 local claims = ClaimRules.new()
+local BurstRules = require(script.Parent:WaitForChild("CloudBurstRules"))
 local active = {}
 local lastAttempt = {}
 local nextId = 0
@@ -185,11 +186,13 @@ remote.OnServerEvent:Connect(function(player, cloudId)
             local currentRoot = currentCharacter and currentCharacter:FindFirstChild("HumanoidRootPart")
             local humanoid = currentCharacter and currentCharacter:FindFirstChildOfClass("Humanoid")
             local currentDistance = currentRoot and (currentRoot.Position - targetCloud.Position).Magnitude
-            local canReach = currentRoot and humanoid and humanoid.Health > 0
-                and currentDistance == currentDistance
-                and (CatchRules.isInRange(currentDistance, targetSpecies, tool)
-                    or (targetId == cloudId and CatchRules.canMagnetPull(currentDistance, targetSpecies, toolId, tool)))
-            if not canReach or active[targetId] ~= targetCloud or not targetCloud.Parent then
+            local canReach = BurstRules.canReward(active[targetId], targetCloud,
+                currentRoot ~= nil and humanoid ~= nil and targetCloud.Parent ~= nil,
+                humanoid and humanoid.Health or 0, currentDistance,
+                currentDistance ~= nil and CatchRules.isInRange(currentDistance, targetSpecies, tool),
+                targetId == cloudId and currentDistance ~= nil
+                    and CatchRules.canMagnetPull(currentDistance, targetSpecies, toolId, tool))
+            if not canReach then
                 claims:release(targetId, claimToken)
                 continue
             end
