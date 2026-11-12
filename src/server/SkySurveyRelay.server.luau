@@ -22,8 +22,7 @@ local function claimRewardCooldown(userId)
     local token = HttpService:GenerateGUID(false)
     local success, record = pcall(function()
         return cooldownMap:UpdateAsync(tostring(userId), function(previous)
-            if type(previous) == "table" and type(previous.expires) == "number"
-                and previous.expires > now then
+            if Rules.cooldownActive(previous, now) then
                 return previous
             end
             return { token = token, expires = now + Rules.COOLDOWN }
