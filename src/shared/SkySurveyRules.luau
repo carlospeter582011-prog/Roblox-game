@@ -11,6 +11,11 @@ local function finite(n)
     return type(n) == "number" and n == n and n ~= math.huge and n ~= -math.huge
 end
 
+function Rules.cooldownActive(previous, now)
+    return type(previous) == "table" and finite(previous.expires)
+        and finite(now) and previous.expires > now
+end
+
 function Rules.check(stage, station, distance, elapsed, cooldownLeft)
     if type(stage) ~= "number" or stage ~= math.floor(stage) or stage < 1 or stage > 3 then return false, "stage" end
     if Rules.STATIONS[stage] ~= station then return false, "order" end
