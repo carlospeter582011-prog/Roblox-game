@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-12 — Skyway launchpad 3D geometry (PR #190)
+- Three original project-authored Roblox Part launchpads at existing walkable Meadow/Eastwind/Ridge coordinates. No external assets, Model IDs, Mesh IDs, GLBs or Canvas world objects.
+- Source: `src/server/SkywayLaunchpads.server.luau`; license: original; ownership: project. Validation: source-only, CI and Roblox runtime geometry/collision/mobile verification pending; not merged or published.
