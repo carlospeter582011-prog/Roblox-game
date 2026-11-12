@@ -393,3 +393,6 @@ print(string.format("%d tests, %d failed", #tests, failures))
 if failures > 0 then
     os.exit(1)
 end
+
+-- Regression: a yielding profile save must never award the same cloud twice.
+assert(require("./CloudClaimSpec"))
