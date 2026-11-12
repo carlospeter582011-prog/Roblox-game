@@ -3,6 +3,8 @@
 local Players = game:GetService("Players")
 local Workspace = game:GetService("Workspace")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local MemoryStoreService = game:GetService("MemoryStoreService")
+local HttpService = game:GetService("HttpService")
 local Profile = require(script.Parent:WaitForChild("ProfileStore"))
 local Rules = require(ReplicatedStorage:WaitForChild("SkySurveyRules"))
 
@@ -12,6 +14,24 @@ local positions = {
     ridge = Vector3.new(325, 3, 30),
 }
 local progress = {}
+local claimInFlight = {}
+-- Shared across live servers: a server hop must not reset the reward cooldown.
+local cooldownMap = MemoryStoreService:GetSortedMap("SkySurveyRewardCooldown_v1")
+local function claimRewardCooldown(userId)
+    local now = os.time()
+    local token = HttpService:GenerateGUID(false)
+    local success, record = pcall(function()
+        return cooldownMap:UpdateAsync(tostring(userId), function(previous)
+            if type(previous) == "table" and type(previous.expires) == "number"
+                and previous.expires > now then
+                return previous
+            end
+            return { token = token, expires = now + Rules.COOLDOWN }
+        end, Rules.COOLDOWN + 60)
+    end)
+    -- Fail closed on MemoryStore outages: do not pay unbounded duplicate rewards.
+    return success and type(record) == "table" and record.token == token
+end
 local beacons = Instance.new("Folder")
 beacons.Name = "SkySurveyRelay3D"
 beacons.Parent = Workspace
@@ -68,7 +88,16 @@ for index, id in ipairs(Rules.STATIONS) do
             return
         end
         if reason == "complete" then
+            if claimInFlight[player] then return end
+            claimInFlight[player] = true
+            local claimed = claimRewardCooldown(player.UserId)
+            if not claimed then
+                claimInFlight[player] = nil
+                player:SetAttribute("SkySurveyStatus", "Reward cooldown active or temporarily unavailable")
+                return
+            end
             local awarded = Profile.AwardSkySurvey(player, Rules.REWARD_COINS, Rules.REWARD_XP)
+            claimInFlight[player] = nil
             if not awarded then return end
             state.stage = 1
             state.started = now
@@ -82,4 +111,7 @@ for index, id in ipairs(Rules.STATIONS) do
         progress[player] = state
     end)
 end
-Players.PlayerRemoving:Connect(function(player) progress[player] = nil end)
+Players.PlayerRemoving:Connect(function(player)
+    progress[player] = nil
+    claimInFlight[player] = nil
+end)
