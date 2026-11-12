@@ -353,3 +353,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Tests: `tests/ExpeditionQuestSpec.luau` (2 cases) registered in `tests/run.luau`; verify IDs, species references, bounded targets/rewards and chapter coverage. CI and actual Roblox runtime are pending verification. PR: https://github.com/carlospeter582011-prog/Roblox-game/pull/178.
 - Asset audit: no new 3D models, Mesh IDs or Canvas world objects; existing asset provenance unchanged. Keep launch checklist unchecked until runtime evidence exists.
 - Next: verify PR CI and quest UI display, review conflicts with other quest changes, Studio/Android playtest and save/rejoin; continue full story/quests/worlds implementation. Do not directly publish a draft PR.
+
+- CI follow-up: [run 43132048023](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/43132048023) completed SUCCESS for documentation commit `43ec908`: both `build` (Rojo/package verification) and `luau-tests` (static analysis and unit tests) passed. This does **not** establish Roblox runtime playability, UI display, save/rejoin or publication.
