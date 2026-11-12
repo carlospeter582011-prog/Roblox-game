@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## Elemental habitats — 2026-11-12
+- Three original project-owned Air/Water/Nature habitat models created from native Roblox anchored Parts in `src/server/ElementalHabitats.server.luau`. No third-party assets, GLB uploads, Model IDs or Mesh IDs; ScreenGui is not used for the environment. Source-integrated on draft branch only. Position, collisions, mobile ProximityPrompt usability and runtime appearance **not verified**.
