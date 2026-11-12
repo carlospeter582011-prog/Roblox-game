@@ -185,8 +185,11 @@ remote.OnServerEvent:Connect(function(player, cloudId)
                 xp = Mutations.bonusXp(CatchRules.XP_PER_CATCH, mut),
             }
             -- Claim remains held across yielding profile writes; other players cannot double-catch.
-            local saved = ProfileStore.AddCatch(player, targetSpecies.id, coins, options)
-            if saved then
+            local callOk, saved = pcall(ProfileStore.AddCatch, player, targetSpecies.id, coins, options)
+            if not callOk then
+                warn("Catch profile operation failed; claim released for retry")
+            end
+            if callOk and saved then
                 active[targetId] = nil
                 showCatchPulse(targetCloud.Position, targetCloud.Color, magnetPull)
                 targetCloud:Destroy()
