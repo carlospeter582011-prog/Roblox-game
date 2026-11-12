@@ -6,17 +6,22 @@ local Recipes = {
     cloud_magnet = { coins = 60, ingredients = { breeze = 2, cirrus = 1 } },
     golden_net = { coins = 100, ingredients = { sunbeam = 2, breeze = 2 } },
     storm_vacuum = { coins = 180, ingredients = { thunder = 1, drizzle = 2 } },
+    rainbow_lasso = { coins = 260, ingredients = { rainbow = 1, sunbeam = 2 } },
+    cosmic_net = { coins = 400, ingredients = { comet = 1, cirrus = 3 } },
+    frost_trap = { coins = 480, ingredients = { frost = 2, hail = 2 } },
+    ember_cannon = { coins = 650, ingredients = { ember = 2, spark = 2 } },
+    crystal_snare = { coins = 800, ingredients = { crystal = 1, pebble = 3 } },
 }
 local Rules = {}
 Rules.Recipes = Recipes
 
 function Rules.canCraft(data, toolId, tools)
-    local recipe, tool = Recipes[toolId], tools[toolId]
+    local recipe, tool = Recipes[toolId], type(tools) == "table" and tools[toolId] or nil
     if not recipe or not tool or type(data) ~= "table" then return false, "Unknown recipe" end
     if type(data.ownedTools) ~= "table" or type(data.species) ~= "table" then return false, "Profile unavailable" end
     if data.ownedTools[toolId] then return false, "Already owned" end
-    if type(data.captures) ~= "number" or data.captures < tool.unlockCatches then return false, "More catches required" end
-    if type(data.coins) ~= "number" or data.coins ~= data.coins or data.coins < recipe.coins then return false, "Not enough Coins" end
+    if type(data.captures) ~= "number" or data.captures ~= data.captures or data.captures == math.huge or data.captures < tool.unlockCatches then return false, "More catches required" end
+    if type(data.coins) ~= "number" or data.coins ~= data.coins or data.coins == math.huge or data.coins < recipe.coins then return false, "Not enough Coins" end
     for id, amount in pairs(recipe.ingredients) do
         local count = data.species[id]
         if type(count) ~= "number" or count ~= count or count < amount + 1 or count ~= math.floor(count) then
