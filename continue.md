@@ -352,3 +352,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Branch `feature/cloud-companion-xp-20261112-0350`: added pure `CloudMasteryRules.luau` and integrated persistent per-companion XP in `ProfileCore` / `ProfileStore`. Equipped, owned companion earns 5 mastery XP per successful catch, up to 1,000,000; earned levels 1–10 add a small capped XP bonus (1% per level above 1). Player attributes expose current companion mastery for future HUD integration. No client authority or new remote.
 - Two regression cases added in `tests/run.luau`: gain/levels/save-rejoin and corrupted stored values. No actual Roblox runtime, UI, mobile or DataStore verification. CI status must be checked; branch not merged/published. Inspect conflicts with concurrent ProfileCore/ProfileStore PRs before merging.
 - Next: CI evidence, actual rejoin tests, mastery HUD, evolution branching, and integrate with collection lifecycle.
+
+## 2026-11-12 — mastery cap regression fix (PR #182)
+- Fixed CloudMasteryRules.gain: already capped mastery XP (1,000,000) previously reset to 5 on next catch due to `< MAX_XP` check. Now preserves cap and clamps near-cap values. Rejects nonfinite ownership and XP rewards; added regression assertions in tests/run.luau.
+- Code commits e43f9e66 and 139443fe. CI/runtime/Roblox publication pending verification; draft PR remains unmerged. No save schema or new assets. Next: verify CI and integration with concurrent ProfileStore PRs, then mobile and rejoin runtime QA.
