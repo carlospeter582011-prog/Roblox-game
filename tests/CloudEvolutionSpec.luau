@@ -21,3 +21,5 @@ eq(unbonded.coins,400)
 local forged = { id = "fake", source = "breeze", result = "gale", copies = 0, bond = 0, coins = 0 }
 eq(Rules.apply(profile(), forged, Catalog),false)
 print("CloudEvolutionSpec: 5 assertions passed")
+
+return true
