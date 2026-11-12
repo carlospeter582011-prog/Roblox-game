@@ -92,3 +92,10 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-12 — Cloud Tool Crafting Workbench (draft)
+- Original procedural 3D Roblox Model: slate Part workbench and neon orb in `src/server/ToolCrafting.server.luau`, no external assets or Mesh IDs.
+- Server ProximityPrompts craft five progression-gated tools with spare cloud copies and Coins; no Canvas world art. Requires CI, Roblox walkability, mobile ProximityPrompt, and persistence verification before acceptance.
+
+## 2026-11-12 — Tool crafting expansion (PR #173)
+- Ten individual recipe pedestals (original native Roblox Parts) added to `src/server/ToolCrafting.server.luau`; no external assets, Mesh IDs, Model IDs, or imported GLB. Source only; visual/walkability and mobile prompt selection not runtime-verified.
