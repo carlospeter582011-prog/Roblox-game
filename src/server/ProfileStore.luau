@@ -193,6 +193,20 @@ function Profile.BuyRangeTraining(player)
     return true, "Range upgraded! +" .. (nextLevel * 2) .. " studs"
 end
 
+-- Reward a fully server-validated three-region survey, using the existing saved currency fields.
+function Profile.AwardSkySurvey(player, coins, xp)
+    local data = sessions[player]
+    if not data or coins ~= 180 or xp ~= 100 then return false end
+    if type(data.coins) ~= "number" or type(data.xp) ~= "number" then return false end
+    if data.coins > 999999999 - coins or data.xp > 999999999 - xp then return false end
+    data.coins += coins
+    data.xp += xp
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CloudXP", data.xp)
+    player:SetAttribute("CloudLevel", Leveling.levelForXp(data.xp))
+    return true
+end
+
 -- Saves with retries. release = true also frees the session lock and ends the session.
 -- Returns true only if the data reached the DataStore.
 local function persist(player, release)
