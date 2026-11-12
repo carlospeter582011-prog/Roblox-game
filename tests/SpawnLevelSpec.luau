@@ -22,6 +22,23 @@ return function(test, eq)
         eq(Spawn.canFastTravel("starter", nil), false, "missing profile")
     end)
 
+    test("travel rejects malformed, nonfinite and fractional progress", function()
+        for _, value in ipairs({ -1, 24.9, math.huge, -math.huge, 0/0, "100", true }) do
+            eq(Spawn.canFastTravel("eastwind", value), false, "invalid catches " .. tostring(value))
+        end
+        eq(Spawn.canFastTravel("starter", math.huge), false, "infinity cannot bypass starter")
+        eq(Spawn.canFastTravel("eastwind", 25.0), true, "integer unlock accepted")
+        eq(Spawn.canFastTravel("ridge", 75.5), false, "fractional unlock rejected")
+    end)
+
+    test("region rotation rejects nonfinite and fractional sequence numbers", function()
+        for _, value in ipairs({ math.huge, -math.huge, 0/0, -1, 0, 1.5 }) do
+            eq(Spawn.regionBounds(value), nil, "invalid sequence " .. tostring(value))
+        end
+        eq(Spawn.regionBounds(2).name, "EastwindOutlook", "valid eastwind slot")
+        eq(Spawn.regionBounds(5).name, "ThunderheadRidge", "valid ridge slot")
+    end)
+
     test("travel landing positions are inside their actual 3D walkable floors", function()
         local floors = {
             starter = { x = 0, halfX = 102.5, halfZ = 102.5 },
