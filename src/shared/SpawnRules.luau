@@ -36,7 +36,7 @@ end
 -- Region layout must match the actual walkable floors in StarterWorld.server.luau.
 -- A stable rotation keeps the starter island populated while sending players onward.
 function Spawn.regionBounds(sequence)
-    if type(sequence) ~= "number" or sequence < 1 or sequence ~= math.floor(sequence) then
+    if type(sequence) ~= "number" or sequence ~= sequence or sequence == math.huge or sequence == -math.huge or sequence < 1 or sequence ~= math.floor(sequence) then
         return nil
     end
     local slot = sequence % 5
@@ -56,7 +56,10 @@ Spawn.travelDestinations = {
 }
 function Spawn.canFastTravel(destination, captures)
     local target = type(destination) == "string" and Spawn.travelDestinations[destination] or nil
-    return target ~= nil and type(captures) == "number" and captures >= target.requiredCatches
+    return target ~= nil and type(captures) == "number" and captures == captures
+        and captures ~= math.huge and captures ~= -math.huge
+        and captures >= 0 and captures == math.floor(captures)
+        and captures >= target.requiredCatches
 end
 
 return Spawn
