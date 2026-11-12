@@ -24,6 +24,26 @@ return function(test, eq)
         eq(Rules.craft(p, "wind_lasso", Tools), false, "insufficient coins")
         eq(p.species.breeze, 5, "species intact")
     end)
+    test("advanced tool recipes require rare spare clouds and preserve the last copy", function()
+        local p = profile()
+        p.captures = 300
+        p.coins = 2000
+        p.species.frost = 3
+        p.species.hail = 3
+        eq(Rules.craft(p, "frost_trap", Tools), true, "frost craft succeeds")
+        eq(p.species.frost, 1, "last frost remains")
+        eq(p.species.hail, 1, "last hail remains")
+        eq(p.coins, 1520, "advanced recipe cost")
+        eq(p.ownedTools.frost_trap, true, "advanced tool owned")
+    end)
+    test("nonfinite capture and currency values never grant a craft", function()
+        local p = profile()
+        p.captures = math.huge
+        eq(Rules.craft(p, "wind_lasso", Tools), false, "infinite captures rejected")
+        p.captures = 50
+        p.coins = math.huge
+        eq(Rules.craft(p, "wind_lasso", Tools), false, "infinite currency rejected")
+    end)
     test("tool crafting cannot bypass capture unlock or unknown recipe", function()
         local p = profile()
         p.captures = 0
