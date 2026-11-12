@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## Rainfall Reef procedural region — 2026-11-12 (draft)
+- `src/server/RainfallReef.server.luau`: original project-authored Roblox 3D Parts/Model for a connected reef island, bridge, coral pillars, skyfall columns and attunement beacons. Creator: project. License: original. Asset ID: none (no external mesh). Ownership: project source. Integration: feature branch only. Validation: source/tests added; CI and Studio/mobile visuals **not yet verified**. These are native Parts, not MeshParts; no Model ID is misused as a Mesh ID.
