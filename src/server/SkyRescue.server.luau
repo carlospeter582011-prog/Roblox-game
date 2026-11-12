@@ -10,7 +10,6 @@ folder.Name = "SkyRescueCheckpoints3D"
 folder.Parent = Workspace
 local checkpoints = {}
 local lastRescue = {}
-local lastActivation = {}
 
 for id, point in pairs(Rules.CHECKPOINTS) do
     local pad = Instance.new("Part")
@@ -40,7 +39,6 @@ for id, point in pairs(Rules.CHECKPOINTS) do
         local distance = (root.Position - pad.Position).Magnitude
         if Rules.canActivate(id, distance, player:GetAttribute("ProfileReady"), humanoid.Health > 0) then
             checkpoints[player] = id
-            lastActivation[player] = os.clock()
             player:SetAttribute("SkyRescuePoint", id)
         end
     end)
@@ -77,5 +75,4 @@ end)
 Players.PlayerRemoving:Connect(function(player)
     checkpoints[player] = nil
     lastRescue[player] = nil
-    lastActivation[player] = nil
 end)
