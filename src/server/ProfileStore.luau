@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local Mastery = require(ReplicatedStorage:WaitForChild("CloudMasteryRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -67,7 +68,15 @@ function Profile.AddCatch(player, speciesId, coins, options)
     local baseXp = catchOptions.xp or CatchRules.XP_PER_CATCH
     local resonance = CompanionRules.resonanceXp(baseXp, data.companionSpecies, speciesId,
         data.species, CloudCatalog, data.companionBond)
-    catchOptions.xp = baseXp + resonance
+    data.companionMastery = data.companionMastery or {}
+    local companionId = data.companionSpecies
+    local earned = Mastery.gain(data.companionMastery[companionId], companionId, data.species, CloudCatalog)
+    if earned then
+        data.companionMastery[companionId] = earned
+        player:SetAttribute("CompanionMasteryXP", earned)
+        player:SetAttribute("CompanionMasteryLevel", Mastery.level(earned))
+    end
+    catchOptions.xp = baseXp + resonance + Mastery.bonusXp(baseXp, earned or 0)
     for _, id in ipairs(CatchRules.applyCatch(data, speciesId, coins, questCatalog, catchOptions)) do
         player:SetAttribute("Quest_" .. id, true)
     end
@@ -149,6 +158,9 @@ function Profile.CycleCompanion(player)
     if not nextId then return false, "Catch a cloud to unlock a companion!" end
     data.companionSpecies = nextId
     player:SetAttribute("CompanionSpecies", nextId)
+    local mastery = (data.companionMastery or {})[nextId] or 0
+    player:SetAttribute("CompanionMasteryXP", mastery)
+    player:SetAttribute("CompanionMasteryLevel", Mastery.level(mastery))
     local points = (data.companionBond or {})[nextId] or 0
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
@@ -276,6 +288,9 @@ local function onPlayerAdded(player)
         data.companionSpecies = CompanionRules.next(nil, data.species, CloudCatalog) or ""
     end
     player:SetAttribute("CompanionSpecies", data.companionSpecies)
+    local mastery = (data.companionMastery or {})[data.companionSpecies] or 0
+    player:SetAttribute("CompanionMasteryXP", mastery)
+    player:SetAttribute("CompanionMasteryLevel", Mastery.level(mastery))
     local bondPoints = (data.companionBond or {})[data.companionSpecies] or 0
     player:SetAttribute("CompanionBondPoints", bondPoints)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(bondPoints))
