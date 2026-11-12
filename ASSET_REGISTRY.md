@@ -92,3 +92,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+## 2026-11-12 — Sky Rescue Relay
+- Three rescue stations at Eastwind Outlook (x 162–184) use project-original server-generated anchored Roblox Parts/Models and ProximityPrompts. No imported GLB, external creator/license, Model ID or Mesh ID. Collision/visual/mobile/runtime verification pending; session-only rescue progress.
