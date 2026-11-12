@@ -354,3 +354,6 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Security: finite distance/time validation; server-owned stage; no client remotes. Cooldown is session-only (server-hop bypass possible); cannot call feature production-ready until persistent anti-repeat is implemented.
 - Source-only pending CI, Studio/Android, actual DataStore rejoin, multiplayer, placement/collision and publish verification. No new third-party assets.
 - Coordinate with open draft PRs #188–194; do not merge blindly. Next: CI, runtime evidence, persistent cooldown, then larger crafting/islands/bosses.
+
+## 2026-11-12 — Sky Survey cross-server cooldown hardening
+PR #195 now claims each reward with atomic MemoryStore SortedMap UpdateAsync keyed by UserId and a GUID owner token. It rejects an existing unexpired claim and fails closed if MemoryStore is unavailable. A per-player in-flight guard blocks concurrent completions on one server. Pure expiry validation and malformed-value regression tests added to SkySurveySpec. Source commits 05ff6b6, bbd4f77, 3b20d45, 73ea02e. **Not yet Roblox runtime/MemoryStore tested; no deployment or merge verified.** If profile reward fails after the claim, cooldown is conservatively consumed. Check live MemoryStore behavior and CI before merging.
