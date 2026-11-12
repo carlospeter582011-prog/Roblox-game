@@ -349,3 +349,7 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 
 ## 2026-11-12 — Concurrent catch reward protection (draft)
 - Fixed a server-side duplicate-reward race: concurrent RemoteEvent handlers could both see the same cloud active while ProfileStore.AddCatch yields. `CloudClaimRules` reserves a cloud synchronously before the profile operation; releases on failure or exception, and removes the cloud after success. `tests/CloudClaimSpec.luau` checks exclusive claim, independent targets and retry. Source-level only until CI and Roblox multiplayer/runtime tests. Branch `fix/atomic-cloud-catch-claims-20261112`; do not merge concurrently with other catch edits. No publish claimed.
+
+## 2026-11-12 — Catch reservation ownership hardening (PR #192)
+- On existing draft PR #192, changed `CloudClaimRules` to return unique owner tokens and require the matching token to release a reservation. Prevents stale/wrong handlers unlocking a newly reserved cloud. Invalid/oversized IDs are rejected; `CloudCatch.server.luau` passes tokens; regression tests cover overlapping claims, independent clouds, wrong-owner and stale releases.
+- Code commits: `6cce935`, `ab4cd03`, `b8032f9`. GitHub Actions lookup for test commit returned no runs at inspection; CI/Roblox Studio, Android, DataStore and publishing are **not verified**. Do not merge until green CI and conflicting CloudCatch PR #193 are reconciled.
