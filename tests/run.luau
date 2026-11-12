@@ -371,6 +371,7 @@ end)
 
 require("./CatchRulesSpec")(test, eq)
 require("./SpawnLevelSpec")(test, eq)
+require("./RegionSpawnSpec")(test, eq)
 require("./MutationsSpec")(test, eq)
 require("./MutationAccountingSpec")(test, eq)
 require("./ProgressSpec")(test, eq)
