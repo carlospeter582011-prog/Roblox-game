@@ -39,5 +39,12 @@ local Quests = {
     five_nebula = { id = "five_nebula", title = "Nebula Hunt", description = "Catch five Nebula Clouds.", objective = "catch_species", speciesId = "nebula", required = 5, rewardCoins = 2000, rewardXP = 1000, chapter = 5 },
     first_solarcore = { id = "first_solarcore", title = "Solar Heart", description = "Catch a Solarcore Cloud.", objective = "catch_species", speciesId = "solarcore", required = 1, rewardCoins = 1100, rewardXP = 550, chapter = 5 },
     three_hundred_total = { id = "three_hundred_total", title = "Sky Emperor", description = "Catch three hundred clouds.", objective = "total_catches", required = 300, rewardCoins = 8000, rewardXP = 4000, chapter = 5 },
+
+    -- New quests for expanded species (2026-11-12)
+    first_cloudwisp = { id = "first_cloudwisp", title = "Whispering Wisp", description = "Catch a Cloudwisp.", objective = "catch_species", speciesId = "cloudwisp", required = 1, rewardCoins = 60, rewardXP = 30, chapter = 1 },
+    five_raindrop = { id = "five_raindrop", title = "Falling Droplets", description = "Catch five Raindrop Clouds.", objective = "catch_species", speciesId = "raindrop", required = 5, rewardCoins = 140, rewardXP = 70, chapter = 2 },
+    first_cosmos = { id = "first_cosmos", title = "Cosmic Visitor", description = "Catch a Cosmos Cloud.", objective = "catch_species", speciesId = "cosmos", required = 1, rewardCoins = 650, rewardXP = 325, chapter = 4 },
+    three_thunderbolt = { id = "three_thunderbolt", title = "Bolt of Power", description = "Catch three Thunderbolt Clouds.", objective = "catch_species", speciesId = "thunderbolt", required = 3, rewardCoins = 450, rewardXP = 225, chapter = 3 },
+    first_rift = { id = "first_rift", title = "Dimensional Tear", description = "Catch a Rift Cloud.", objective = "catch_species", speciesId = "rift", required = 1, rewardCoins = 950, rewardXP = 475, chapter = 5 },
 }
 return table.freeze(Quests)
