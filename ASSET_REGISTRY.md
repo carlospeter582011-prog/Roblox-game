@@ -98,3 +98,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-12 — Catch reservation token hardening
 - Server-side concurrency validation only; no new Roblox Models, Parts, Mesh IDs, external assets or Canvas world objects. Existing cloud visual model integration unchanged. Runtime verification pending.
+
+## 2026-11-12 — Burst catch post-yield validation
+- Server-only validation and pure regression tests on PR #192. No new Parts, Models, MeshParts, textures, third-party assets, Model IDs or Mesh IDs. Existing 3D cloud visuals unchanged. Roblox runtime remains unverified.
