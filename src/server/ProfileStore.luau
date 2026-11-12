@@ -15,6 +15,7 @@ local Leveling = require(ReplicatedStorage:WaitForChild("Leveling"))
 local CrystalRules = require(ReplicatedStorage:WaitForChild("CrystalRules"))
 local CompanionRules = require(ReplicatedStorage:WaitForChild("CompanionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local CloudFusionRules = require(ReplicatedStorage:WaitForChild("CloudFusionRules"))
 
 local STORE_NAME = "CatchACloudProfiles_v1" -- v1 flat records are migrated on first load
 local LOAD_ATTEMPTS, LOAD_DELAY = 5, 3 -- waits 3+6+9+12s while another server releases the lock
@@ -153,6 +154,22 @@ function Profile.CycleCompanion(player)
     player:SetAttribute("CompanionBondPoints", points)
     player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(points))
     return true, "Companion: " .. CloudCatalog[nextId].name
+end
+
+-- Consumes duplicate clouds and Coins only after server-side recipe validation.
+-- Inventory and wallet mutate without yielding; normal session-lock autosave persists them.
+function Profile.FuseCloud(player, recipeId)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local ok, result = CloudFusionRules.apply(data, recipeId, CloudCatalog)
+    if not ok then return false, result end
+    local recipe = CloudFusionRules.recipes[recipeId]
+    for ingredient in pairs(recipe.inputs) do
+        player:SetAttribute("SpeciesCount_" .. ingredient, data.species[ingredient])
+    end
+    player:SetAttribute("SpeciesCount_" .. result, data.species[result])
+    player:SetAttribute("CloudCoins", data.coins)
+    return true, result
 end
 
 function Profile.BuyTool(player, toolId)
