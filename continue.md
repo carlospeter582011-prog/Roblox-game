@@ -351,3 +351,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Branch `feature/region-elemental-spawn-20261112`: `SpawnRules.rollForRegion` biases species elements by actual 3D spawn region (StarterMeadow Air/Nature/Light; Eastwind Air/Light/Storm; Thunderhead Storm/Fire/Ice), preserving baseline chance for other elements and deterministic seeded selection.
 - `CloudCatch.server.luau` now resolves region before species roll, and uses the same bounds for actual cloud position. Three regression tests in `tests/RegionSpawnSpec.luau`, registered in `tests/run.luau`.
 - No assets, save schema, new remotes, or 2D world geometry. Tests/CI, in-game rarity balance, visual/runtime and publishing **not yet verified**. Do not merge until CI and conflicts checked; main is not changed by this branch.
+
+- **CI verified** for PR #185 head `e95ea81a02f781edc732e57fe10e74bb773473a6`: [run 43142496088](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/43142496088) completed success, both `build` and `luau-tests` jobs passed. This does not verify Roblox runtime, visual placement, save or published deployment. Remains draft/unmerged.
