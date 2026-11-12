@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Sky Rescue checkpoint beacons (Meadow, Eastwind, Ridge) | n/a (`src/server/SkyRescue.server.luau`) | Project (original procedural) | Original | none | Project-owned | Three native Roblox Part/ProximityPrompt pads and server fall recovery on draft branch | Code-only; Luau CI and Studio/mobile runtime/collision unverified |
