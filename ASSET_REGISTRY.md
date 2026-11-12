@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Wind launch traversal pads (Meadow/Eastwind) | n/a (`src/server/SkyLaunch.server.luau`) | Project original procedural | Original | none | Project-owned | Two 3D Parts/Models with server-owned ProximityPrompts, draft branch | Source integration only; CI, trajectory/landing, Studio/mobile visuals and Published state unverified |
