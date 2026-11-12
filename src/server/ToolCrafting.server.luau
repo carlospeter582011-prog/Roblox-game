@@ -9,7 +9,7 @@ station.Name = "CloudToolCraftingStation"
 station.Parent = workspace
 local base = Instance.new("Part")
 base.Name = "Workbench"
-base.Size = Vector3.new(7, 2, 5)
+base.Size = Vector3.new(22, 2, 12)
 base.Position = Vector3.new(15, 6, 12)
 base.Anchored = true
 base.Material = Enum.Material.Slate
@@ -26,7 +26,7 @@ orb.Material = Enum.Material.Neon
 orb.Color = Color3.fromRGB(160, 235, 255)
 orb.Parent = station
 local cooldown = {}
-local recipeOrder = {"wind_lasso", "mist_gloves", "cloud_magnet", "golden_net", "storm_vacuum"}
+local recipeOrder = {"wind_lasso", "mist_gloves", "cloud_magnet", "golden_net", "storm_vacuum", "rainbow_lasso", "cosmic_net", "frost_trap", "ember_cannon", "crystal_snare"}
 for i, id in ipairs(recipeOrder) do
     local prompt = Instance.new("ProximityPrompt")
     prompt.Name = "Craft_" .. id
@@ -34,7 +34,15 @@ for i, id in ipairs(recipeOrder) do
     prompt.ObjectText = "Cloud Workshop (" .. Rules.Recipes[id].coins .. " Coins + spare clouds)"
     prompt.MaxActivationDistance = 10
     prompt.HoldDuration = 0.5
-    prompt.Parent = base
+    local pedestal = Instance.new("Part")
+    pedestal.Name = "Recipe_" .. id
+    pedestal.Size = Vector3.new(2.5, 1.2, 2.5)
+    pedestal.Position = base.Position + Vector3.new(-8 + ((i - 1) % 5) * 4, 1.6, i <= 5 and -3 or 3)
+    pedestal.Anchored = true
+    pedestal.Color = Color3.fromRGB(120, 180, 220)
+    pedestal.Material = Enum.Material.SmoothPlastic
+    pedestal.Parent = station
+    prompt.Parent = pedestal
     prompt.Triggered:Connect(function(player)
         local now = os.clock()
         if cooldown[player] and now - cooldown[player] < 1 then return end
@@ -42,7 +50,7 @@ for i, id in ipairs(recipeOrder) do
         local character = player.Character
         local humanoid = character and character:FindFirstChildOfClass("Humanoid")
         local root = character and character:FindFirstChild("HumanoidRootPart")
-        if not root or not humanoid or humanoid.Health <= 0 or (root.Position - base.Position).Magnitude > 13 then return end
+        if not root or not humanoid or humanoid.Health <= 0 or (root.Position - pedestal.Position).Magnitude > 13 then return end
         if player:GetAttribute("ProfileReady") ~= true then return end
         local data = Profile.Get(player)
         local ok, message = Rules.craft(data, id, Tools)
