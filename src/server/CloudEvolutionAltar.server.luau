@@ -19,10 +19,13 @@ local function part(name, size, position, color, material)
     p.Parent = altar
     return p
 end
-local base = part("EvolutionDais", Vector3.new(15, 2, 12), Vector3.new(-36, 4, 15), Color3.fromRGB(93, 76, 149), Enum.Material.Slate)
+local base = part("EvolutionDais", Vector3.new(24, 2, 18), Vector3.new(-36, 4, 15), Color3.fromRGB(93, 76, 149), Enum.Material.Slate)
 for i, recipe in ipairs(Rules.Recipes) do
-    local x = -42 + (i - 1) * 6
-    local pillar = part(recipe.id, Vector3.new(3, 4, 3), Vector3.new(x, 7, 15), Color3.fromRGB(135, 193, 237), Enum.Material.Neon)
+    local column = (i - 1) % 3
+    local row = math.floor((i - 1) / 3)
+    local x = -43 + column * 7
+    local z = 11 + row * 8
+    local pillar = part(recipe.id, Vector3.new(3, 4, 3), Vector3.new(x, 7, z), Color3.fromRGB(135, 193, 237), Enum.Material.Neon)
     pillar.CanCollide = true
     local prompt = Instance.new("ProximityPrompt")
     prompt.ActionText = "Evolve " .. recipe.source .. " to " .. recipe.result
