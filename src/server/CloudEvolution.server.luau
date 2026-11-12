@@ -6,6 +6,7 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Profile = require(script.Parent:WaitForChild("ProfileStore"))
 local EvolutionRules = require(ReplicatedStorage:WaitForChild("EvolutionRules"))
 local CloudCatalog = require(ReplicatedStorage:WaitForChild("CloudCatalog"))
+local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
 
 local ALTAR_POS = Vector3.new(25, 5, 15) -- near starter island, not overlapping known stations
 local COOLDOWN = 8 -- seconds per player
@@ -70,7 +71,6 @@ prompt.Triggered:Connect(function(player)
 
     local ok, recipeOrErr = EvolutionRules.canEvolve(inputId, data.species, data.coins, data.companionBond, CloudCatalog)
     if not ok then
-        -- Optional: notify client, but keep server silent for now
         return
     end
 
@@ -80,17 +80,13 @@ prompt.Triggered:Connect(function(player)
     data.species = newSpecies
     data.coins = newCoins
     player:SetAttribute("CloudCoins", data.coins)
-    if CatchRules and CatchRules.isAttributeSafe then -- safe if available
-        local CatchRules = require(ReplicatedStorage:WaitForChild("CatchRules"))
-        if CatchRules.isAttributeSafe("SpeciesCount_" .. inputId) then
-            player:SetAttribute("SpeciesCount_" .. inputId, data.species[inputId] or 0)
-        end
-        if CatchRules.isAttributeSafe("SpeciesCount_" .. outputId) then
-            player:SetAttribute("SpeciesCount_" .. outputId, data.species[outputId] or 0)
-        end
+    if CatchRules.isAttributeSafe("SpeciesCount_" .. inputId) then
+        player:SetAttribute("SpeciesCount_" .. inputId, data.species[inputId] or 0)
+    end
+    if CatchRules.isAttributeSafe("SpeciesCount_" .. outputId) then
+        player:SetAttribute("SpeciesCount_" .. outputId, data.species[outputId] or 0)
     end
     lastUse[player] = now
-    -- Profile save happens via autosave / leave; immediate optional save not required for this slice
 end)
 
 Players.PlayerRemoving:Connect(function(player)
