@@ -96,3 +96,6 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## Companion mastery progression — 2026-11-12
 - This branch changes profile and server progression only. No new visual assets, Model IDs, Mesh IDs, external licenses, or world Canvas elements. Existing 3D assets remain subject to the verification notes above.
+
+## 2026-11-12 — mastery cap fix asset audit
+- PR #182 fixes numeric progression and adds tests only. No 3D objects, Canvas world stand-ins, external assets, Model IDs or MeshPart IDs introduced. Existing runtime/visual verification remains pending.
