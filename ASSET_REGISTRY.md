@@ -15,6 +15,9 @@ Priority order: Roblox Creator Store -> licensed external (CC0 preferred) -> ori
 | Three boss trial statues and arenas (Meadow Warden, Wind Guardian, Stormheart Titan) | n/a (`src/server/BossTrials.server.luau`) | Project (original procedural 3D Parts/Models) | Original | none | Project-owned | Server-generated anchored Roblox 3D geometry, ProximityPrompt interaction | Source implementation only; collision, Android visuals, tests and Published upload unverified |
 | Sports car (removed prototype asset) | Uploaded via Open Cloud by the owner's account | Unknown (listed in the old prototype as an uploaded GLB; original source and license **not recorded**) | **Unverified** | 124315115505635 | Owner account 7550783083 per old code comment; permission for the experience unverified | **Removed** with the house-and-car prototype (`World.server.luau` deleted); still in `baseline/house-car-prototype` | Do not reuse until source/license are established |
 
+
+| Sky Observatory compass station (base, center, four direction markers) | n/a (`src/server/SkyObservatory.server.luau`) | Project original procedural geometry | Original | none | Project-owned | Draft branch `feature/sky-current-navigation-trial-20261112`, native Roblox Parts and ProximityPrompts | Source only; CI, terrain overlap, mobile prompts and Roblox runtime unverified |
+
 ## Notes
 - `CloudVisuals.MeshIds` is empty: no mesh asset is integrated. `docs/3d-assets.md` lists CC0 candidates (Kenney, Quaternius) but its Studio-import steps are unusable on the owner's tablet; upload through Open Cloud and record each asset here (source, creator, licence, asset ID, inspection result) before use.
 
