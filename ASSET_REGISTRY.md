@@ -92,3 +92,7 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+
+## Companion mastery progression — 2026-11-12
+- This branch changes profile and server progression only. No new visual assets, Model IDs, Mesh IDs, external licenses, or world Canvas elements. Existing 3D assets remain subject to the verification notes above.
