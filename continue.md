@@ -1,1 +1,1 @@
-See /tmp/continue_updated.md - will be replaced by reading
+The full content is in /tmp/continue_updated.md - using it now
