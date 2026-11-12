@@ -343,4 +343,29 @@ task.spawn(function()
     end
 end)
 
+-- Coin-funded companion training at a physical station. Cooldown is server-session scoped;
+-- progress and spent Coins persist through the existing session-locked profile.
+local TrainingRules = require(ReplicatedStorage:WaitForChild("CompanionTrainingRules"))
+local trainingTimes = {}
+function Profile.TrainCompanion(player)
+    local data = sessions[player]
+    if not data then return false, "Profile unavailable" end
+    local id = data.companionSpecies
+    if not CompanionRules.owned(id, data.species, CloudCatalog) then return false, "Equip an owned cloud" end
+    local now = os.clock()
+    local previous = trainingTimes[player]
+    local points = (data.companionBond or {})[id] or 0
+    local result, reason = TrainingRules.purchase(data.coins, points, now, previous)
+    if not result then return false, reason end
+    data.companionBond = data.companionBond or {}
+    data.coins = result.coins
+    data.companionBond[id] = result.points
+    trainingTimes[player] = now
+    player:SetAttribute("CloudCoins", data.coins)
+    player:SetAttribute("CompanionBondPoints", result.points)
+    player:SetAttribute("CompanionBondLevel", CompanionRules.bondLevel(result.points))
+    return true, "Training complete! +" .. result.gain .. " Bond"
+end
+Players.PlayerRemoving:Connect(function(player) trainingTimes[player] = nil end)
+
 return Profile
