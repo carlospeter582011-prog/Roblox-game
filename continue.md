@@ -353,3 +353,8 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 ## 2026-11-12 — Catch reservation ownership hardening (PR #192)
 - On existing draft PR #192, changed `CloudClaimRules` to return unique owner tokens and require the matching token to release a reservation. Prevents stale/wrong handlers unlocking a newly reserved cloud. Invalid/oversized IDs are rejected; `CloudCatch.server.luau` passes tokens; regression tests cover overlapping claims, independent clouds, wrong-owner and stale releases.
 - Code commits: `6cce935`, `ab4cd03`, `b8032f9`. GitHub Actions lookup for test commit returned no runs at inspection; CI/Roblox Studio, Android, DataStore and publishing are **not verified**. Do not merge until green CI and conflicting CloudCatch PR #193 are reconciled.
+
+## 2026-11-12 — PR #192 post-yield burst revalidation
+- Strengthened the existing catch-claim security PR: after a profile operation yields, each subsequent vacuum-burst target now rechecks live character/health, active target identity and current range before granting Coins/XP. Targeted magnet reach remains allowed only for the explicitly selected cloud. Failed validation releases the owner's reservation and skips the reward.
+- Added pure `CloudBurstRules.luau` and `tests/CloudBurstSpec.luau` with cases for stale/despawned targets, dead/disconnected characters, invalid distances and magnet reach; registered in `tests/run.luau`. Commits `3f7e1ef5`, `ae7b7e61`, `59b863be`, `d6ce58b9`, `044e069a`.
+- CI and Roblox multiplayer runtime for these commits are pending independent verification. This is still a DRAFT PR; do not merge with overlapping #193 until integrated and verified. No publishing claimed.
