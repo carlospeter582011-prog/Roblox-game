@@ -92,3 +92,5 @@ Boss trial phase progression modifies server attributes and HUD feedback only. E
 
 ## 2026-11-10 — Air companion reach ability asset audit
 - Gameplay-only ability; no new models, meshes, audio, textures, or asset IDs introduced. Existing original procedural 3D companion Model/Parts retained; no Canvas world stand-ins added. Roblox runtime appearance remains unverified.
+
+| Cloud Fusion Forge (3 pedestals and floating cores) | n/a (`src/server/CloudFusionForge.server.luau`) | Project (original procedural) | Original | none; Model/Mesh IDs n/a | Project-owned | Draft PR feature branch; real Roblox Parts and ProximityPrompts | Source only; CI, Roblox runtime, collisions and mobile pending |
