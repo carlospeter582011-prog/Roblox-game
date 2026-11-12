@@ -352,3 +352,5 @@ Phase C/D boundary. Foundation merged to `main` (PR #11). Playable slice exists 
 - Source: `src/server/SkyRescue.server.luau`, `src/shared/SkyRescueRules.luau`; 3 regression tests in `tests/SkyRescueSpec.luau` registered in runner.
 - Branch `feature/sky-rescue-checkpoints-20261112`; CI and Roblox runtime/collision/Android verification pending; no merge or publish. Main was f8a7f944 at branch creation. Separate from existing open PRs #189–195.
 - Next: check PR CI; test whether Roblox kill plane eliminates characters before y=-45 and verify touch prompts/return points. Keep launch criteria unchecked until real tests.
+
+- CI verified: [GitHub Actions run 43160272242](https://github.com/carlospeter582011-prog/Roblox-game/actions/runs/43160272242) completed success; jobs `build` and `luau-tests` passed. This is not Roblox runtime or Published verification.
