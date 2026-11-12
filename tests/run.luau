@@ -396,3 +396,6 @@ end
 
 -- Regression: a yielding profile save must never award the same cloud twice.
 assert(require("./CloudClaimSpec"))
+
+-- Regression: burst candidates must be revalidated after any yielding profile operation.
+assert(require("./CloudBurstSpec"))
