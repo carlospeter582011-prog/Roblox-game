@@ -179,6 +179,20 @@ remote.OnServerEvent:Connect(function(player, cloudId)
         if targetSpecies and active[targetId] == targetCloud then
             local claimToken = claims:claim(targetId)
             if not claimToken then continue end
+            -- A burst may yield between targets. Revalidate the *current* character,
+            -- health and distance before rewarding each cloud, not only at burst start.
+            local currentCharacter = player.Character
+            local currentRoot = currentCharacter and currentCharacter:FindFirstChild("HumanoidRootPart")
+            local humanoid = currentCharacter and currentCharacter:FindFirstChildOfClass("Humanoid")
+            local currentDistance = currentRoot and (currentRoot.Position - targetCloud.Position).Magnitude
+            local canReach = currentRoot and humanoid and humanoid.Health > 0
+                and currentDistance == currentDistance
+                and (CatchRules.isInRange(currentDistance, targetSpecies, tool)
+                    or (targetId == cloudId and CatchRules.canMagnetPull(currentDistance, targetSpecies, toolId, tool)))
+            if not canReach or active[targetId] ~= targetCloud or not targetCloud.Parent then
+                claims:release(targetId, claimToken)
+                continue
+            end
             local mut = targetCloud:GetAttribute("MutationId")
             local baseCoins = CatchRules.coinReward(targetSpecies, tool)
             local coins = Mutations.bonusCoins(baseCoins, mut)
